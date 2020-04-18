@@ -23,7 +23,6 @@
     "ronasit/laravel-entity-generator": ">=1.3.2",
     "ronasit/laravel-swagger": ">=1.4.3@beta",
     "ronasit/laravel-remote-data-collector": ">=1.0",
-    "barryvdh/laravel-cors": ">=0.8.0",
     "barryvdh/laravel-ide-helper": "^2.2"
   },
   "autoload": {
