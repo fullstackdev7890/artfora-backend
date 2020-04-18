@@ -2,7 +2,7 @@
 
 namespace App\Http;
 
-use Barryvdh\Cors\HandleCors;
+use App\Http\Middleware\AddCorsMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use RonasIT\Support\AutoDoc\Http\Middleware\AutoDocMiddleware;
 
@@ -21,7 +21,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         AutoDocMiddleware::class,
-        HandleCors::class
+        AddCorsMiddleware::class
     ];
 
     /**

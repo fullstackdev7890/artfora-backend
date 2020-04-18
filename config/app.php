@@ -183,7 +183,6 @@ return [
         RonasIT\Support\EntityGeneratorServiceProvider::class,
         RonasIT\Support\AutoDoc\AutoDocServiceProvider::class,
         RonasIT\Support\DataCollectors\RemoteDataCollectorServiceProvider::class,
-        Barryvdh\Cors\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 
