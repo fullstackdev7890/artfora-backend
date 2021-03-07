@@ -258,6 +258,6 @@ class UserTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $this->assertEqualsFixture($fixture, $response->json());
+        $this->assertEqualsFixture($fixture, Arr::except($response->json(), ['links']));
     }
 }

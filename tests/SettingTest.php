@@ -3,6 +3,7 @@
 namespace App\Tests;
 
 use App\Models\User;
+use Illuminate\Support\Arr;
 use Symfony\Component\HttpFoundation\Response;
 
 class SettingTest extends TestCase
@@ -152,7 +153,7 @@ class SettingTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $this->assertEqualsFixture($fixture, $response->json());
+        $this->assertEqualsFixture($fixture, Arr::except($response->json(), ['links']));
     }
 
     public function getUserSearchFilters()
@@ -177,6 +178,6 @@ class SettingTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $this->assertEqualsFixture($fixture, $response->json());
+        $this->assertEqualsFixture($fixture, Arr::except($response->json(), ['links']));
     }
 }

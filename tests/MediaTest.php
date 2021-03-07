@@ -5,6 +5,7 @@ namespace App\Tests;
 use App\Models\User;
 use App\Models\Media;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use RonasIT\Support\Traits\FilesUploadTrait;
 use Symfony\Component\HttpFoundation\Response;
@@ -191,7 +192,7 @@ class MediaTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $this->assertEqualsFixture($fixture, $response->json());
+        $this->assertEqualsFixture($fixture, Arr::except($response->json(), ['links']));
     }
 
     /**
@@ -206,7 +207,7 @@ class MediaTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $this->assertEqualsFixture($fixture, $response->json());
+        $this->assertEqualsFixture($fixture, Arr::except($response->json(), ['links']));
     }
 
     public function getBadFiles()
