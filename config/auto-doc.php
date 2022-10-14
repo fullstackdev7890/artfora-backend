@@ -34,6 +34,5 @@ return [
             '204' => 'Operation successfully done',
             '404' => 'This entity not found'
         ]
-    ],
-    'data_collector' => \RonasIT\Support\DataCollectors\RemoteDataCollector::class
+    ]
 ];

@@ -3,8 +3,8 @@
 namespace App\Tests;
 
 use Illuminate\Contracts\Console\Kernel;
-use RonasIT\Support\Tests\TestCase as BaseTestCase;
-use RonasIT\Support\AutoDoc\Tests\AutoDocTestCaseTrait;
+use Artel\Support\Tests\TestCase as BaseTestCase;
+use Artel\Support\AutoDoc\Tests\AutoDocTestCaseTrait;
 
 abstract class TestCase extends BaseTestCase
 {

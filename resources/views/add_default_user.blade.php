@@ -1,7 +1,7 @@
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Hash;
-use RonasIT\Support\Traits\MigrationTrait;
+use Artel\Support\Traits\MigrationTrait;
 
 class AddDefaultUser extends Migration
 {

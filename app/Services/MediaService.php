@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Repositories\MediaRepository;
-use RonasIT\Support\Services\EntityService;
-use RonasIT\Support\Traits\FilesUploadTrait;
+use Artel\Support\Services\EntityService;
+use Artel\Support\Traits\FilesUploadTrait;
 
 /**
  * @property MediaRepository $repository

@@ -7,7 +7,7 @@ use App\Models\Media;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
-use RonasIT\Support\Traits\FilesUploadTrait;
+use Artel\Support\Traits\FilesUploadTrait;
 use Symfony\Component\HttpFoundation\Response;
 
 class MediaTest extends TestCase

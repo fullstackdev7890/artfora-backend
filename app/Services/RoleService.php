@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\RoleRepository;
-use RonasIT\Support\Services\EntityService;
+use Artel\Support\Services\EntityService;
 
 /**
  * @property RoleRepository $repository

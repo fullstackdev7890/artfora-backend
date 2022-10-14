@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Setting;
-use RonasIT\Support\Repositories\BaseRepository;
+use Artel\Support\Repositories\BaseRepository;
 
 /**
  * @property  Setting $model

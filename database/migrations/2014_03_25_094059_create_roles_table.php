@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
-use RonasIT\Support\Traits\MigrationTrait;
+use Artel\Support\Traits\MigrationTrait;
 
 class CreateRolesTable extends Migration
 {

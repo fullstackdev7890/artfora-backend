@@ -4,7 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Arr;
 use App\Repositories\SettingRepository;
-use RonasIT\Support\Services\EntityService;
+use Artel\Support\Services\EntityService;
 
 /**
  * @property SettingRepository $repository

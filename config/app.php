@@ -179,12 +179,10 @@ return [
          * Package Service Providers...
          */
         Laravel\Tinker\TinkerServiceProvider::class,
-        RonasIT\Support\HelpersServiceProvider::class,
-        RonasIT\Support\EntityGeneratorServiceProvider::class,
-        RonasIT\Support\AutoDoc\AutoDocServiceProvider::class,
-        RonasIT\Support\DataCollectors\RemoteDataCollectorServiceProvider::class,
+        Artel\Support\HelpersServiceProvider::class,
+        Artel\Support\EntityGeneratorServiceProvider::class,
+        Artel\Support\AutoDoc\AutoDocServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
-        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 
         /*
          * Application Service Providers...

@@ -30,8 +30,8 @@ migrate:
 gcs:
   enabled: false
   projectId: "ronas-it-development"
-  bucketName: "ronasit-development"
-  apiUri: "https://storage.googleapis.com/ronasit-development"
+  bucketName: "Artel-development"
+  apiUri: "https://storage.googleapis.com/Artel-development"
   key: "secret"
 
 # For Google Cloud SQL
@@ -54,7 +54,7 @@ postgres:
     
 mysql:
   enabled: false
-  image: "ronasit/mysql"
+  image: "Artel/mysql"
   imageTag: "5.7-lowmem"
   persistence:
     enabled: true

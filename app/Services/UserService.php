@@ -8,7 +8,7 @@ use App\Models\Role;
 use Illuminate\Support\Arr;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
-use RonasIT\Support\Services\EntityService;
+use Artel\Support\Services\EntityService;
 
 /**
  * @property UserRepository $repository

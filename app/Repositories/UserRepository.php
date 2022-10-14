@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Models\User;
 use Illuminate\Support\Arr;
-use RonasIT\Support\Repositories\BaseRepository;
+use Artel\Support\Repositories\BaseRepository;
 
 /**
  * @property  User $model

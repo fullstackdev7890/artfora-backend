@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Media;
-use RonasIT\Support\Repositories\BaseRepository;
+use Artel\Support\Repositories\BaseRepository;
 
 /**
  * @property  Media $model

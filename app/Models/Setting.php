@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use RonasIT\Support\Traits\ModelTrait;
+use Artel\Support\Traits\ModelTrait;
 use Illuminate\Database\Eloquent\Model;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
