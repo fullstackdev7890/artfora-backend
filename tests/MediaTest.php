@@ -60,13 +60,6 @@ class MediaTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
     }
 
-    public function testCreateCheckUrls()
-    {
-        $this->actingAs($this->admin)->json('post', '/media', ['file' => $this->file]);
-
-        $this->assertEquals(1, Media::where('link', 'like', '/%')->count());
-    }
-
     public function testCreateCheckResponse()
     {
         $response = $this->actingAs($this->admin)->json('post', '/media', ['file' => $this->file]);

@@ -9,6 +9,7 @@ use Illuminate\Support\Arr;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
 use Artel\Support\Services\EntityService;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * @property UserRepository $repository
@@ -60,8 +61,7 @@ class UserService extends EntityService
                 'reset_password_hash' => $hash
             ]);
 
-        $mail = new ForgotPasswordMail($email, ['hash' => $hash]);
-        dispatch(new SendMailJob($mail));
+        Mail::queue(new ForgotPasswordMail($email, ['hash' => $hash]));
     }
 
     public function restorePassword($token, $password)

@@ -28,8 +28,7 @@ class MediaService extends EntityService
 
     public function create($content, $fileName, $data = [])
     {
-        $url = $this->saveFile($fileName, $content, true);
-        $data['link'] = str_replace(config('app.url'), '', $url);
+        $data['link'] = $this->saveFile($fileName, $content);
 
         return $this->repository->create($data);
     }
