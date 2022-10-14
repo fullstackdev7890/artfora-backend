@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class GetUserRequest extends Request
 {
-    public function rules()
+    public function rules(): array
     {
         return [];
     }

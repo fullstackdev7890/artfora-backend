@@ -5,6 +5,7 @@ namespace App\Tests;
 use App\Mails\ForgotPasswordMail;
 use App\Tests\Support\AuthTestTrait;
 use Illuminate\Support\Arr;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\User;
 
@@ -38,7 +39,7 @@ class AuthTest extends TestCase
     public function testLoginWrongCredentials()
     {
         $response = $this->json('post', '/login', [
-            'email' => 'wrong email',
+            'email' => 'wrong@email.com',
             'password' => 'wrong password'
         ]);
 

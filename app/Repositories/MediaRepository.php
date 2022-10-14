@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Media;
 use Artel\Support\Repositories\BaseRepository;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * @property  Media $model
@@ -15,7 +16,7 @@ class MediaRepository extends BaseRepository
         $this->setModel(Media::class);
     }
 
-    public function getSearchResults()
+    public function getSearchResults(): LengthAwarePaginator
     {
         $this->query->applyMediaPermissionRestrictions();
 

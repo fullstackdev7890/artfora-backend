@@ -6,10 +6,10 @@ use App\Http\Requests\Request;
 
 class LoginRequest extends Request
 {
-    public function rules()
+    public function rules(): array
     {
         return [
-            'email' => 'required',
+            'email' => 'string|email|required',
             'password' => 'required',
         ];
     }

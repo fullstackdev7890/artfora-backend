@@ -12,7 +12,7 @@ class GetSettingRequest extends Request
 {
     protected $setting;
 
-    public function authorize()
+    public function authorize(): bool
     {
         $service = app(SettingService::class);
         $this->setting = $service->findBy('name', $this->route('name'));
@@ -24,7 +24,7 @@ class GetSettingRequest extends Request
         return Arr::get($this->setting, 'is_public');
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [];
     }
