@@ -9,6 +9,7 @@ use Artel\Support\AutoDoc\Tests\AutoDocTestCaseTrait;
 abstract class TestCase extends BaseTestCase
 {
     use AutoDocTestCaseTrait;
+    protected $prepareSequencesExceptTables = ['migrations', 'password_resets', 'settings'];
 
     /**
      * Creates the application.
