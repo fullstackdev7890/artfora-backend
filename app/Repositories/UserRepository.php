@@ -3,13 +3,11 @@
 namespace App\Repositories;
 
 use App\Models\User;
-use Illuminate\Support\Arr;
-use Artel\Support\Repositories\BaseRepository;
 
 /**
  * @property  User $model
 */
-class UserRepository extends BaseRepository
+class UserRepository extends Repository
 {
     public function __construct()
     {

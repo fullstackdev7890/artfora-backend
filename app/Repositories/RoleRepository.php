@@ -3,12 +3,11 @@
 namespace App\Repositories;
 
 use App\Models\Role;
-use Artel\Support\Repositories\BaseRepository;
 
 /**
  * @property  Role $model
 */
-class RoleRepository extends BaseRepository
+class RoleRepository extends Repository
 {
     public function __construct()
     {

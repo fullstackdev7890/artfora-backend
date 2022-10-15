@@ -3,13 +3,12 @@
 namespace App\Repositories;
 
 use App\Models\Media;
-use Artel\Support\Repositories\BaseRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * @property  Media $model
  */
-class MediaRepository extends BaseRepository
+class MediaRepository extends Repository
 {
     public function __construct()
     {

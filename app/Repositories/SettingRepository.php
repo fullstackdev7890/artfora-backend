@@ -3,13 +3,12 @@
 namespace App\Repositories;
 
 use App\Models\Setting;
-use Artel\Support\Repositories\BaseRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * @property  Setting $model
 */
-class SettingRepository extends BaseRepository
+class SettingRepository extends Repository
 {
     public function __construct()
     {
