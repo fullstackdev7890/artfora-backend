@@ -2,7 +2,7 @@ version: '3'
 
 services:
 
-  apache:
+  api:
       image: ronasit/php-nginx-dev:8.0
       working_dir: /app
       ports:
