@@ -2,32 +2,28 @@ version: '3'
 
 services:
   api:
-      image: ronasit/php-nginx-dev:8.0
-      container_name: artfora-api
+      image: ${short_branch}-${CI_PROJECT_NAME}-${CI_COMMIT_SHORT_SHA}
+      container_name: tse-api
       working_dir: /app
       ports:
-          - 80:80
-          - 443:443
-      volumes:
-          - ./:/app
+          - 80
+          - 443
       links:
         - pgsql
         - pgsql_test
       environment:
-          WEB_DOCUMENT_ROOT: /app/public
-          WEB_DOCUMENT_INDEX: index.php
           REDIS_PORT: "6379"
           XDEBUG_START_WITH_REQUEST: "yes"
           XDEBUG_CLIENT_PORT: 9000
           XDEBUG_CLIENT_HOST: host.docker.internal
       networks:
-        - artfora
+        - escort
 
   pgsql:
     image: postgres:15rc2
-    container_name: artfora-pgsql
+    container_name: tse-pgsql
     ports:
-      - 5433:5432
+      - 5432
     environment:
       POSTGRES_PASSWORD: "pgpassword"
       POSTGRES_USER: pguser
@@ -35,13 +31,13 @@ services:
     volumes:
       - .:/app
     networks:
-      - artfora
+      - escort
 
   pgsql_test:
     image: postgres:15rc2
-    container_name: artfora-pgsql-test
+    container_name: tse-pgsql-test
     ports:
-        - 5434:5432
+        - 5432
     environment:
       POSTGRES_PASSWORD: "pgpassword"
       POSTGRES_USER: pguser
@@ -50,16 +46,16 @@ services:
     - .:/app
     command: ["-c", "fsync=off"]
     networks:
-      - artfora
+      - escort
 
   redis:
     image: redis:4
-    container_name: artfora-redis
+    container_name: tse-redis
     ports:
-      - 6379:6379
+      - 6379
     networks:
-      - artfora
+      - escort
 
 networks:
-  artfora:
+  escort:
     external: true
