@@ -15,6 +15,8 @@ class UpdateProfileRequest extends Request
             'confirm' => 'string',
             'email' => "string|email|unique:users,email,{$userId}",
             'name' => 'string',
+            'background_image_id' => 'integer|exists:media,id|nullable',
+            'avatar_image_id' => 'integer|exists:media,id|nullable'
         ];
     }
 }

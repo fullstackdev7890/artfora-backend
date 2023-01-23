@@ -15,7 +15,9 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
-        'role_id'
+        'role_id',
+        'background_image_id',
+        'avatar_image_id'
     ];
 
     protected $guarded = [
@@ -41,5 +43,15 @@ class User extends Authenticatable implements JWTSubject
     public function role()
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function background_image()
+    {
+        return $this->belongsTo(Media::class);
+    }
+
+    public function avatar_image()
+    {
+        return $this->belongsTo(Media::class);
     }
 }

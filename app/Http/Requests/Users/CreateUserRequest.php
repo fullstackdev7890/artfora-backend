@@ -20,6 +20,8 @@ class CreateUserRequest extends Request
             'password' => 'string|required',
             'name' => 'string|required',
             'email' => 'required|email|unique:users,email',
+            'background_image_id' => 'integer|exists:media,id|nullable',
+            'avatar_image_id' => 'integer|exists:media,id|nullable'
         ];
     }
 

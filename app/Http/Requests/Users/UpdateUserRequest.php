@@ -20,6 +20,8 @@ class UpdateUserRequest extends Request
         return [
             'email' => "string|email|unique:users,email,{$this->route('id')}",
             'name' => 'string',
+            'background_image_id' => 'integer|exists:media,id|nullable',
+            'avatar_image_id' => 'integer|exists:media,id|nullable'
         ];
     }
 
