@@ -17,17 +17,21 @@ use App\Models\User;
 
 class AuthTest extends TestCase
 {
+    protected $admin;
     protected $user;
     protected $notVerifiedUser;
-    protected $userWithoutPhone;
+    protected $userWithPhoneAuth;
+    protected $userWithOtpAuth;
 
     public function setUp(): void
     {
         parent::setUp();
 
+        $this->admin = User::find(1);
         $this->user = User::find(2);
         $this->notVerifiedUser = User::find(3);
-        $this->userWithoutPhone = User::find(5);
+        $this->userWithPhoneAuth = User::find(4);
+        $this->userWithOtpAuth = User::find(5);
     }
 
     public function testRegister()
@@ -325,13 +329,13 @@ class AuthTest extends TestCase
     public function testCheckSms2faCode()
     {
         SmsTwoFactorAuthorization::shouldReceive('check')
-            ->with('1234567890', '123456')
+            ->with($this->userWithPhoneAuth->phone, '123456')
             ->andReturn(true)
             ->once();
 
         $response = $this->json('post', '/auth/2fa/sms/check', [
             'code' => '123456',
-            'phone' => '1234567890'
+            'phone' => $this->userWithPhoneAuth->phone
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -340,16 +344,26 @@ class AuthTest extends TestCase
         $this->assertNotEmpty($response->json('token'));
     }
 
+    public function testCheckSms2faCodeWithoutSms2faEnabled()
+    {
+        $response = $this->json('post', '/auth/2fa/sms/check', [
+            'code' => '123456',
+            'phone' => $this->admin->phone
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
     public function testCheckSms2faCodeWrongCode()
     {
         SmsTwoFactorAuthorization::shouldReceive('check')
-            ->with('1234567890', 'wrong_code')
+            ->with($this->userWithPhoneAuth->phone, 'wrong_code')
             ->andReturn(false)
             ->once();
 
         $response = $this->json('post', '/auth/2fa/sms/check', [
             'code' => 'wrong_code',
-            'phone' => '1234567890'
+            'phone' => $this->userWithPhoneAuth->phone
         ]);
 
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
@@ -364,7 +378,7 @@ class AuthTest extends TestCase
 
         $response = $this->json('post', '/auth/2fa/otp/check', [
             'code' => '123456',
-            'user_id' => 10
+            'user_id' => $this->userWithOtpAuth->id
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -382,7 +396,7 @@ class AuthTest extends TestCase
 
         $response = $this->json('post', '/auth/2fa/otp/check', [
             'code' => 'wrong_code',
-            'user_id' => 10
+            'user_id' => $this->userWithOtpAuth->id
         ]);
 
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
@@ -647,7 +661,7 @@ class AuthTest extends TestCase
 
     public function testEnable2faWithSmsAsUserWithoutPhone()
     {
-        $response = $this->actingAs($this->userWithoutPhone)->json('post', '/auth/2fa/sms/enable');
+        $response = $this->actingAs($this->userWithOtpAuth)->json('post', '/auth/2fa/sms/enable');
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -737,7 +751,7 @@ class AuthTest extends TestCase
 
     public function testConfirm2faWithSmsWithoutPhone()
     {
-        $response = $this->actingAs($this->userWithoutPhone)->json('post', '/auth/2fa/sms/confirm', [
+        $response = $this->actingAs($this->userWithOtpAuth)->json('post', '/auth/2fa/sms/confirm', [
             'code' => 'right_code'
         ]);
 
