@@ -4,21 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Facades\OtpTwoFactorAuthorization;
 use App\Facades\SmsTwoFactorAuthorization;
-use App\Http\Requests\Auth\Check2FAEmailRequest;
-use App\Http\Requests\Auth\CheckOtpCodeRequest;
-use App\Http\Requests\Auth\CheckRestoreTokenRequest;
-use App\Http\Requests\Auth\Confirm2FAUserRequest;
-use App\Http\Requests\Auth\VerifyEmailRequest;
+use App\Http\Requests\Auth\Check2faEmailRequest;
+use App\Http\Requests\Auth\Confirm2faOtpRequest;
+use App\Http\Requests\Auth\CheckRestorePasswordTokenRequest;
+use App\Http\Requests\Auth\CheckSms2faRequest;
+use App\Http\Requests\Auth\Confirm2faEmailRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\GetOtpQrCodeRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RefreshTokenRequest;
 use App\Http\Requests\Auth\RegisterUserRequest;
-use App\Http\Requests\Auth\Resend2FAEmailRequest;
+use App\Http\Requests\Auth\Resend2faEmailRequest;
 use App\Http\Requests\Auth\RestorePasswordRequest;
-use App\Http\Requests\Auth\Send2FASmsRequest;
-use App\Http\Requests\Auth\Check2FASmsRequest;
-use App\Http\Requests\Auth\ConfirmOtp2FAUserRequest;
+use App\Http\Requests\Auth\Enable2faSmsRequest;
+use App\Http\Requests\Auth\Confirm2faSmsRequest;
+use App\Http\Requests\Auth\Check2faOtpRequest;
 use App\Mails\AccountConfirmationMail;
 use App\Models\User;
 use App\Services\TwoFactorAuthEmailService;
@@ -124,12 +124,12 @@ class AuthController extends Controller
         return response('', Response::HTTP_NO_CONTENT);
     }
 
-    public function checkRestoreToken(CheckRestoreTokenRequest $request)
+    public function checkRestorePasswordToken(CheckRestorePasswordTokenRequest $request)
     {
         return response('', Response::HTTP_NO_CONTENT);
     }
 
-    public function verifyEmail(VerifyEmailRequest $request, UserService $service, JWTAuth $auth)
+    public function verifyEmail(Confirm2faEmailRequest $request, UserService $service, JWTAuth $auth)
     {
         $user = $service->verifyEmail($request->input('token'));
 
@@ -138,18 +138,18 @@ class AuthController extends Controller
         return response()->json([ 'token' => $token ]);
     }
 
-    public function resend2FAEmail(Resend2FAEmailRequest $request, TwoFactorAuthEmailService $service)
+    public function resend2faEmail(Resend2faEmailRequest $request, TwoFactorAuthEmailService $service)
     {
         $service->send($request->input('email'));
 
         return response()->json([ 'message' => 'Successfully sent' ]);
     }
 
-    public function check2FAEmail(
-        Check2FAEmailRequest $request,
+    public function check2faEmail(
+        Check2faEmailRequest      $request,
         TwoFactorAuthEmailService $service,
-        UserService $userService,
-        JWTAuth $auth
+        UserService               $userService,
+        JWTAuth                   $auth
     ) {
         $email = $request->input('email');
         $code = $request->input('code');
@@ -167,7 +167,7 @@ class AuthController extends Controller
         ]);
     }
 
-    public function confirmSms(Confirm2FAUserRequest $request, UserService $service, JWTAuth $auth)
+    public function check2faSms(CheckSms2faRequest $request, UserService $service, JWTAuth $auth)
     {
         $phone = $request->input('phone');
 
@@ -175,7 +175,7 @@ class AuthController extends Controller
             return response()->json(['message' => __('Wrong code')], Response::HTTP_BAD_REQUEST);
         }
 
-        $user = $service->getEntityBy('phone', $phone);
+        $user = $service->findBy('phone', $phone);
 
         $token = $auth->fromUser($user);
 
@@ -185,14 +185,21 @@ class AuthController extends Controller
         ])->header('Authorization', $token);
     }
 
-    public function sendSms(Send2FASmsRequest $request)
+    public function enableSms2fa(Enable2faSmsRequest $request)
     {
         SmsTwoFactorAuthorization::verify($request->user()->phone);
 
         return response('', Response::HTTP_OK);
     }
 
-    public function checkSms(Check2FASmsRequest $request, UserService $service)
+    public function resend2faSms(Enable2faSmsRequest $request)
+    {
+        SmsTwoFactorAuthorization::verify($request->input('phone'));
+
+        return response('', Response::HTTP_OK);
+    }
+
+    public function confirmSms2fa(Confirm2faSmsRequest $request, UserService $service)
     {
         $isCodeCorrect = SmsTwoFactorAuthorization::check(
             $request->user()->phone,
@@ -217,7 +224,7 @@ class AuthController extends Controller
         return response()->json($data);
     }
 
-    public function checkOtp(CheckOtpCodeRequest $request, UserService $service)
+    public function confirmOtp2fa(Confirm2faOtpRequest $request, UserService $service)
     {
         $isCodeCorrect = OtpTwoFactorAuthorization::check(
             $request->user()->otp_secret,
@@ -233,11 +240,11 @@ class AuthController extends Controller
         return response('', Response::HTTP_OK);
     }
 
-    public function confirmOtp(ConfirmOtp2FAUserRequest $request, UserService $service, JWTAuth $auth)
+    public function check2faOtp(Check2faOtpRequest $request, UserService $service, JWTAuth $auth)
     {
         $user = $service->find($request->input('user_id'));
 
-        if (!OtpTwoFactorAuthorization::check($user['otp_secret'], $request->input('code'))) {
+        if (!OtpTwoFactorAuthorization::check($user->otp_secret, $request->input('code'))) {
             return response()->json(['message' => __('Wrong code')], Response::HTTP_BAD_REQUEST);
         }
 

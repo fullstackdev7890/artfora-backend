@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\Request;
+use App\Services\UserService;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class RegisterUserRequest extends Request
 {
@@ -15,5 +17,24 @@ class RegisterUserRequest extends Request
             'password' => 'required|string|same:confirm',
             'confirm' => 'required|string'
         ];
+    }
+
+    public function validateResolved()
+    {
+        parent::validateResolved();
+
+        $user = app(UserService::class)
+            ->withTrashed()
+            ->findBy('email', $this->input('email'));
+
+        if (empty($user)) {
+            return;
+        }
+
+        if (empty($user['email_verified_at'])) {
+            return;
+        }
+
+        throw new BadRequestHttpException('Email has already been taken');
     }
 }

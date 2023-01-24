@@ -48,7 +48,8 @@ class User extends Authenticatable implements JWTSubject
     protected $guarded = [
         'reset_password_hash',
         'email_verified_at',
-        'email_verification_token'
+        'email_verification_token',
+        'email_verification_token_sent_at'
     ];
 
     protected $hidden = [

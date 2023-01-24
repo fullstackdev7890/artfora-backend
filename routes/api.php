@@ -35,24 +35,28 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/settings/{name}', ['uses' => SettingController::class . '@get']);
     Route::get('/settings', ['uses' => SettingController::class . '@search']);
 
-    Route::post('/auth/2fa/sms/send', ['uses' => AuthController::class . '@sendSms']);
-    Route::post('/auth/2fa/sms/check', ['uses' => AuthController::class . '@checkSms']);
+    Route::post('/auth/2fa/sms/enable', ['uses' => AuthController::class . '@enableSms2fa']);
+    Route::post('/auth/2fa/sms/confirm', ['uses' => AuthController::class . '@confirmSms2fa']);
 
     Route::post('/auth/2fa/otp/generate', ['uses' => AuthController::class . '@getOtpQrCode']);
-    Route::post('/auth/2fa/otp/check', ['uses' => AuthController::class . '@checkOtp']);
+    Route::post('/auth/2fa/otp/confirm', ['uses' => AuthController::class . '@confirmOtp2fa']);
 });
 
 Route::group(['middleware' => 'guest'], function () {
+    Route::get('/auth/refresh', ['uses' => AuthController::class . '@refreshToken'])
+        ->middleware(['jwt.refresh']);
+
     Route::post('/auth/login', ['uses' => AuthController::class . '@login']);
     Route::post('/auth/register', [ 'uses' => AuthController::class . '@register' ]);
+    Route::post('/auth/register/email/verify', ['uses' => AuthController::class . '@verifyEmail', 'as' => 'auth.confirm']);
     Route::post('/auth/forgot-password', ['uses' => AuthController::class . '@forgotPassword']);
     Route::post('/auth/restore-password', ['uses' => AuthController::class . '@restorePassword']);
-    Route::post('/auth/token/check', ['uses' => AuthController::class . '@checkRestoreToken']);
-    Route::post('/auth/email/verify', ['uses' => AuthController::class . '@verifyEmail', 'as' => 'auth.confirm']);
-    Route::post('/auth/2fa/email/resend', ['uses' => AuthController::class . '@resend2FAEmail']);
-    Route::post('/auth/2fa/email/check', ['uses' => AuthController::class . '@resend2FAEmail']);
-    Route::post('/auth/2fa/sms/confirm', ['uses' => AuthController::class . '@confirmSms']);
-    Route::post('/auth/2fa/otp/confirm', ['uses' => AuthController::class . '@confirmOtp']);
+    Route::post('/auth/restore-password/check', ['uses' => AuthController::class . '@checkRestorePasswordToken']);
+    Route::post('/auth/2fa/email/resend', ['uses' => AuthController::class . '@resend2faEmail']);
+    Route::post('/auth/2fa/email/check', ['uses' => AuthController::class . '@check2faEmail']);
+    Route::post('/auth/2fa/sms/resend', ['uses' => AuthController::class . '@resend2faSms']);
+    Route::post('/auth/2fa/sms/check', ['uses' => AuthController::class . '@check2faSms']);
+    Route::post('/auth/2fa/otp/check', ['uses' => AuthController::class . '@check2faOtp']);
 
     Route::get('/status', ['uses' => StatusController::class . '@status']);
 });

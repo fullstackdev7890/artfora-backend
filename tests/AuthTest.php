@@ -18,6 +18,7 @@ use App\Models\User;
 class AuthTest extends TestCase
 {
     protected $user;
+    protected $notVerifiedUser;
     protected $userWithoutPhone;
 
     public function setUp(): void
@@ -25,6 +26,8 @@ class AuthTest extends TestCase
         parent::setUp();
 
         $this->user = User::find(2);
+        $this->notVerifiedUser = User::find(3);
+        $this->userWithoutPhone = User::find(5);
     }
 
     public function testRegister()
@@ -35,7 +38,6 @@ class AuthTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $data['email_verified_at'] = null;
         Arr::forget($data, ['password', 'confirm']);
 
         $this->assertDatabaseHas('users', $data);
@@ -53,7 +55,9 @@ class AuthTest extends TestCase
 
         $this->assertDatabaseHas('users', [
             'id' => User::max('id'),
-            'email_verification_token' => 'test_token'
+            'email_verified_at' => null,
+            'email_verification_token' => 'test_token',
+            'email_verification_token_sent_at' => Carbon::now()
         ]);
     }
 
@@ -86,7 +90,7 @@ class AuthTest extends TestCase
 
         $response = $this->json('post', '/auth/register', $data);
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
     public function testRegisterCheckPassword()
@@ -141,11 +145,66 @@ class AuthTest extends TestCase
     {
         $data = $this->getJsonFixture('new_user.json');
 
-        $data['email'] = 'admin@email.com';
+        $data['email'] = 'user@example.com';
 
         $response = $this->json('post', '/auth/register', $data);
 
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
+    }
+
+    public function testVerifyEmail()
+    {
+        $response = $this->json('post', '/auth/register/email/verify', [
+            'token' => 'correct_confirmation_code'
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $this->assertArrayHasKey('token', $response->json());
+        $this->assertNotEmpty($response->json('token'));
+    }
+
+    public function testVerifyEmailNotFound()
+    {
+        $response = $this->json('post', '/auth/register/email/verify', [
+            'token' => 'not_existed_code'
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function testVerifyEmailWithOldToken()
+    {
+        $response = $this->json('post', '/auth/register/email/verify', [
+            'token' => 'old_confirmation_code'
+        ]);
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+    }
+
+    public function testVerifyEmailCheckDB()
+    {
+        $response = $this->json('post', '/auth/register/email/verify', [
+            'token' => 'correct_confirmation_code'
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $this->assertDatabaseHas('users', [
+            'id' => 3,
+            'email_verification_token' => null,
+            'email_verification_token_sent_at' => null,
+            'email_verified_at' => Carbon::now()
+        ]);
+    }
+
+    public function testVerifyEmailWrongConfirmationCode()
+    {
+        $response = $this->json('post', '/auth/register/email/verify', [
+            'token' => 'wrong_confirmation_code'
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function testLogin()
@@ -229,7 +288,7 @@ class AuthTest extends TestCase
         $response->assertStatus(Response::HTTP_NOT_ACCEPTABLE);
     }
 
-    public function testLoginWithSms2FA()
+    public function testLoginWithSms2fa()
     {
         SmsTwoFactorAuthorization::shouldReceive('verify')->andReturn('test_2fa_id')->once();
 
@@ -247,7 +306,7 @@ class AuthTest extends TestCase
         ], $response->json());
     }
 
-    public function testLoginWithOtp2FA()
+    public function testLoginWithOtp2fa()
     {
         $response = $this->json('post', '/auth/login', [
             'login' => 'user.otp.2fa@email.com',
@@ -263,14 +322,14 @@ class AuthTest extends TestCase
         ], $response->json());
     }
 
-    public function testConfirmSms2FA()
+    public function testCheckSms2faCode()
     {
         SmsTwoFactorAuthorization::shouldReceive('check')
             ->with('1234567890', '123456')
             ->andReturn(true)
             ->once();
 
-        $response = $this->json('post', '/auth/sms/confirm', [
+        $response = $this->json('post', '/auth/2fa/sms/check', [
             'code' => '123456',
             'phone' => '1234567890'
         ]);
@@ -281,14 +340,14 @@ class AuthTest extends TestCase
         $this->assertNotEmpty($response->json('token'));
     }
 
-    public function testConfirmSms2FAWrongCode()
+    public function testCheckSms2faCodeWrongCode()
     {
         SmsTwoFactorAuthorization::shouldReceive('check')
             ->with('1234567890', 'wrong_code')
             ->andReturn(false)
             ->once();
 
-        $response = $this->json('post', '/auth/sms/confirm', [
+        $response = $this->json('post', '/auth/2fa/sms/check', [
             'code' => 'wrong_code',
             'phone' => '1234567890'
         ]);
@@ -296,14 +355,14 @@ class AuthTest extends TestCase
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
-    public function testConfirmOtp2FA()
+    public function testCheckOtp2fa()
     {
         OtpTwoFactorAuthorization::shouldReceive('check')
             ->with('secret', '123456')
             ->andReturn(true)
             ->once();
 
-        $response = $this->json('post', '/auth/otp/confirm', [
+        $response = $this->json('post', '/auth/2fa/otp/check', [
             'code' => '123456',
             'user_id' => 10
         ]);
@@ -314,14 +373,14 @@ class AuthTest extends TestCase
         $this->assertNotEmpty($response->json('token'));
     }
 
-    public function testConfirmOtp2FAWrongCode()
+    public function testCheckOtp2faWrongCode()
     {
         OtpTwoFactorAuthorization::shouldReceive('check')
             ->with('secret', 'wrong_code')
             ->andReturn(false)
             ->once();
 
-        $response = $this->json('post', '/auth/otp/confirm', [
+        $response = $this->json('post', '/auth/2fa/otp/check', [
             'code' => 'wrong_code',
             'user_id' => 10
         ]);
@@ -329,10 +388,16 @@ class AuthTest extends TestCase
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
-    public function testConfirmEmail()
+    public function testCheckEmail2fa()
     {
-        $response = $this->json('post', '/auth/email/confirm', [
-            'token' => 'correct_confirmation_code'
+        EmailTwoFactorAuthorization::shouldReceive('check')
+            ->with($this->user->email, '123456')
+            ->andReturn(true)
+            ->once();
+
+        $response = $this->json('post', '/auth/2fa/email/check', [
+            'code' => '123456',
+            'email' => $this->user->email
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -341,47 +406,19 @@ class AuthTest extends TestCase
         $this->assertNotEmpty($response->json('token'));
     }
 
-    public function testConfirmEmailNotFound()
+    public function testCheckEmail2faWrongCode()
     {
-        $response = $this->json('post', '/auth/email/confirm', [
-            'token' => 'not_existed_code'
-        ]);
+        OtpTwoFactorAuthorization::shouldReceive('check')
+            ->with($this->user->email, '098877')
+            ->andReturn(false)
+            ->once();
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-    }
-
-    public function testConfirmEmailWithOldToken()
-    {
-        $response = $this->json('post', '/auth/email/confirm', [
-            'token' => 'old_token'
+        $response = $this->json('post', '/auth/2fa/email/check', [
+            'code' => '098877',
+            'email' => $this->user->email
         ]);
 
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
-    }
-
-    public function testConfirmEmailCheckDB()
-    {
-        $response = $this->json('post', '/auth/email/confirm', [
-            'token' => 'correct_confirmation_code'
-        ]);
-
-        $response->assertStatus(Response::HTTP_OK);
-
-        $this->assertDatabaseHas('users', [
-            'id' => 3,
-            'email_verification_token' => null,
-            'email_verification_token_sent_at' => null,
-            'email_verified_at' => Carbon::now()
-        ]);
-    }
-
-    public function testConfirmEmailWrongConfirmationCode()
-    {
-        $response = $this->json('post', '/auth/email/confirm', [
-            'token' => 'wrong_confirmation_code'
-        ]);
-
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function testRefreshToken()
@@ -488,19 +525,99 @@ class AuthTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function testCheckRestoreToken()
+    public function testCheckRestorePasswordToken()
     {
-        $response = $this->json('post', '/auth/token/check', [
+        $response = $this->json('post', '/auth/restore-password/check', [
             'token' => 'restore_token',
         ]);
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
     }
 
-    public function testCheckRestoreWrongToken()
+    public function testCheckRestorePasswordWrongToken()
     {
-        $response = $this->json('post', '/auth/token/check', [
+        $response = $this->json('post', '/auth/restore-password/check', [
             'token' => 'wrong_token',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function testResend2faSms()
+    {
+        SmsTwoFactorAuthorization::shouldReceive('verify')
+            ->with('3333333')
+            ->once();
+
+        $response = $this->json('post', '/auth/2fa/sms/resend', [
+            'phone' => '3333333',
+        ]);
+
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+    }
+
+    public function testResend2faSmsNotEnabled()
+    {
+        $response = $this->json('post', '/auth/2fa/sms/resend', [
+            'phone' => '1111111',
+        ]);
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+    }
+
+    public function testResend2faSmsOfSoftDeletedUser()
+    {
+        $response = $this->json('post', '/auth/2fa/sms/resend', [
+            'phone' => '4444444',
+        ]);
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+    }
+
+    public function testResend2faSmsPhoneNotFound()
+    {
+        $response = $this->json('post', '/auth/2fa/sms/resend', [
+            'phone' => '0000000',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function testResend2faEmail()
+    {
+        EmailTwoFactorAuthorization::shouldReceive('send')
+            ->with('admin@example.com')
+            ->once();
+
+        $response = $this->json('post', '/auth/2fa/email/resend', [
+            'email' => 'admin@example.com',
+        ]);
+
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+    }
+
+    public function testResend2faEmailNotEnabled()
+    {
+        $response = $this->json('post', '/auth/2fa/email/resend', [
+            'email' => 'user.sms.2fa@email.com',
+        ]);
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+    }
+
+    public function testResend2faEmailOfSoftDeletedUser()
+    {
+        $response = $this->json('post', '/auth/2fa/email/resend', [
+            'email' => 'soft.deleted.user@email.com',
+        ]);
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+    }
+
+    public function testResend2faEmailPhoneNotFound()
+    {
+        $response = $this->json('post', '/auth/2fa/email/resend', [
+            'email' => 'not.exists@email.com',
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -519,25 +636,32 @@ class AuthTest extends TestCase
         ]);
     }
 
-    public function testSendSms()
+    public function testEnable2faWithSms()
     {
         SmsTwoFactorAuthorization::shouldReceive('verify')->once();
 
-        $response = $this->actingAs($this->user)->json('post', '/auth/sms/send');
+        $response = $this->actingAs($this->user)->json('post', '/auth/2fa/sms/enable');
 
         $response->assertStatus(Response::HTTP_OK);
     }
 
-    public function testSendSmsAsUserWithoutPhone()
+    public function testEnable2faWithSmsAsUserWithoutPhone()
     {
-        $response = $this->actingAs($this->userWithoutPhone)->json('post', '/auth/sms/send');
+        $response = $this->actingAs($this->userWithoutPhone)->json('post', '/auth/2fa/sms/enable');
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function testSendSmsNoAuth()
+    public function testEnable2faWithSmsAsNotVerifiedUser()
     {
-        $response = $this->json('post', '/auth/sms/send');
+        $response = $this->actingAs($this->notVerifiedUser)->json('post', '/auth/2fa/sms/enable');
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function testEnable2faWithSmsNoAuth()
+    {
+        $response = $this->json('post', '/auth/2fa/sms/enable');
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
@@ -549,7 +673,7 @@ class AuthTest extends TestCase
             'qr_code' => 'test-url'
         ])->once();
 
-        $response = $this->actingAs($this->user)->json('post', '/auth/otp/generate');
+        $response = $this->actingAs($this->user)->json('post', '/auth/2fa/otp/generate');
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -564,18 +688,30 @@ class AuthTest extends TestCase
         ]);
     }
 
+    public function testGetOtpQrCodeAsNotVerifiedUser()
+    {
+        OtpTwoFactorAuthorization::shouldReceive('generate')->andReturn([
+            'secret' => 'secret',
+            'qr_code' => 'test-url'
+        ])->once();
+
+        $response = $this->actingAs($this->notVerifiedUser)->json('post', '/auth/2fa/otp/generate');
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
     public function testGetOtpQrCodeNoAuth()
     {
-        $response = $this->json('post', '/auth/otp/generate');
+        $response = $this->json('post', '/auth/2fa/otp/generate');
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function testEnableSmsCode()
+    public function testConfirm2faWithSms()
     {
         SmsTwoFactorAuthorization::shouldReceive('check')->andReturn(true)->once();
 
-        $response = $this->actingAs($this->user)->json('post', '/auth/sms/check', [
+        $response = $this->actingAs($this->user)->json('post', '/auth/2fa/sms/confirm', [
             'code' => 'right_code'
         ]);
 
@@ -588,57 +724,38 @@ class AuthTest extends TestCase
         ]);
     }
 
-    public function testEnableSmsCodeCheckPromocodeCreation()
-    {
-        SmsTwoFactorAuthorization::shouldReceive('check')->andReturn(true)->once();
-        TokenGenerator::shouldReceive('getRandom')
-            ->andReturn('test_promo')
-            ->once();
-
-        $response = $this->actingAs($this->user)->json('post', '/auth/sms/check', [
-            'code' => 'right_code'
-        ]);
-
-        $response->assertStatus(Response::HTTP_OK);
-
-        $this->assertDatabaseHas('promocodes', [
-            'user_id' => $this->user->id,
-            'code' => 'test_promo'
-        ]);
-    }
-
-    public function testEnableSms2faWrongCode()
+    public function testConfirm2faWithSmsWrongCode()
     {
         SmsTwoFactorAuthorization::shouldReceive('check')->andReturn(false)->once();
 
-        $response = $this->actingAs($this->user)->json('post', '/auth/sms/check', [
+        $response = $this->actingAs($this->user)->json('post', '/auth/2fa/sms/confirm', [
             'code' => 'right_code'
         ]);
 
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
-    public function testEnableSms2FACodeWithoutPhone()
+    public function testConfirm2faWithSmsWithoutPhone()
     {
-        $response = $this->actingAs($this->userWithoutPhone)->json('post', '/auth/sms/check', [
+        $response = $this->actingAs($this->userWithoutPhone)->json('post', '/auth/2fa/sms/confirm', [
             'code' => 'right_code'
         ]);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function testEnableSms2FACodeNoAuth()
+    public function testConfirm2faWithSmsNoAuth()
     {
-        $response = $this->json('post', '/auth/sms/check');
+        $response = $this->json('post', '/auth/2fa/sms/confirm');
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function testEnableOtpCode()
+    public function testEnableOtp2fa()
     {
         OtpTwoFactorAuthorization::shouldReceive('check')->andReturn(true)->once();
 
-        $response = $this->actingAs($this->user)->json('post', '/auth/otp/check', [
+        $response = $this->actingAs($this->user)->json('post', '/auth/2fa/otp/confirm', [
             'code' => 'right_code'
         ]);
 
@@ -651,39 +768,34 @@ class AuthTest extends TestCase
         ]);
     }
 
-    public function testEnableOtpCodeCheckPromocodeCreation()
+    public function testEnableOtp2faCheckPromocodeCreation()
     {
         OtpTwoFactorAuthorization::shouldReceive('check')->andReturn(true)->once();
         TokenGenerator::shouldReceive('getRandom')
             ->andReturn('test_promo')
             ->once();
 
-        $response = $this->actingAs($this->user)->json('post', '/auth/otp/check', [
+        $response = $this->actingAs($this->user)->json('post', '/auth/2fa/otp/confirm', [
             'code' => 'right_code'
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-
-        $this->assertDatabaseHas('promocodes', [
-            'id' => $this->user->id,
-            'code' => 'test_promo'
-        ]);
     }
 
     public function testEnableOtp2faWrongCode()
     {
         OtpTwoFactorAuthorization::shouldReceive('check')->andReturn(false)->once();
 
-        $response = $this->actingAs($this->user)->json('post', '/auth/otp/check', [
+        $response = $this->actingAs($this->user)->json('post', '/auth/2fa/otp/confirm', [
             'code' => 'right_code'
         ]);
 
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
-    public function testEnableOtp2FACodeNoAuth()
+    public function testEnableOtp2faCodeNoAuth()
     {
-        $response = $this->json('post', '/auth/otp/check');
+        $response = $this->json('post', '/auth/2fa/otp/confirm');
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }

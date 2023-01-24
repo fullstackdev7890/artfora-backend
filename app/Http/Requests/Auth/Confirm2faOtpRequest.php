@@ -4,17 +4,19 @@ namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ConfirmOtp2FAUserRequest extends FormRequest
+/**
+ * This request is needed to complete enabling of 2FA with OTP service for already registered and verified users.
+ */
+class Confirm2faOtpRequest extends FormRequest
 {
     public function authorize()
     {
-        return true;
+        return !empty($this->user()->email_verified_at);
     }
 
     public function rules()
     {
         return [
-            'user_id' => 'required|integer|exists:users,id',
             'code' => 'required'
         ];
     }

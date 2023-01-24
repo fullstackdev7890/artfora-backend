@@ -4,7 +4,7 @@ namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Confirm2FAUserRequest extends FormRequest
+class Check2faOtpRequest extends FormRequest
 {
     public function authorize()
     {
@@ -14,7 +14,7 @@ class Confirm2FAUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'phone' => 'required',
+            'user_id' => 'required|integer|exists:users,id',
             'code' => 'required'
         ];
     }

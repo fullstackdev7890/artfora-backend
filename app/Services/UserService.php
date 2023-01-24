@@ -47,6 +47,7 @@ class UserService extends EntityService
         $data['role_id'] = Arr::get($data, 'role_id', Role::USER);
         $data['password'] = Hash::make($data['password']);
         $data['email_verification_token'] = TokenGenerator::getRandom();
+        $data['email_verification_token_sent_at'] = Carbon::now();
 
         return $this->repository
             ->force()
@@ -68,8 +69,9 @@ class UserService extends EntityService
             ->withTrashed()
             ->findBy('email_verification_token', $code);
 
-        $this->repository->update(['email_verification_token' => $code], [
+        $this->repository->force()->update(['email_verification_token' => $code], [
             'email_verification_token' => null,
+            'email_verification_token_sent_at' => null,
             'email_verified_at' => Carbon::now(),
             'deleted_at' => null
         ]);

@@ -18,6 +18,7 @@ class CreateUsersTable extends Migration
             $table->integer('role_id');
             $table->string('reset_password_hash')->nullable();
             $table->string('email_verification_token')->nullable();
+            $table->timestamp('email_verification_token_sent_at')->nullable();
             $table->text('description')->default('');
             $table->string('country')->default('USA');
             $table->string('external_link')->nullable();

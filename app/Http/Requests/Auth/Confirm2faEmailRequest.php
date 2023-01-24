@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class VerifyEmailRequest extends FormRequest
+class Confirm2faEmailRequest extends FormRequest
 {
     public function authorize()
     {
