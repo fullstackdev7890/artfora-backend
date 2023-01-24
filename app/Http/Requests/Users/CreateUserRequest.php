@@ -16,10 +16,14 @@ class CreateUserRequest extends Request
     public function rules(): array
     {
         return [
-            'role_id' => 'integer|exists:roles,id',
-            'password' => 'string|required',
-            'name' => 'string|required',
+            'username' => 'string|required|unique:users',
+            'tagname' => 'string|required',
             'email' => 'required|email|unique:users,email',
+            'password' => 'string|required',
+            'role_id' => 'integer|exists:roles,id',
+            'description' => 'string|nullable',
+            'country' => 'string|nullable',
+            'external_link' => 'string|nullable',
             'background_image_id' => 'integer|exists:media,id|nullable',
             'avatar_image_id' => 'integer|exists:media,id|nullable'
         ];

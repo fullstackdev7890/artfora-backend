@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Artel\Support\Traits\ModelTrait;
@@ -9,25 +10,58 @@ use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use Notifiable, ModelTrait;
+    use Notifiable, ModelTrait, SoftDeletes;
+
+    /**
+     * The functionality of 2fa is copy-pasted from the Remmesa project, that's why sms and otp is here
+     * but there were no requirements to implement it so this functionality is kinda works but won't be
+     * presented in the design and I bet soon it will be erased from the project.
+     * I decided to still keep it because it will allow us to easy scale types of 2fa in future.
+     */
+    const EMAIL_2FA_TYPE = 'email';
+    const SMS_2FA_TYPE = 'sms';
+    const OTP_2FA_TYPE = 'otp';
+
+    const TWO_FACTOR_AUTHORIZATION_TYPES = [
+        self::EMAIL_2FA_TYPE,
+        self::SMS_2FA_TYPE,
+        self::OTP_2FA_TYPE,
+    ];
 
     protected $fillable = [
-        'name',
+        'username',
+        'tagname',
         'email',
         'password',
         'role_id',
+        'description',
+        'country',
+        'external_link',
+        'data',
         'background_image_id',
-        'avatar_image_id'
+        'avatar_image_id',
+        '2fa_type',
+        'is_2fa_enabled',
+        'otp_secret'
     ];
 
     protected $guarded = [
-        'reset_password_hash'
+        'reset_password_hash',
+        'email_verified_at',
+        'email_verification_token'
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
-        'reset_password_hash'
+        'reset_password_hash',
+        '2fa_type',
+        'otp_secret',
+        'email_verified_at'
+    ];
+
+    protected $casts = [
+        'data' => 'array'
     ];
 
     public function getJWTIdentifier()

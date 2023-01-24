@@ -19,7 +19,8 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
     static $password;
 
     return [
-        'name' => $faker->name,
+        'username' => $faker->name,
+        'tagname' => $faker->name,
         'email' => $faker->unique()->safeEmail,
         'password' => $password ?: $password = Hash::make('secret'),
         'remember_token' => Str::random(10),
@@ -43,5 +44,20 @@ $factory->define(App\Models\Setting::class, function (Faker\Generator $faker) {
     return [
         'key' => $faker->word,
         'value' => $faker->word
+    ];
+});
+
+
+$factory->define(App\Models\TwoFactorAuthEmail::class, function (Faker\Generator $faker) {
+    return [
+        'email' => $faker->word,
+        'code' => $faker->word,
+    ];
+});
+
+$factory->define(App\Models\PasswordReset::class, function (Faker\Generator $faker) {
+    return [
+        'email' => $faker->word,
+        'token' => $faker->word,
     ];
 });
