@@ -20,8 +20,8 @@ class UpdateUserRequest extends Request
         $userId = $this->route('id');
 
         return [
-            'username' => "string|unique:users,{$userId}",
-            'tagname' => 'string',
+            'username' => "string|unique:users,username,{$userId}",
+            'tagname' => "string|unique:users,tagname,{$userId}",
             'email' => "email|unique:users,email,{$userId}",
             'password' => 'string|same:confirm',
             'confirm' => 'string',
