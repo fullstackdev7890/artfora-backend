@@ -11,8 +11,6 @@ INSERT INTO users(id, "2fa_type", username, tagname, email, role_id, phone, desc
   (6, 'email', 'Restore password', 'Restore password', 'restore@email.com', 2, null, 'Lorem ipsum well you know', 'USA', null, '{ "media_filters": {} }'::jsonb, null, null, '$2y$10$JSlPT99kMrhDE815OEQKaezYdlgcB0S0uwiOhNnoonyUMc0yQ7KEm', null, null, '2016-10-20 11:05:00', '2016-10-20 11:05:00', '2016-10-20 11:05:00', null, null, null, null),
   (7, 'email', 'Soft deleted user', 'Soft deleted user', 'soft.deleted.user@email.com', 2, '4444444', 'Lorem ipsum well you know', 'USA', null, '{ "media_filters": {} }'::jsonb, null, null, '$2y$10$JSlPT99kMrhDE815OEQKaezYdlgcB0S0uwiOhNnoonyUMc0yQ7KEm', null, null, '2016-10-20 11:05:00', '2016-10-20 11:05:00', '2016-10-20 11:05:00', '2016-10-20 11:05:00', null, null, null);
 
-truncate table password_resets;
-
 insert into password_resets(email, token, created_at) values
     ('restore@email.com', 'restore_token', '2018-11-11 11:11:11'),
     ('restore@email.com', 'old_token', '2018-11-10 11:11:11');

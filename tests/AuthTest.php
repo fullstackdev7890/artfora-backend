@@ -449,20 +449,20 @@ class AuthTest extends TestCase
             ->once();
 
         $response = $this->json('post', '/auth/forgot-password', [
-            'login' => 'correct@email.com'
+            'login' => $this->user->email
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
 
         $this->assertDatabaseHas('password_resets', [
-            'email' => 'correct@email.com',
+            'email' => $this->user->email,
             'token' => 'some_token',
             'created_at' => Carbon::now()
         ]);
 
         $this->assertMailEquals(ForgotPasswordMail::class, [
             [
-                'emails' => 'correct@email.com',
+                'emails' => $this->user->email,
                 'fixture' => 'forgot_password_email.html'
             ]
         ]);

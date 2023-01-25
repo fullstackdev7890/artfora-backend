@@ -9,9 +9,12 @@ class PasswordReset extends Model
 {
     use ModelTrait;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'email',
         'token',
+        'created_at'
     ];
 
     protected $hidden = ['pivot'];

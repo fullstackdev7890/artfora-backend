@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Mail;
  */
 class UserService extends EntityService
 {
-    protected $passwordResetRepository;
+    protected PasswordResetRepository $passwordResetRepository;
 
     public function __construct()
     {
@@ -81,17 +81,22 @@ class UserService extends EntityService
 
     public function forgotPassword($email)
     {
-        $hash = TokenGenerator::getRandom();
+        $user = $this->repository->findBy('email', $email);
 
-        $this->repository
-            ->force()
-            ->update([
-                'email' => $email
-            ], [
-                'reset_password_hash' => $hash
-            ]);
+        if (empty($user)) {
+            return;
+        }
 
-        Mail::queue(new ForgotPasswordMail($email, ['hash' => $hash]));
+        $record = $this->passwordResetRepository->create([
+            'email' => $email,
+            'token' => TokenGenerator::getRandom(128),
+            'created_at' => Carbon::now()
+        ]);
+
+        Mail::queue(new ForgotPasswordMail($email, [
+            'user' => $user,
+            'hash' => $record['token']
+        ]));
     }
 
     public function restorePassword($restoreToken, $password)
