@@ -22,6 +22,7 @@ class AuthTest extends TestCase
     protected $notVerifiedUser;
     protected $userWithPhoneAuth;
     protected $userWithOtpAuth;
+    protected $softDeletedUser;
 
     public function setUp(): void
     {
@@ -32,6 +33,7 @@ class AuthTest extends TestCase
         $this->notVerifiedUser = User::find(3);
         $this->userWithPhoneAuth = User::find(4);
         $this->userWithOtpAuth = User::find(5);
+        $this->softDeletedUser = User::withTrashed()->find(7);
     }
 
     public function testRegister()
@@ -550,32 +552,32 @@ class AuthTest extends TestCase
     public function testResend2faSms()
     {
         SmsTwoFactorAuthorization::shouldReceive('verify')
-            ->with('3333333')
+            ->with($this->userWithPhoneAuth->phone)
             ->once();
 
         $response = $this->json('post', '/auth/2fa/sms/resend', [
-            'phone' => '3333333',
+            'phone' => $this->userWithPhoneAuth->phone,
         ]);
 
-        $response->assertStatus(Response::HTTP_NO_CONTENT);
+        $response->assertOk();
     }
 
     public function testResend2faSmsNotEnabled()
     {
         $response = $this->json('post', '/auth/2fa/sms/resend', [
-            'phone' => '1111111',
+            'phone' => $this->userWithOtpAuth,
         ]);
 
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     public function testResend2faSmsOfSoftDeletedUser()
     {
         $response = $this->json('post', '/auth/2fa/sms/resend', [
-            'phone' => '4444444',
+            'phone' => $this->softDeletedUser->phone,
         ]);
 
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     public function testResend2faSmsPhoneNotFound()
@@ -584,7 +586,7 @@ class AuthTest extends TestCase
             'phone' => '0000000',
         ]);
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     public function testResend2faEmail()

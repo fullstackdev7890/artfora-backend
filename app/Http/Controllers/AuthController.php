@@ -16,6 +16,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RefreshTokenRequest;
 use App\Http\Requests\Auth\RegisterUserRequest;
 use App\Http\Requests\Auth\Resend2faEmailRequest;
+use App\Http\Requests\Auth\Resend2faSmsRequest;
 use App\Http\Requests\Auth\RestorePasswordRequest;
 use App\Http\Requests\Auth\Enable2faSmsRequest;
 use App\Http\Requests\Auth\Confirm2faSmsRequest;
@@ -186,14 +187,14 @@ class AuthController extends Controller
     {
         SmsTwoFactorAuthorization::verify($request->user()->phone);
 
-        return response('', Response::HTTP_OK);
+        return response()->json(['message' => 'Success']);
     }
 
-    public function resend2faSms(Enable2faSmsRequest $request)
+    public function resend2faSms(Resend2faSmsRequest $request)
     {
         SmsTwoFactorAuthorization::verify($request->input('phone'));
 
-        return response('', Response::HTTP_OK);
+        return response()->json(['message' => 'Success']);
     }
 
     public function confirmSms2fa(Confirm2faSmsRequest $request, UserService $service)
@@ -209,7 +210,7 @@ class AuthController extends Controller
 
         $service->enable2FA($request->user()->id, User::SMS_2FA_TYPE);
 
-        return response('', Response::HTTP_OK);
+        return response()->json(['message' => 'Success']);
     }
 
     public function getOtpQrCode(GetOtpQrCodeRequest $request, UserService $service)
@@ -234,7 +235,7 @@ class AuthController extends Controller
 
         $service->enable2FA($request->user()->id, User::OTP_2FA_TYPE);
 
-        return response('', Response::HTTP_OK);
+        return response()->json(['message' => 'Success']);
     }
 
     public function check2faOtp(Check2faOtpRequest $request, UserService $service, JWTAuth $auth)
