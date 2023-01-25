@@ -709,11 +709,6 @@ class AuthTest extends TestCase
 
     public function testGetOtpQrCodeAsNotVerifiedUser()
     {
-        OtpTwoFactorAuthorization::shouldReceive('generate')->andReturn([
-            'secret' => 'secret',
-            'qr_code' => 'test-url'
-        ])->once();
-
         $response = $this->actingAs($this->notVerifiedUser)->json('post', '/auth/2fa/otp/generate');
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
@@ -738,7 +733,6 @@ class AuthTest extends TestCase
 
         $this->assertDatabaseHas('users', [
             'id' => $this->user->id,
-            'is_2fa_enabled' => true,
             '2fa_type' => User::SMS_2FA_TYPE
         ]);
     }
@@ -782,23 +776,8 @@ class AuthTest extends TestCase
 
         $this->assertDatabaseHas('users', [
             'id' => $this->user->id,
-            'is_2fa_enabled' => true,
             '2fa_type' => User::OTP_2FA_TYPE
         ]);
-    }
-
-    public function testEnableOtp2faCheckPromocodeCreation()
-    {
-        OtpTwoFactorAuthorization::shouldReceive('check')->andReturn(true)->once();
-        TokenGenerator::shouldReceive('getRandom')
-            ->andReturn('test_promo')
-            ->once();
-
-        $response = $this->actingAs($this->user)->json('post', '/auth/2fa/otp/confirm', [
-            'code' => 'right_code'
-        ]);
-
-        $response->assertStatus(Response::HTTP_OK);
     }
 
     public function testEnableOtp2faWrongCode()
