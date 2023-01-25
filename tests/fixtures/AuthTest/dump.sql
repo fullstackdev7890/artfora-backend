@@ -16,3 +16,7 @@ truncate table password_resets;
 insert into password_resets(email, token, created_at) values
     ('restore@email.com', 'restore_token', '2018-11-11 11:11:11'),
     ('restore@email.com', 'old_token', '2018-11-10 11:11:11');
+
+insert into two_factor_auth_emails(id, email, code, created_at, updated_at) values
+    (1, 'user@example.com', '123456', '2018-11-11 11:11:11', '2018-11-11 11:11:11'),
+    (2, 'user@example.com', '098765', '2018-11-10 11:11:11', '2018-11-10 11:11:11');

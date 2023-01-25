@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\EmailTwoFactorAuthorization;
 use App\Facades\OtpTwoFactorAuthorization;
 use App\Facades\SmsTwoFactorAuthorization;
 use App\Http\Requests\Auth\Check2faEmailRequest;
@@ -145,16 +146,12 @@ class AuthController extends Controller
         return response()->json([ 'message' => 'Successfully sent' ]);
     }
 
-    public function check2faEmail(
-        Check2faEmailRequest      $request,
-        TwoFactorAuthEmailService $service,
-        UserService               $userService,
-        JWTAuth                   $auth
-    ) {
+    public function check2faEmail(Check2faEmailRequest $request, UserService $userService, JWTAuth $auth)
+    {
         $email = $request->input('email');
         $code = $request->input('code');
 
-        if (!$service->check($email, $code)) {
+        if (!EmailTwoFactorAuthorization::check($email, $code)) {
             return response()->json([ 'message' => 'Wrong code' ], Response::HTTP_UNAUTHORIZED);
         }
 

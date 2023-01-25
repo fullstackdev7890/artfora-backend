@@ -53,6 +53,6 @@ class TwoFactorAuthEmailService extends EntityService
             'only_actual' => true
         ]);
 
-        return !empty($records['data']);
+        return (bool)$records->total();
     }
 }

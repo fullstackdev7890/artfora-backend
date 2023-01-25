@@ -404,11 +404,6 @@ class AuthTest extends TestCase
 
     public function testCheckEmail2fa()
     {
-        EmailTwoFactorAuthorization::shouldReceive('check')
-            ->with($this->user->email, '123456')
-            ->andReturn(true)
-            ->once();
-
         $response = $this->json('post', '/auth/2fa/email/check', [
             'code' => '123456',
             'email' => $this->user->email
@@ -422,17 +417,12 @@ class AuthTest extends TestCase
 
     public function testCheckEmail2faWrongCode()
     {
-        OtpTwoFactorAuthorization::shouldReceive('check')
-            ->with($this->user->email, '098877')
-            ->andReturn(false)
-            ->once();
-
         $response = $this->json('post', '/auth/2fa/email/check', [
             'code' => '098877',
             'email' => $this->user->email
         ]);
 
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     public function testRefreshToken()
