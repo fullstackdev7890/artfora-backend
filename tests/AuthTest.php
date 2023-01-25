@@ -246,7 +246,7 @@ class AuthTest extends TestCase
             'password' => 'correct_password'
         ]);
 
-        $response->assertStatus(Response::HTTP_OK);
+        $response->assertOk();
 
         $this->assertMailEquals(TwoFactorAuthenticationMail::class, [
             [
@@ -591,42 +591,55 @@ class AuthTest extends TestCase
 
     public function testResend2faEmail()
     {
-        EmailTwoFactorAuthorization::shouldReceive('send')
-            ->with('admin@example.com')
-            ->once();
-
         $response = $this->json('post', '/auth/2fa/email/resend', [
-            'email' => 'admin@example.com',
+            'email' => $this->admin->email,
         ]);
 
-        $response->assertStatus(Response::HTTP_NO_CONTENT);
+        $response->assertOk();
+    }
+
+    public function testResend2faEmailCheckEmail()
+    {
+        TokenGenerator::shouldReceive('getCode')->andReturn('123456');
+
+        $this->json('post', '/auth/2fa/email/resend', [
+            'email' => $this->admin->email,
+        ]);
+
+        $this->assertMailEquals(TwoFactorAuthenticationMail::class, [
+            [
+                'emails' => 'admin@example.com',
+                'fixture' => 'email_login_2fa.html',
+                'subject' => 'ARTfora. 2FA code'
+            ]
+        ]);
     }
 
     public function testResend2faEmailNotEnabled()
     {
         $response = $this->json('post', '/auth/2fa/email/resend', [
-            'email' => 'user.sms.2fa@email.com',
+            'email' => $this->userWithPhoneAuth->email
         ]);
 
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     public function testResend2faEmailOfSoftDeletedUser()
     {
         $response = $this->json('post', '/auth/2fa/email/resend', [
-            'email' => 'soft.deleted.user@email.com',
+            'email' => $this->softDeletedUser->email
         ]);
 
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function testResend2faEmailPhoneNotFound()
+    public function testResend2faEmailNotFound()
     {
         $response = $this->json('post', '/auth/2fa/email/resend', [
             'email' => 'not.exists@email.com',
         ]);
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     public function testClearPasswordResets()
