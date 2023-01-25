@@ -192,7 +192,10 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
+        \App\Providers\OtpProvider::class,
+        \App\Providers\TwilioProvider::class,
+        \App\Providers\TokenGeneratorProvider::class,
+        \App\Providers\EmailTwoFactorAuthProvider::class
     ],
 
     /*

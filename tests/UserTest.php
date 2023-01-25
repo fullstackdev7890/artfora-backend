@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use App\Facades\TokenGenerator;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,6 +22,8 @@ class UserTest extends TestCase
 
     public function testCreate()
     {
+        TokenGenerator::shouldReceive('getRandom')->andReturn('123123123');
+
         $data = $this->getJsonFixture('create_user.json');
 
         $response = $this->actingAs($this->admin)->json('post', '/users', $data);
@@ -30,7 +33,7 @@ class UserTest extends TestCase
         $expect = Arr::except($data, ['id', 'password', 'updated_at', 'created_at']);
         $actual = Arr::except($response->json(), ['id', 'updated_at', 'created_at']);
 
-        $this->assertEquals($expect, $actual);
+        $this->assertEqualsFixture('create_user_response.json', $actual);
 
         $this->assertDatabaseHas('users', $expect);
     }
@@ -85,7 +88,7 @@ class UserTest extends TestCase
 
         $this->assertDatabaseMissing('users', [
             'id' => 1,
-            'name' => $data['name'],
+            'username' => $data['username'],
             'email' => $data['email']
         ]);
     }
@@ -154,7 +157,7 @@ class UserTest extends TestCase
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
 
-        $this->assertDatabaseMissing('users', [
+        $this->assertSoftDeleted('users', [
             'id' => 1
         ]);
     }
@@ -239,7 +242,7 @@ class UserTest extends TestCase
             [
                 'filter' => [
                     'desc' => false,
-                    'order_by' => 'name'
+                    'order_by' => 'username'
                 ],
                 'result' => 'get_users_check_order.json'
             ]

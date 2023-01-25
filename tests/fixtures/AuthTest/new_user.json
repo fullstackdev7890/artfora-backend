@@ -1,6 +1,7 @@
 {
-  "name": "Don Juan",
-  "email": "test@example.com",
+  "username": "New user",
+  "tagname": "New user",
+  "email": "new@email.com",
   "password": "666999",
   "confirm": "666999"
 }

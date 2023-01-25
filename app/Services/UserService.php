@@ -2,9 +2,14 @@
 
 namespace App\Services;
 
+use App\Facades\TokenGenerator;
 use App\Jobs\SendMailJob;
 use App\Mails\ForgotPasswordMail;
+use App\Models\Invitation;
 use App\Models\Role;
+use App\Models\User;
+use App\Repositories\PasswordResetRepository;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
@@ -13,14 +18,19 @@ use Illuminate\Support\Facades\Mail;
 
 /**
  * @property UserRepository $repository
+ * @property PasswordResetRepository $passwordResetRepository
+ *
+ * @mixin UserRepository
  */
 class UserService extends EntityService
 {
-    protected $roleRepository;
+    protected PasswordResetRepository $passwordResetRepository;
 
     public function __construct()
     {
         $this->setRepository(UserRepository::class);
+
+        $this->passwordResetRepository = app(PasswordResetRepository::class);
     }
 
     public function search($filters)
@@ -28,7 +38,7 @@ class UserService extends EntityService
         return $this->repository
             ->searchQuery($filters)
             ->filterBy('role_id')
-            ->filterByQuery(['name', 'email'])
+            ->filterByQuery(['username', 'email'])
             ->getSearchResults();
     }
 
@@ -36,8 +46,12 @@ class UserService extends EntityService
     {
         $data['role_id'] = Arr::get($data, 'role_id', Role::USER);
         $data['password'] = Hash::make($data['password']);
+        $data['email_verification_token'] = TokenGenerator::getRandom();
+        $data['email_verification_token_sent_at'] = Carbon::now();
 
-        return $this->repository->create($data);
+        return $this->repository
+            ->force()
+            ->updateOrCreate([ 'email' => $data['email'] ], $data);
     }
 
     public function update($where, $data)
@@ -49,35 +63,62 @@ class UserService extends EntityService
         return $this->repository->update($where, $data);
     }
 
+    public function verifyEmail($code): User
+    {
+        $user = $this->repository
+            ->withTrashed()
+            ->findBy('email_verification_token', $code);
+
+        $this->repository->force()->update(['email_verification_token' => $code], [
+            'email_verification_token' => null,
+            'email_verification_token_sent_at' => null,
+            'email_verified_at' => Carbon::now(),
+            'deleted_at' => null
+        ]);
+
+        return $user;
+    }
+
     public function forgotPassword($email)
     {
-        $hash = $this->generateUniqueHash();
+        $user = $this->repository->findBy('email', $email);
 
-        $this->repository
-            ->force()
-            ->update([
-                'email' => $email
-            ], [
-                'reset_password_hash' => $hash
-            ]);
+        if (empty($user)) {
+            return;
+        }
 
-        Mail::queue(new ForgotPasswordMail($email, ['hash' => $hash]));
+        $record = $this->passwordResetRepository->create([
+            'email' => $email,
+            'token' => TokenGenerator::getRandom(128),
+            'created_at' => Carbon::now()
+        ]);
+
+        Mail::queue(new ForgotPasswordMail($email, [
+            'user' => $user,
+            'hash' => $record['token']
+        ]));
     }
 
-    public function restorePassword($token, $password)
+    public function restorePassword($restoreToken, $password)
     {
-        $this->repository
-            ->force()
-            ->update([
-                'reset_password_hash' => $token
-            ], [
-                'password' => Hash::make($password),
-                'reset_password_hash' => null
-            ]);
+        $record = $this->passwordResetRepository->findBy('token', $restoreToken);
+
+        $this->update(
+            ['email' => $record['email']],
+            ['password' => $password]
+        );
+
+        $this->passwordResetRepository->delete(['token' => $restoreToken]);
     }
 
-    protected function generateUniqueHash($length = 16)
+    public function enable2FA($userId, $type)
     {
-        return bin2hex(openssl_random_pseudo_bytes($length));
+        $data = [ '2fa_type' => $type ];
+
+        if ($type === User::SMS_2FA_TYPE) {
+            $data['phone_verified_at'] = Carbon::now();
+        }
+
+        $this->update($userId, $data);
     }
 }

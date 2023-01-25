@@ -17,11 +17,22 @@ class UpdateUserRequest extends Request
 
     public function rules(): array
     {
+        $userId = $this->route('id');
+
         return [
-            'email' => "string|email|unique:users,email,{$this->route('id')}",
-            'name' => 'string',
+            'username' => "string|unique:users,username,{$userId}",
+            'tagname' => "string|unique:users,tagname,{$userId}",
+            'email' => "email|unique:users,email,{$userId}",
+            'password' => 'string|same:confirm',
+            'confirm' => 'string',
+            'role_id' => 'integer|exists:roles,id',
+            'description' => 'string|nullable',
+            'country' => 'string|nullable',
+            'external_link' => 'string|nullable',
             'background_image_id' => 'integer|exists:media,id|nullable',
-            'avatar_image_id' => 'integer|exists:media,id|nullable'
+            'avatar_image_id' => 'integer|exists:media,id|nullable',
+            'data' => 'array',
+            'data.media_filters' => 'array'
         ];
     }
 

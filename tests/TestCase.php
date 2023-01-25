@@ -11,7 +11,7 @@ use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 abstract class TestCase extends BaseTestCase
 {
     use AutoDocTestCaseTrait;
-    protected $prepareSequencesExceptTables = ['migrations', 'password_resets', 'settings'];
+    protected $prepareSequencesExceptTables = ['migrations', 'settings'];
 
     protected string $jwt;
 
