@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TwoFactorAuthEmailController;
 use App\Http\Controllers\StatusController;
@@ -68,3 +69,9 @@ Route::group(['middleware' => 'guest'], function () {
 
     Route::get('/status', ['uses' => StatusController::class . '@status']);
 });
+
+Route::post('/products', [ProductController::class, 'create']);
+Route::put('/products/{id}', [ProductController::class, 'update']);
+Route::delete('/products/{id}', [ProductController::class, 'delete']);
+Route::get('/products/{id}', [ProductController::class, 'get']);
+Route::get('/products', [ProductController::class, 'search']);

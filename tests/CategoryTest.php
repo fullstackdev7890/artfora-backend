@@ -189,6 +189,12 @@ class CategoryTest extends TestCase
                 ],
                 'result' => 'search_with_parent_and_children.json'
             ],
+            [
+                'filter' => [
+                    'only_parent' => 1
+                ],
+                'result' => 'search_only_parents.json'
+            ],
         ];
     }
 

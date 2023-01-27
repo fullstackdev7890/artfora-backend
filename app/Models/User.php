@@ -89,4 +89,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsTo(Media::class);
     }
+
+    public function product()
+    {
+        return $this->hasOne(Product::class);
+    }
+
 }
