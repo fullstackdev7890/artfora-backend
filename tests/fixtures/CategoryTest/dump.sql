@@ -9,6 +9,9 @@ INSERT INTO users(id, "2fa_type", username, tagname, email, role_id, phone, desc
   (1, 'email', 'Gerhard Feest', 'Gerhard Feest', 'admin@example.com', 1, '1111111', 'Lorem ipsum well you know', 'USA', null, '{ "media_filters": {} }'::jsonb, null, null, '$2y$10$JSlPT99kMrhDE815OEQKaezYdlgcB0S0uwiOhNnoonyUMc0yQ7KEm', null, null, '2016-10-20 11:05:00', '2016-10-20 11:05:00', '2016-10-20 11:05:00', null, null, null, null),
   (2, 'email', 'Alien West', 'Alien West', 'user@example.com', 2, '2222222', 'Lorem ipsum well you know', 'USA', null, '{ "media_filters": {} }'::jsonb, null, null, 'old_password', null, 'restore_token', '2016-10-20 11:05:00', '2016-10-20 11:05:00', '2016-10-20 11:05:00', null, null, null, null);
 
-INSERT INTO categories(id, title, created_at, updated_at) VALUES
-  (1, 'eum', '2016-10-20 11:05:00', '2016-10-20 11:05:00');
+INSERT INTO categories(id, title, parent_id, created_at, updated_at) VALUES
+  (1, 'category without parent and children', null, '2016-10-20 11:05:00', '2016-10-20 11:05:00'),
+  (2, 'parent category', null, '2016-10-20 11:05:00', '2016-10-20 11:05:00'),
+  (3, 'children #1', 2, '2016-10-20 11:05:00', '2016-10-20 11:05:00'),
+  (4, 'children #2', 2, '2016-10-20 11:05:00', '2016-10-20 11:05:00');
 

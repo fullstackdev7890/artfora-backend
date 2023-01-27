@@ -22,13 +22,41 @@ class CategoryTest extends TestCase
     {
         $data = $this->getJsonFixture('create_category_request.json');
 
-        $response = $this->actingAs($this->user)->json('post', '/categories', $data);
+        $response = $this->actingAs($this->admin)->json('post', '/categories', $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
         $this->assertEqualsFixture('create_category_response.json', $response->json());
 
-        $this->assertDatabaseHas('categories', $this->getJsonFixture('create_category_response.json'));
+        $this->assertDatabaseHas(
+            'categories',
+            $this->getJsonFixture('create_category_response.json')
+        );
+    }
+
+    public function testCreateWithParent()
+    {
+        $data = $this->getJsonFixture('create_category_with_parent_request.json');
+
+        $response = $this->actingAs($this->admin)->json('post', '/categories', $data);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $this->assertEqualsFixture('create_category_with_parent_response.json', $response->json());
+
+        $this->assertDatabaseHas(
+            'categories',
+            $this->getJsonFixture('create_category_with_parent_response.json')
+        );
+    }
+
+    public function testCreateWithoutPermission()
+    {
+        $data = $this->getJsonFixture('create_category_request.json');
+
+        $response = $this->actingAs($this->user)->json('post', '/categories', $data);
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     public function testCreateNoAuth()
@@ -44,18 +72,27 @@ class CategoryTest extends TestCase
     {
         $data = $this->getJsonFixture('update_category_request.json');
 
-        $response = $this->actingAs($this->user)->json('put', '/categories/1', $data);
+        $response = $this->actingAs($this->admin)->json('put', '/categories/1', $data);
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
 
         $this->assertDatabaseHas('categories', $data);
     }
 
+    public function testUpdateWithoutPermission()
+    {
+        $data = $this->getJsonFixture('update_category_request.json');
+
+        $response = $this->actingAs($this->user)->json('put', '/categories/1', $data);
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
     public function testUpdateNotExists()
     {
         $data = $this->getJsonFixture('update_category_request.json');
 
-        $response = $this->actingAs($this->user)->json('put', '/categories/0', $data);
+        $response = $this->actingAs($this->admin)->json('put', '/categories/0', $data);
 
         $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
@@ -71,7 +108,7 @@ class CategoryTest extends TestCase
 
     public function testDelete()
     {
-        $response = $this->actingAs($this->user)->json('delete', '/categories/1');
+        $response = $this->actingAs($this->admin)->json('delete', '/categories/1');
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
 
@@ -80,9 +117,16 @@ class CategoryTest extends TestCase
         ]);
     }
 
+    public function testDeleteWithoutPermission()
+    {
+        $response = $this->actingAs($this->user)->json('delete', '/categories/1');
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
     public function testDeleteNotExists()
     {
-        $response = $this->actingAs($this->user)->json('delete', '/categories/0');
+        $response = $this->actingAs($this->admin)->json('delete', '/categories/0');
 
         $response->assertStatus(Response::HTTP_NOT_FOUND);
 
@@ -107,6 +151,17 @@ class CategoryTest extends TestCase
         $this->assertEqualsFixture('get_category.json', $response->json());
     }
 
+    public function testGetWithParentAndChildren()
+    {
+        $response = $this->actingAs($this->user)->json('get', '/categories/2', [
+            'with' => [ 'parent', 'children' ]
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $this->assertEqualsFixture('get_category_with_parent_and_children.json', $response->json());
+    }
+
     public function testGetNotExists()
     {
         $response = $this->actingAs($this->user)->json('get', '/categories/0');
@@ -128,6 +183,12 @@ class CategoryTest extends TestCase
                 ],
                 'result' => 'search_by_page_per_page.json'
             ],
+            [
+                'filter' => [
+                    'with' => [ 'parent', 'children' ]
+                ],
+                'result' => 'search_with_parent_and_children.json'
+            ],
         ];
     }
 
@@ -143,7 +204,7 @@ class CategoryTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
+        $this->exportJson($fixture, $response->json());
         $this->assertEqualsFixture($fixture, $response->json());
     }
-
 }

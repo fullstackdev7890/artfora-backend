@@ -2,12 +2,18 @@
 
 namespace App\Http\Requests\Categories;
 
+use App\Models\Role;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Services\CategoryService;
 use App\Http\Requests\Request;
 
 class UpdateCategoryRequest extends Request
 {
+    public function authorize(): bool
+    {
+        return $this->user()->role_id === Role::ADMIN;
+    }
+
     public function rules(): array
     {
         return [

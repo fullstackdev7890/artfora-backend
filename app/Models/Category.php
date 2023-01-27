@@ -21,6 +21,6 @@ class Category extends Model
     }
 
     public function children() {
-        return $this->hasMany(Category::class);
+        return $this->hasMany(Category::class, foreignKey: 'parent_id');
     }
 }
