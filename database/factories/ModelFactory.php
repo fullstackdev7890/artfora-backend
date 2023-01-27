@@ -61,3 +61,9 @@ $factory->define(App\Models\PasswordReset::class, function (Faker\Generator $fak
         'token' => $faker->word,
     ];
 });
+
+$factory->define(App\Models\Category::class, function (Faker\Generator $faker) {
+    return [
+        'title' => $faker->word,
+    ];
+});
