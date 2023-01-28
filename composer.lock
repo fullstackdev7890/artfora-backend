@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d942f8e1e2f71da15eb5eb9340e235a9",
+    "content-hash": "a520825705dc4ebdb0c6ba98351b3139",
     "packages": [
         {
             "name": "artel/laravel-helpers",
-            "version": "2.2.2",
+            "version": "2.2.3",
             "source": {
                 "type": "git",
                 "url": "git@gitlab.com:artel-workshop/plugins/laravel-helpers.git",
-                "reference": "4aee2bc0b5cc8e1bedfd22c74bc8c79ddb5b96e9"
+                "reference": "2a67eb53072c2657f42e1082aa55f7de25159075"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/artel-workshop%2Fplugins%2Flaravel-helpers/repository/archive.zip?sha=4aee2bc0b5cc8e1bedfd22c74bc8c79ddb5b96e9",
-                "reference": "4aee2bc0b5cc8e1bedfd22c74bc8c79ddb5b96e9",
+                "url": "https://gitlab.com/api/v4/projects/artel-workshop%2Fplugins%2Flaravel-helpers/repository/archive.zip?sha=2a67eb53072c2657f42e1082aa55f7de25159075",
+                "reference": "2a67eb53072c2657f42e1082aa55f7de25159075",
                 "shasum": ""
             },
             "require": {
@@ -64,7 +64,7 @@
                 "helpers",
                 "laravel"
             ],
-            "time": "2023-01-27T17:03:40+00:00"
+            "time": "2023-01-28T14:18:53+00:00"
         },
         {
             "name": "beberlei/assert",

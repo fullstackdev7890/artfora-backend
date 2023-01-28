@@ -30,7 +30,7 @@
                 <tr>
                     <td class="header" style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; padding: 25px 0; text-align: center;">
                         <a href="" style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; color: #bbbfc3; font-size: 19px; font-weight: bold; text-decoration: none; text-shadow: 0 1px 0 white;">
-                            {{config('app.name')}}
+                            Laravel
                         </a>
                     </td>
                 </tr>
@@ -38,7 +38,32 @@
                 <!-- Email Body -->
                 <tr>
                     <td class="body" width="100%" cellpadding="0" cellspacing="0" style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; background-color: #FFFFFF; border-bottom: 1px solid #EDEFF2; border-top: 1px solid #EDEFF2; margin: 0; padding: 0; width: 100%; -premailer-cellpadding: 0; -premailer-cellspacing: 0; -premailer-width: 100%;">
-                        @yield('content')
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="center"
+                style="font-size: 32px; font-family: Helvetica, Arial, sans-serif; color: #333333; padding-top: 30px;"
+                class="padding-copy"
+            >
+                Sender sent contact us request
+            </td>
+        </tr>
+        <tr>
+            <td align="left"
+                style="padding: 20px; text-align: center; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;"
+                class="padding-copy"
+            >
+                <b>Contact back email <a href="mailto:sender@email.com">sender@email.com</a></b>
+            </td>
+        </tr>
+        <tr>
+            <td align="left"
+                style="padding: 20px 20px; text-align: center; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;"
+                class="padding-copy"
+            >
+                Lorem upsum
+            </td>
+        </tr>
+    </table>
                     </td>
                 </tr>
 
@@ -48,7 +73,7 @@
                             <tr>
                                 <td class="content-cell" align="center" style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; padding: 35px;">
                                     <p style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; line-height: 1.5em; margin-top: 0; color: #AEAEAE; font-size: 12px; text-align: center;">©
-                                        {{ \Carbon\Carbon::now()->year }} {{config('app.name')}}. All rights reserved.
+                                        2018 Laravel. All rights reserved.
                                     </p>
                                 </td>
                             </tr>

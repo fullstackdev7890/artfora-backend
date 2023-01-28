@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\TwoFactorAuthEmailController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
@@ -75,4 +75,7 @@ Route::group(['middleware' => 'guest'], function () {
 
     Route::get('/products/{id}', [ProductController::class, 'get']);
     Route::get('/products', [ProductController::class, 'search']);
+
+    Route::post('/users/{id}/commission', [ContactUsController::class, 'commission']);
+    Route::post('/contact-us', [ContactUsController::class, 'contactUs']);
 });

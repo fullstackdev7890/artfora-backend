@@ -81,11 +81,9 @@ class AuthTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
 
         $this->assertMailEquals(AccountConfirmationMail::class, [
-            [
-                'emails' => $data['email'],
-                'fixture' => 'confirm_email_with_redirect.html',
-                'subject' => 'Account verification'
-            ]
+            'emails' => $data['email'],
+            'fixture' => 'confirm_email_with_redirect.html',
+            'subject' => 'Account verification'
         ]);
     }
 
@@ -123,11 +121,9 @@ class AuthTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
 
         $this->assertMailEquals(AccountConfirmationMail::class, [
-            [
-                'emails' => $data['email'],
-                'fixture' => 'confirm_email.html',
-                'subject' => 'Account verification'
-            ]
+            'emails' => $data['email'],
+            'fixture' => 'confirm_email.html',
+            'subject' => 'Account verification'
         ]);
     }
 
@@ -249,11 +245,9 @@ class AuthTest extends TestCase
         $response->assertOk();
 
         $this->assertMailEquals(TwoFactorAuthenticationMail::class, [
-            [
-                'emails' => 'admin@example.com',
-                'fixture' => 'email_login_2fa.html',
-                'subject' => 'ARTfora. 2FA code'
-            ]
+            'emails' => 'admin@example.com',
+            'fixture' => 'email_login_2fa.html',
+            'subject' => 'ARTfora. 2FA code'
         ]);
     }
 
@@ -463,10 +457,8 @@ class AuthTest extends TestCase
         ]);
 
         $this->assertMailEquals(ForgotPasswordMail::class, [
-            [
-                'emails' => $this->user->email,
-                'fixture' => 'forgot_password_email.html'
-            ]
+            'emails' => $this->user->email,
+            'fixture' => 'forgot_password_email.html'
         ]);
     }
 
@@ -607,11 +599,9 @@ class AuthTest extends TestCase
         ]);
 
         $this->assertMailEquals(TwoFactorAuthenticationMail::class, [
-            [
-                'emails' => 'admin@example.com',
-                'fixture' => 'email_login_2fa.html',
-                'subject' => 'ARTfora. 2FA code'
-            ]
+            'emails' => 'admin@example.com',
+            'fixture' => 'email_login_2fa.html',
+            'subject' => 'ARTfora. 2FA code'
         ]);
     }
 
