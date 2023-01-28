@@ -2,7 +2,7 @@
     "id": 2,
     "price": 900,
     "user_id": 2,
-    "category_id": 3,
+    "category_id": 1,
     "title": "Second",
     "author": "Shishkin",
     "slug": "second",

@@ -2,7 +2,7 @@
     "id": 1,
     "price": 1000,
     "user_id": 1,
-    "category_id": 1,
+    "category_id": 3,
     "title": "First",
     "author": "Picasso",
     "slug": "first",

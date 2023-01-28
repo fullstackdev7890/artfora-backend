@@ -30,9 +30,9 @@ class ProductRepository extends Repository
             return $this;
         }
 
-        $this->query
-            ->where('status', Product::APPROVED_STATUS)
-            ->orWhere('user_id', $user->id);
+        if (!isset($this->filter['user_id']) || ($this->filter['user_id'] !== $user->id)) {
+            $this->query->where('status', Product::APPROVED_STATUS);
+        }
 
         return $this;
     }

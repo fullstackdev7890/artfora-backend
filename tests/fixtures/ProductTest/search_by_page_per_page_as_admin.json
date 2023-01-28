@@ -25,7 +25,7 @@
             "id": 4,
             "price": 700,
             "user_id": 2,
-            "category_id": 1,
+            "category_id": 4,
             "title": "Fourth",
             "author": "Aivazovkiy",
             "slug": "fourth",

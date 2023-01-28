@@ -2,7 +2,7 @@
     "id": 6,
     "price": 500,
     "user_id": 2,
-    "category_id": 4,
+    "category_id": 3,
     "title": "Sixth",
     "author": "Picasso",
     "slug": "sixth",

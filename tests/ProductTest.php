@@ -356,9 +356,16 @@ class ProductTest extends TestCase
             ],
             [
                 'filter' => [
+                    'user_id' => 2,
+                    'status' => Product::PENDING_STATUS,
+                ],
+                'result' => 'search_by_user_with_filter.json'
+            ],
+            [
+                'filter' => [
                     'status' => Product::PENDING_STATUS
                 ],
-                'result' => 'search_pending.json'
+                'result' => 'search_by_status.json'
             ],
             [
                 'filter' => [
@@ -407,7 +414,6 @@ class ProductTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $this->exportJson($fixture, $response->json());
         $this->assertEqualsFixture($fixture, $response->json());
     }
 

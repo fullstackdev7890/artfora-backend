@@ -5,6 +5,13 @@ namespace App\Http\Requests\Products;
 use App\Http\Requests\Request;
 use App\Models\Product;
 
+/**
+ * @description
+ * If a regular user(not admin) tries to search by products he will see only Approved products.
+ * If they need to see their own products with other statuses they need to mention their `user_id` in
+ * the request.
+ * Also, requesting parent category cause requesting child categories too.
+ */
 class SearchProductsRequest extends Request
 {
     public function rules(): array
