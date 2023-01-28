@@ -52,7 +52,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/products/{id}', [ProductController::class, 'delete']);
 });
 
-Route::group(['middleware' => 'guest'], function () {
+Route::group(['middleware' => ['guest', 'api']], function () {
     Route::get('/status', ['uses' => StatusController::class . '@status']);
 
     Route::get('/auth/refresh', ['uses' => AuthController::class . '@refreshToken'])

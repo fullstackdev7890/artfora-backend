@@ -13,7 +13,8 @@ class CommissionRequest extends Request
         return [
             'name' => 'string|required',
             'email' => 'string|email|required',
-            'message' => 'string|required'
+            'message' => 'string|required',
+            'g-recaptcha-response' => 'recaptcha',
         ];
     }
 

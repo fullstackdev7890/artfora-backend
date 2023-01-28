@@ -5,6 +5,8 @@ namespace App\Tests;
 use App\Mails\CommissionRequestMail;
 use App\Mails\ContactUsMail;
 use App\Services\SettingService;
+use Biscolab\ReCaptcha\Facades\ReCaptcha;
+use Illuminate\Support\Arr;
 use Symfony\Component\HttpFoundation\Response;
 
 class ContactUsTest extends TestCase
@@ -20,6 +22,8 @@ class ContactUsTest extends TestCase
 
     public function testContactUsRequest()
     {
+        ReCaptcha::shouldReceive('validate')->andReturn(true);
+
         $data = $this->getJsonFixture('contact_us_request.json');
 
         $response = $this->post('/contact-us', $data);
@@ -29,6 +33,8 @@ class ContactUsTest extends TestCase
 
     public function testContactUsRequestCheckEmail()
     {
+        ReCaptcha::shouldReceive('validate')->andReturn(true);
+
         $data = $this->getJsonFixture('contact_us_request.json');
 
         $this->post('/contact-us', $data);
@@ -41,8 +47,21 @@ class ContactUsTest extends TestCase
         ]);
     }
 
+    public function testContactUsRequestRecaptchaFailed()
+    {
+        ReCaptcha::shouldReceive('validate')->andReturn(false);
+
+        $data = $this->getJsonFixture('contact_us_request.json');
+
+        $response = $this->post('/contact-us', $data);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     public function testCommissionUsRequest()
     {
+        ReCaptcha::shouldReceive('validate')->andReturn(true);
+
         $data = $this->getJsonFixture('commission_request.json');
 
         $response = $this->post('/users/1/commission', $data);
@@ -52,6 +71,8 @@ class ContactUsTest extends TestCase
 
     public function testCommissionUsRequestCheckEmail()
     {
+        ReCaptcha::shouldReceive('validate')->andReturn(true);
+
         $data = $this->getJsonFixture('commission_request.json');
 
         $this->post('/users/1/commission', $data);
@@ -64,8 +85,21 @@ class ContactUsTest extends TestCase
         ]);
     }
 
+    public function testCommissionUsRequestRecaptchaFailed()
+    {
+        ReCaptcha::shouldReceive('validate')->andReturn(false);
+
+        $data = $this->getJsonFixture('commission_request.json');
+
+        $response = $this->post('/users/1/commission', $data);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     public function testCommissionUsProductNotFoundRequest()
     {
+        ReCaptcha::shouldReceive('validate')->andReturn(true);
+
         $data = $this->getJsonFixture('commission_request.json');
 
         $response = $this->post('/users/0/commission', $data);
