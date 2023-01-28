@@ -55,7 +55,8 @@ class Product extends Model
     protected $casts = [
         'data' => 'array',
         'is_ai_safe' => 'boolean',
-        'tags' => PostgresArray::class
+        'tags' => PostgresArray::class,
+        'weight' => 'float'
     ];
 
     public function user()

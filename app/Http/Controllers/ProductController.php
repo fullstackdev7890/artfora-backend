@@ -16,9 +16,11 @@ class ProductController extends Controller
     {
         $data = $request->onlyValidated();
 
+        $data['user_id'] = $request->user()->id;
+
         $result = $service->create($data);
 
-        return response()->json($result);
+        return response()->json($result, Response::HTTP_CREATED);
     }
 
     public function get(GetProductRequest $request, ProductService $service, $id)

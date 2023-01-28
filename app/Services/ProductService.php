@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Arr;
 use Artel\Support\Services\EntityService;
 use App\Repositories\ProductRepository;
+use Illuminate\Support\Str;
 
 /**
  * @mixin ProductRepository
@@ -15,6 +16,19 @@ class ProductService extends EntityService
     public function __construct()
     {
         $this->setRepository(ProductRepository::class);
+    }
+
+    public function create($data)
+    {
+        if (is_string($data['tags'])) {
+            $data['tags'] = explode(',', $data['tags']);
+        }
+
+        $data['slug'] = Str::slug($data['title']);
+
+        return $this->repository
+            ->with(['media'])
+            ->create($data);
     }
 
     public function search($filters)

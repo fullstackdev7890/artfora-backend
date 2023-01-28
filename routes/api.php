@@ -46,9 +46,15 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/categories', [CategoryController::class, 'create']);
     Route::put('/categories/{id}', [CategoryController::class, 'update']);
     Route::delete('/categories/{id}', [CategoryController::class, 'delete']);
+
+    Route::post('/products', [ProductController::class, 'create']);
+    Route::put('/products/{id}', [ProductController::class, 'update']);
+    Route::delete('/products/{id}', [ProductController::class, 'delete']);
 });
 
 Route::group(['middleware' => 'guest'], function () {
+    Route::get('/status', ['uses' => StatusController::class . '@status']);
+
     Route::get('/auth/refresh', ['uses' => AuthController::class . '@refreshToken'])
         ->middleware(['jwt.refresh']);
 
@@ -67,11 +73,6 @@ Route::group(['middleware' => 'guest'], function () {
     Route::get('/categories/{id}', [CategoryController::class, 'get']);
     Route::get('/categories', [CategoryController::class, 'search']);
 
-    Route::get('/status', ['uses' => StatusController::class . '@status']);
+    Route::get('/products/{id}', [ProductController::class, 'get']);
+    Route::get('/products', [ProductController::class, 'search']);
 });
-
-Route::post('/products', [ProductController::class, 'create']);
-Route::put('/products/{id}', [ProductController::class, 'update']);
-Route::delete('/products/{id}', [ProductController::class, 'delete']);
-Route::get('/products/{id}', [ProductController::class, 'get']);
-Route::get('/products', [ProductController::class, 'search']);
