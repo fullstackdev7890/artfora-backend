@@ -24,6 +24,8 @@ class ProductRepository extends Repository
 
         if (empty($user)) {
             $this->query->where('status', Product::APPROVED_STATUS);
+
+            return $this;
         }
 
         if ($user->role_id === Role::ADMIN) {
