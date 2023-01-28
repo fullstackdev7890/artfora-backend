@@ -19,17 +19,17 @@ INSERT INTO categories(id, title, parent_id, created_at, updated_at) VALUES
   (4, 'children #2', 2, '2016-10-20 11:05:00', '2016-10-20 11:05:00');
 
 INSERT INTO products(id, price, user_id, category_id, title, author, slug, description, is_ai_safe, visibility_level, width, height, weight, status, tags, created_at, updated_at) VALUES
-  (1, 1000, 1, 1, 'First', 'Picasso', 'first', 'Lorem ipsum', true, 0, 100, 200, 0.4, 'Approved', '{ "First", "Picasso", "Some", "Tags" }', '2016-10-20 11:05:00', '2016-10-20 11:05:00'),
-  (2, 900, 2, 3, 'Second', 'Shishkin', 'second', 'Lorem ipsum', true, 1, 100, 200, 0.4, 'Rejected', '{ "Second", "Shishkin", "Some", "Tags" }', '2016-10-20 11:05:00', '2016-10-20 11:05:00'),
-  (3, 800, 1, 4, 'Third', 'Vrubel', 'third', 'Lorem ipsum', false, 2, 100, 200, 0.4, 'Pending', '{ "Third", "Vrubel", "Some", "Tags" }', '2016-10-20 11:05:00', '2016-10-20 11:05:00'),
-  (4, 700, 2, 1, 'Fourth', 'Aivazovkiy', 'fourth', 'Lorem ipsum', false, 3, 100, 200, 0.4, 'Approved', '{ "Fourth", "Aivazovkiy", "Some", "Tags" }', '2016-10-20 11:05:00', '2016-10-20 11:05:00'),
-  (5, 600, 1, 3, 'Fifth', 'Vasnetsov', 'fifth', 'Lorem ipsum', true, 0, 100, 200, 0.4, 'Rejected', '{ "Fifth", "Vasnetsov", "Some", "Tags" }', '2016-10-20 11:05:00', '2016-10-20 11:05:00'),
-  (6, 500, 2, 4, 'Sixth', 'Picasso', 'sixth', 'Lorem ipsum', true, 1, 100, 200, 0.4, 'Pending', '{ "Sixth", "Picasso", "Some", "Tags" }', '2016-10-20 11:05:00', '2016-10-20 11:05:00'),
-  (7, 400, 1, 1, 'Seventh', 'Shishkin', 'seventh', 'Lorem ipsum', false, 2, 100, 200, 0.4, 'Approved', '{ "Seventh", "Shishkin", "Some", "Tags" }', '2016-10-20 11:05:00', '2016-10-20 11:05:00'),
-  (8, 300, 2, 4, 'Eighth', 'Vrubel', 'eighth', 'Lorem ipsum', false, 3, 100, 200, 0.4, 'Rejected', '{ "Eighth", "Vrubel", "Some", "Tags" }', '2016-10-20 11:05:00', '2016-10-20 11:05:00'),
-  (9, 200, 1, 4, 'Ninth', 'Aivazovkiy', 'ninth', 'Lorem ipsum', true, 0, 100, 200, 0.4, 'Pending', '{ "Ninth", "Aivazovkiy", "Some", "Tags" }', '2016-10-20 11:05:00', '2016-10-20 11:05:00'),
-  (10, 100, 2, 1, 'Tenth', 'Vasnetsov', 'tenth', 'Lorem ipsum', true, 1, 100, 200, 0.4, 'Approved', '{ "Tenth", "Vasnetsov", "Some", "Tags" }', '2016-10-20 11:05:00', '2016-10-20 11:05:00'),
-  (11, 0, 1, 3, 'Eleventh', 'Picasso', 'eleventh', 'Lorem ipsum', false, 2, 100, 200, 0.4, 'Rejected', '{ "Eleventh", "Picasso", "Some", "Tags" }', '2016-10-20 11:05:00', '2016-10-20 11:05:00');
+  (1, 1000, 1, 1, 'First', 'Picasso', 'first', 'Lorem ipsum', true, 0, 100, 200, 0.4, 'Approved', 'First, Picasso, Some, Tags', '2016-10-20 11:05:00', '2016-10-20 11:05:00'),
+  (2, 900, 2, 3, 'Second', 'Shishkin', 'second', 'Lorem ipsum', true, 1, 100, 200, 0.4, 'Rejected', 'Second, Shishkin, Some, Tags', '2016-10-21 11:05:00', '2016-10-20 11:05:00'),
+  (3, 800, 1, 4, 'Third', 'Vrubel', 'third', 'Lorem ipsum', false, 2, 100, 200, 0.4, 'Pending', 'Third, Vrubel, Some, Tags', '2016-10-22 11:05:00', '2016-10-20 11:05:00'),
+  (4, 700, 2, 1, 'Fourth', 'Aivazovkiy', 'fourth', 'Lorem ipsum', false, 3, 100, 200, 0.4, 'Approved', 'Fourth, Aivazovkiy, Some, Tags', '2016-10-23 11:05:00', '2016-10-20 11:05:00'),
+  (5, 600, 1, 3, 'Fifth', 'Vasnetsov', 'fifth', 'Lorem ipsum', true, 0, 100, 200, 0.4, 'Rejected', 'Fifth, Vasnetsov, Some, Tags', '2016-10-24 11:05:00', '2016-10-20 11:05:00'),
+  (6, 500, 2, 4, 'Sixth', 'Picasso', 'sixth', 'Lorem ipsum', true, 1, 100, 200, 0.4, 'Pending', 'Sixth, Picasso, Some, Tags', '2016-10-25 11:05:00', '2016-10-20 11:05:00'),
+  (7, 400, 1, 1, 'Seventh', 'Shishkin', 'seventh', 'Lorem ipsum', false, 2, 100, 200, 0.4, 'Approved', 'Seventh, Shishkin, Some, Tags', '2016-10-26 11:05:00', '2016-10-20 11:05:00'),
+  (8, 300, 2, 4, 'Eighth', 'Vrubel', 'eighth', 'Lorem ipsum', false, 3, 100, 200, 0.4, 'Rejected', 'Eighth, Vrubel, Some, Tags', '2016-10-27 11:05:00', '2016-10-20 11:05:00'),
+  (9, 200, 1, 4, 'Ninth', 'Aivazovkiy', 'ninth', 'Lorem ipsum', true, 0, 100, 200, 0.4, 'Pending', 'Ninth, Aivazovkiy, Some, Tags', '2016-10-28 11:05:00', '2016-10-20 11:05:00'),
+  (10, 100, 2, 1, 'Tenth', 'Vasnetsov', 'tenth', 'Lorem ipsum', true, 1, 100, 200, 0.4, 'Approved', 'Tenth, Vasnetsov, Some, Tags', '2016-10-29 11:05:00', '2016-10-20 11:05:00'),
+  (11, 0, 1, 3, 'Eleventh', 'Picasso', 'eleventh', 'Lorem ipsum', false, 2, 100, 200, 0.4, 'Rejected', 'Eleventh, Picasso, Some, Tags', '2016-10-30 11:05:00', '2016-10-20 11:05:00');
 
 INSERT INTO media_product (product_id, media_id) VALUES
   (1, 1),

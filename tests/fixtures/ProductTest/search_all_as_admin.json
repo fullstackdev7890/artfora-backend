@@ -9,6 +9,7 @@
             "title": "First",
             "author": "Picasso",
             "slug": "first",
+            "tags": "First, Picasso, Some, Tags",
             "description": "Lorem ipsum",
             "is_ai_safe": true,
             "visibility_level": 0,
@@ -18,13 +19,7 @@
             "status": "Approved",
             "deleted_at": null,
             "created_at": "2016-10-20T11:05:00.000000Z",
-            "updated_at": "2016-10-20T11:05:00.000000Z",
-            "tags": [
-                "First",
-                "Picasso",
-                "Some",
-                "Tags"
-            ]
+            "updated_at": "2016-10-20T11:05:00.000000Z"
         },
         {
             "id": 2,
@@ -34,6 +29,7 @@
             "title": "Second",
             "author": "Shishkin",
             "slug": "second",
+            "tags": "Second, Shishkin, Some, Tags",
             "description": "Lorem ipsum",
             "is_ai_safe": true,
             "visibility_level": 1,
@@ -42,14 +38,8 @@
             "weight": 0.4,
             "status": "Rejected",
             "deleted_at": null,
-            "created_at": "2016-10-20T11:05:00.000000Z",
-            "updated_at": "2016-10-20T11:05:00.000000Z",
-            "tags": [
-                "Second",
-                "Shishkin",
-                "Some",
-                "Tags"
-            ]
+            "created_at": "2016-10-21T11:05:00.000000Z",
+            "updated_at": "2016-10-20T11:05:00.000000Z"
         },
         {
             "id": 3,
@@ -59,6 +49,7 @@
             "title": "Third",
             "author": "Vrubel",
             "slug": "third",
+            "tags": "Third, Vrubel, Some, Tags",
             "description": "Lorem ipsum",
             "is_ai_safe": false,
             "visibility_level": 2,
@@ -67,14 +58,8 @@
             "weight": 0.4,
             "status": "Pending",
             "deleted_at": null,
-            "created_at": "2016-10-20T11:05:00.000000Z",
-            "updated_at": "2016-10-20T11:05:00.000000Z",
-            "tags": [
-                "Third",
-                "Vrubel",
-                "Some",
-                "Tags"
-            ]
+            "created_at": "2016-10-22T11:05:00.000000Z",
+            "updated_at": "2016-10-20T11:05:00.000000Z"
         },
         {
             "id": 4,
@@ -84,6 +69,7 @@
             "title": "Fourth",
             "author": "Aivazovkiy",
             "slug": "fourth",
+            "tags": "Fourth, Aivazovkiy, Some, Tags",
             "description": "Lorem ipsum",
             "is_ai_safe": false,
             "visibility_level": 3,
@@ -92,14 +78,8 @@
             "weight": 0.4,
             "status": "Approved",
             "deleted_at": null,
-            "created_at": "2016-10-20T11:05:00.000000Z",
-            "updated_at": "2016-10-20T11:05:00.000000Z",
-            "tags": [
-                "Fourth",
-                "Aivazovkiy",
-                "Some",
-                "Tags"
-            ]
+            "created_at": "2016-10-23T11:05:00.000000Z",
+            "updated_at": "2016-10-20T11:05:00.000000Z"
         },
         {
             "id": 5,
@@ -109,6 +89,7 @@
             "title": "Fifth",
             "author": "Vasnetsov",
             "slug": "fifth",
+            "tags": "Fifth, Vasnetsov, Some, Tags",
             "description": "Lorem ipsum",
             "is_ai_safe": true,
             "visibility_level": 0,
@@ -117,14 +98,8 @@
             "weight": 0.4,
             "status": "Rejected",
             "deleted_at": null,
-            "created_at": "2016-10-20T11:05:00.000000Z",
-            "updated_at": "2016-10-20T11:05:00.000000Z",
-            "tags": [
-                "Fifth",
-                "Vasnetsov",
-                "Some",
-                "Tags"
-            ]
+            "created_at": "2016-10-24T11:05:00.000000Z",
+            "updated_at": "2016-10-20T11:05:00.000000Z"
         },
         {
             "id": 6,
@@ -134,6 +109,7 @@
             "title": "Sixth",
             "author": "Picasso",
             "slug": "sixth",
+            "tags": "Sixth, Picasso, Some, Tags",
             "description": "Lorem ipsum",
             "is_ai_safe": true,
             "visibility_level": 1,
@@ -142,14 +118,8 @@
             "weight": 0.4,
             "status": "Pending",
             "deleted_at": null,
-            "created_at": "2016-10-20T11:05:00.000000Z",
-            "updated_at": "2016-10-20T11:05:00.000000Z",
-            "tags": [
-                "Sixth",
-                "Picasso",
-                "Some",
-                "Tags"
-            ]
+            "created_at": "2016-10-25T11:05:00.000000Z",
+            "updated_at": "2016-10-20T11:05:00.000000Z"
         },
         {
             "id": 7,
@@ -159,6 +129,7 @@
             "title": "Seventh",
             "author": "Shishkin",
             "slug": "seventh",
+            "tags": "Seventh, Shishkin, Some, Tags",
             "description": "Lorem ipsum",
             "is_ai_safe": false,
             "visibility_level": 2,
@@ -167,14 +138,8 @@
             "weight": 0.4,
             "status": "Approved",
             "deleted_at": null,
-            "created_at": "2016-10-20T11:05:00.000000Z",
-            "updated_at": "2016-10-20T11:05:00.000000Z",
-            "tags": [
-                "Seventh",
-                "Shishkin",
-                "Some",
-                "Tags"
-            ]
+            "created_at": "2016-10-26T11:05:00.000000Z",
+            "updated_at": "2016-10-20T11:05:00.000000Z"
         },
         {
             "id": 8,
@@ -184,6 +149,7 @@
             "title": "Eighth",
             "author": "Vrubel",
             "slug": "eighth",
+            "tags": "Eighth, Vrubel, Some, Tags",
             "description": "Lorem ipsum",
             "is_ai_safe": false,
             "visibility_level": 3,
@@ -192,14 +158,8 @@
             "weight": 0.4,
             "status": "Rejected",
             "deleted_at": null,
-            "created_at": "2016-10-20T11:05:00.000000Z",
-            "updated_at": "2016-10-20T11:05:00.000000Z",
-            "tags": [
-                "Eighth",
-                "Vrubel",
-                "Some",
-                "Tags"
-            ]
+            "created_at": "2016-10-27T11:05:00.000000Z",
+            "updated_at": "2016-10-20T11:05:00.000000Z"
         },
         {
             "id": 9,
@@ -209,6 +169,7 @@
             "title": "Ninth",
             "author": "Aivazovkiy",
             "slug": "ninth",
+            "tags": "Ninth, Aivazovkiy, Some, Tags",
             "description": "Lorem ipsum",
             "is_ai_safe": true,
             "visibility_level": 0,
@@ -217,14 +178,8 @@
             "weight": 0.4,
             "status": "Pending",
             "deleted_at": null,
-            "created_at": "2016-10-20T11:05:00.000000Z",
-            "updated_at": "2016-10-20T11:05:00.000000Z",
-            "tags": [
-                "Ninth",
-                "Aivazovkiy",
-                "Some",
-                "Tags"
-            ]
+            "created_at": "2016-10-28T11:05:00.000000Z",
+            "updated_at": "2016-10-20T11:05:00.000000Z"
         },
         {
             "id": 10,
@@ -234,6 +189,7 @@
             "title": "Tenth",
             "author": "Vasnetsov",
             "slug": "tenth",
+            "tags": "Tenth, Vasnetsov, Some, Tags",
             "description": "Lorem ipsum",
             "is_ai_safe": true,
             "visibility_level": 1,
@@ -242,14 +198,8 @@
             "weight": 0.4,
             "status": "Approved",
             "deleted_at": null,
-            "created_at": "2016-10-20T11:05:00.000000Z",
-            "updated_at": "2016-10-20T11:05:00.000000Z",
-            "tags": [
-                "Tenth",
-                "Vasnetsov",
-                "Some",
-                "Tags"
-            ]
+            "created_at": "2016-10-29T11:05:00.000000Z",
+            "updated_at": "2016-10-20T11:05:00.000000Z"
         },
         {
             "id": 11,
@@ -259,6 +209,7 @@
             "title": "Eleventh",
             "author": "Picasso",
             "slug": "eleventh",
+            "tags": "Eleventh, Picasso, Some, Tags",
             "description": "Lorem ipsum",
             "is_ai_safe": false,
             "visibility_level": 2,
@@ -267,14 +218,8 @@
             "weight": 0.4,
             "status": "Rejected",
             "deleted_at": null,
-            "created_at": "2016-10-20T11:05:00.000000Z",
-            "updated_at": "2016-10-20T11:05:00.000000Z",
-            "tags": [
-                "Eleventh",
-                "Picasso",
-                "Some",
-                "Tags"
-            ]
+            "created_at": "2016-10-30T11:05:00.000000Z",
+            "updated_at": "2016-10-20T11:05:00.000000Z"
         }
     ],
     "first_page_url": "http:\/\/localhost\/products?page=1",

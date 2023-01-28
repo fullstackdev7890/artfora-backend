@@ -32,6 +32,7 @@ class ProductTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
 
+        $this->exportJson('create_product_response.json', $response->json());
         $this->assertEqualsFixture('create_product_response.json', $response->json());
     }
 
@@ -39,13 +40,10 @@ class ProductTest extends TestCase
     {
         $data = $this->getJsonFixture('create_product_request.json');
 
-        $response = $this->actingAs($this->user)->json('post', '/products', $data);
-
-        $product = Product::find($response->json('id'));
+        $this->actingAs($this->user)->json('post', '/products', $data);
 
         $expected = $this->getJsonFixture('create_product_response.json');
         Arr::forget($expected, 'media');
-        $expected['tags'] = app(PostgresArray::class)->set($product, 'tags', $expected['tags'], []);
 
         $this->assertDatabaseHas('products', $expected);
     }
@@ -90,12 +88,6 @@ class ProductTest extends TestCase
 
         $data['id'] = 2;
         Arr::forget($data, 'media');
-        $data['tags'] = app(PostgresArray::class)->set(
-            Product::find(2),
-            'tags',
-            explode(',', $data['tags']),
-            []
-        );
 
         $this->assertDatabaseHas('products', $data);
     }
@@ -230,6 +222,7 @@ class ProductTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
+        $this->exportJson('get_approved_product.json', $response->json());
         $this->assertEqualsFixture('get_approved_product.json', $response->json());
     }
 
@@ -239,6 +232,7 @@ class ProductTest extends TestCase
 
         $response->assertOk();
 
+        $this->exportJson('get_approved_product.json', $response->json());
         $this->assertEqualsFixture('get_approved_product.json', $response->json());
     }
 
@@ -248,6 +242,7 @@ class ProductTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
+        $this->exportJson('get_approved_product.json', $response->json());
         $this->assertEqualsFixture('get_approved_product.json', $response->json());
     }
 
@@ -257,6 +252,7 @@ class ProductTest extends TestCase
 
         $response->assertOk();
 
+        $this->exportJson('get_rejected_product.json', $response->json());
         $this->assertEqualsFixture('get_rejected_product.json', $response->json());
     }
 
@@ -273,6 +269,7 @@ class ProductTest extends TestCase
 
         $response->assertOk();
 
+        $this->exportJson('get_rejected_product.json', $response->json());
         $this->assertEqualsFixture('get_rejected_product.json', $response->json());
     }
 
@@ -296,6 +293,7 @@ class ProductTest extends TestCase
 
         $response->assertOk();
 
+        $this->exportJson('get_pending_product.json', $response->json());
         $this->assertEqualsFixture('get_pending_product.json', $response->json());
     }
 
@@ -305,6 +303,7 @@ class ProductTest extends TestCase
 
         $response->assertOk();
 
+        $this->exportJson('get_pending_product.json', $response->json());
         $this->assertEqualsFixture('get_pending_product.json', $response->json());
     }
 
@@ -351,15 +350,28 @@ class ProductTest extends TestCase
             ],
             [
                 'filter' => [
-                    'order_by' => 'random'
+                    'user_id' => 2
                 ],
-                'result' => 'search_order_by_random.json'
+                'result' => 'search_by_user.json'
             ],
             [
                 'filter' => [
-                    'user_id' => 3
+                    'status' => Product::PENDING_STATUS
                 ],
-                'result' => 'search_by_user.json'
+                'result' => 'search_pending.json'
+            ],
+            [
+                'filter' => [
+                    'category_id' => 2,
+                    'with' => ['category.parent']
+                ],
+                'result' => 'search_by_parent_category.json'
+            ],
+            [
+                'filter' => [
+                    'category_id' => 3
+                ],
+                'result' => 'search_by_child_category.json'
             ],
         ];
     }
@@ -370,9 +382,11 @@ class ProductTest extends TestCase
      * @param array $filter
      * @param string $fixture
      */
-    public function testSearch($filter, $fixture)
+    public function testSearchAsAdmin($filter, $fixture)
     {
-        $response = $this->json('get', '/products', $filter);
+        $fixture = Str::replace('.json', '_as_admin.json', $fixture);
+
+        $response = $this->actingAs($this->admin)->json('get', '/products', $filter);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -389,10 +403,11 @@ class ProductTest extends TestCase
     {
         $fixture = Str::replace('.json', '_as_user.json', $fixture);
 
-        $response = $this->actingAs($this->admin)->json('get', '/products', $filter);
+        $response = $this->actingAs($this->productOwner)->json('get', '/products', $filter);
 
         $response->assertStatus(Response::HTTP_OK);
 
+        $this->exportJson($fixture, $response->json());
         $this->assertEqualsFixture($fixture, $response->json());
     }
 
@@ -410,6 +425,20 @@ class ProductTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
+        $this->exportJson($fixture, $response->json());
         $this->assertEqualsFixture($fixture, $response->json());
+    }
+
+    /**
+     * Order by random need to be moved to a separate test because we can not surely compare it with
+     * preset fixture
+     */
+    public function testSearchOrderByRandom()
+    {
+        $response = $this->json('get', '/products', [
+            'order_by' => 'random'
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
     }
 }

@@ -38,6 +38,7 @@ class ProductsCreateTable extends Migration
             $table->string('title');
             $table->string('author')->nullable();
             $table->string('slug');
+            $table->string('tags');
             $table->text('description');
             $table->boolean('is_ai_safe')->default(false);
             $table->unsignedInteger('visibility_level')->default(0);
@@ -49,8 +50,5 @@ class ProductsCreateTable extends Migration
             $table->softDeletes();
             $table->timestamps();
         });
-
-        DB::statement("ALTER TABLE products ADD tags VARCHAR[] DEFAULT '{}';");
-        DB::statement("create index products_tags_index on products(tags);");
     }
 }

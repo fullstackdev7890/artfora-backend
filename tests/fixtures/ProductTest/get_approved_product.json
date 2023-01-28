@@ -6,6 +6,7 @@
     "title": "First",
     "author": "Picasso",
     "slug": "first",
+    "tags": "First, Picasso, Some, Tags",
     "description": "Lorem ipsum",
     "is_ai_safe": true,
     "visibility_level": 0,
@@ -15,11 +16,5 @@
     "status": "Approved",
     "deleted_at": null,
     "created_at": "2016-10-20T11:05:00.000000Z",
-    "updated_at": "2016-10-20T11:05:00.000000Z",
-    "tags": [
-        "First",
-        "Picasso",
-        "Some",
-        "Tags"
-    ]
+    "updated_at": "2016-10-20T11:05:00.000000Z"
 }

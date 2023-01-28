@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Artel\Support\Casts\PostgresArray;
 use Artel\Support\Traits\ModelTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -55,7 +54,6 @@ class Product extends Model
     protected $casts = [
         'data' => 'array',
         'is_ai_safe' => 'boolean',
-        'tags' => PostgresArray::class,
         'weight' => 'float'
     ];
 

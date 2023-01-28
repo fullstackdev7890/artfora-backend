@@ -9,6 +9,7 @@
             "title": "Third",
             "author": "Vrubel",
             "slug": "third",
+            "tags": "Third, Vrubel, Some, Tags",
             "description": "Lorem ipsum",
             "is_ai_safe": false,
             "visibility_level": 2,
@@ -17,14 +18,8 @@
             "weight": 0.4,
             "status": "Pending",
             "deleted_at": null,
-            "created_at": "2016-10-20T11:05:00.000000Z",
-            "updated_at": "2016-10-20T11:05:00.000000Z",
-            "tags": [
-                "Third",
-                "Vrubel",
-                "Some",
-                "Tags"
-            ]
+            "created_at": "2016-10-22T11:05:00.000000Z",
+            "updated_at": "2016-10-20T11:05:00.000000Z"
         },
         {
             "id": 4,
@@ -34,6 +29,7 @@
             "title": "Fourth",
             "author": "Aivazovkiy",
             "slug": "fourth",
+            "tags": "Fourth, Aivazovkiy, Some, Tags",
             "description": "Lorem ipsum",
             "is_ai_safe": false,
             "visibility_level": 3,
@@ -42,14 +38,8 @@
             "weight": 0.4,
             "status": "Approved",
             "deleted_at": null,
-            "created_at": "2016-10-20T11:05:00.000000Z",
-            "updated_at": "2016-10-20T11:05:00.000000Z",
-            "tags": [
-                "Fourth",
-                "Aivazovkiy",
-                "Some",
-                "Tags"
-            ]
+            "created_at": "2016-10-23T11:05:00.000000Z",
+            "updated_at": "2016-10-20T11:05:00.000000Z"
         }
     ],
     "first_page_url": "http:\/\/localhost\/products?page=1",

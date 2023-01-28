@@ -6,6 +6,7 @@
     "title": "Second",
     "author": "Shishkin",
     "slug": "second",
+    "tags": "Second, Shishkin, Some, Tags",
     "description": "Lorem ipsum",
     "is_ai_safe": true,
     "visibility_level": 1,
@@ -14,12 +15,6 @@
     "weight": 0.4,
     "status": "Rejected",
     "deleted_at": null,
-    "created_at": "2016-10-20T11:05:00.000000Z",
-    "updated_at": "2016-10-20T11:05:00.000000Z",
-    "tags": [
-        "Second",
-        "Shishkin",
-        "Some",
-        "Tags"
-    ]
+    "created_at": "2016-10-21T11:05:00.000000Z",
+    "updated_at": "2016-10-20T11:05:00.000000Z"
 }

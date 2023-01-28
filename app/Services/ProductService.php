@@ -20,10 +20,6 @@ class ProductService extends EntityService
 
     public function create($data)
     {
-        if (isset($data['tags']) && is_string($data['tags'])) {
-            $data['tags'] = explode(',', $data['tags']);
-        }
-
         $data['slug'] = Str::slug($data['title']);
 
         return $this->repository
@@ -33,10 +29,6 @@ class ProductService extends EntityService
 
     public function update($where, $data)
     {
-        if (isset($data['tags']) && is_string($data['tags'])) {
-            $data['tags'] = explode(',', $data['tags']);
-        }
-
         return $this->repository
             ->with(['media'])
             ->update($where, $data);
@@ -48,13 +40,12 @@ class ProductService extends EntityService
             ->with(Arr::get($filters, 'with', []))
             ->withCount(Arr::get($filters, 'with_count', []))
             ->searchQuery($filters)
-            ->filterBy('width')
-            ->filterBy('height')
             ->filterBy('user_id')
-            ->filterBy('category_id')
-            ->filterBy('price')
+            ->filterBy('status')
             ->filterBy('is_ai_safe')
-            ->filterByQuery(['author', 'title', 'slug', 'description', 'status', 'tags', 'visibility_level'])
+            ->filterByQuery(['author', 'title', 'description', 'tags'])
+            ->filterByStatus()
+            ->filterByCategory()
             ->getSearchResults();
     }
 }
