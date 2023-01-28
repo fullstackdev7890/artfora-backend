@@ -32,7 +32,6 @@ class ProductTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
 
-        $this->exportJson('create_product_response.json', $response->json());
         $this->assertEqualsFixture('create_product_response.json', $response->json());
     }
 
@@ -286,14 +285,14 @@ class ProductTest extends TestCase
 
     public function testGetPendingAsUser()
     {
-        $response = $this->actingAs($this->user)->json('get', '/products/3');
+        $response = $this->actingAs($this->user)->json('get', '/products/6');
 
         $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
     public function testGetPendingAsAdmin()
     {
-        $response = $this->actingAs($this->admin)->json('get', '/products/3');
+        $response = $this->actingAs($this->admin)->json('get', '/products/6');
 
         $response->assertOk();
 
@@ -302,7 +301,7 @@ class ProductTest extends TestCase
 
     public function testGetPendingAsOwner()
     {
-        $response = $this->actingAs($this->productOwner)->json('get', '/products/2');
+        $response = $this->actingAs($this->productOwner)->json('get', '/products/6');
 
         $response->assertOk();
 
@@ -311,7 +310,7 @@ class ProductTest extends TestCase
 
     public function testGetPendingAsGuest()
     {
-        $response = $this->json('get', '/products/2');
+        $response = $this->json('get', '/products/6');
 
         $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
@@ -377,7 +376,6 @@ class ProductTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $this->exportJson($fixture, $response->json());
         $this->assertEqualsFixture($fixture, $response->json());
     }
 
@@ -395,7 +393,6 @@ class ProductTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $this->exportJson($fixture, $response->json());
         $this->assertEqualsFixture($fixture, $response->json());
     }
 
@@ -413,7 +410,6 @@ class ProductTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $this->exportJson($fixture, $response->json());
         $this->assertEqualsFixture($fixture, $response->json());
     }
 }
