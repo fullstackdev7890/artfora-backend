@@ -8,6 +8,14 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Services\ProductService;
 use App\Http\Requests\Request;
 
+/**
+ * @description
+ * Visibility level is in interval from 0 to 3 where
+ * 0 - Common level
+ * 1 - Nudity
+ * 2 - Erotic
+ * 3 - Porno
+ */
 class UpdateProductRequest extends Request
 {
     protected Product | null $product;

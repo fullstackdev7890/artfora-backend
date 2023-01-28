@@ -30,6 +30,8 @@ class SearchProductsRequest extends Request
             'desc' => 'boolean',
             'with' => 'array',
             'with.*' => 'string|required',
+            'visibility_level_from' => 'integer|min:' . Product::COMMON_VISIBILITY_LEVEL,
+            'visibility_level_to' => 'integer|max:' . Product::PORNO_VISIBILITY_LEVEL,
         ];
     }
 }
