@@ -14,6 +14,7 @@ class ProductTest extends TestCase
     protected $admin;
     protected $productOwner;
     protected $user;
+    protected $userWithSetVisibilityLevel;
 
     public function setUp() : void
     {
@@ -22,6 +23,7 @@ class ProductTest extends TestCase
         $this->admin = User::find(1);
         $this->productOwner = User::find(2);
         $this->user = User::find(3);
+        $this->userWithSetVisibilityLevel = User::find(4);
     }
 
     public function testCreate()
@@ -32,7 +34,6 @@ class ProductTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
 
-        $this->exportJson('create_product_response.json', $response->json());
         $this->assertEqualsFixture('create_product_response.json', $response->json());
     }
 
@@ -222,7 +223,6 @@ class ProductTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $this->exportJson('get_approved_product.json', $response->json());
         $this->assertEqualsFixture('get_approved_product.json', $response->json());
     }
 
@@ -232,7 +232,6 @@ class ProductTest extends TestCase
 
         $response->assertOk();
 
-        $this->exportJson('get_approved_product.json', $response->json());
         $this->assertEqualsFixture('get_approved_product.json', $response->json());
     }
 
@@ -242,7 +241,6 @@ class ProductTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $this->exportJson('get_approved_product.json', $response->json());
         $this->assertEqualsFixture('get_approved_product.json', $response->json());
     }
 
@@ -252,7 +250,6 @@ class ProductTest extends TestCase
 
         $response->assertOk();
 
-        $this->exportJson('get_rejected_product.json', $response->json());
         $this->assertEqualsFixture('get_rejected_product.json', $response->json());
     }
 
@@ -269,7 +266,6 @@ class ProductTest extends TestCase
 
         $response->assertOk();
 
-        $this->exportJson('get_rejected_product.json', $response->json());
         $this->assertEqualsFixture('get_rejected_product.json', $response->json());
     }
 
@@ -293,7 +289,6 @@ class ProductTest extends TestCase
 
         $response->assertOk();
 
-        $this->exportJson('get_pending_product.json', $response->json());
         $this->assertEqualsFixture('get_pending_product.json', $response->json());
     }
 
@@ -303,7 +298,6 @@ class ProductTest extends TestCase
 
         $response->assertOk();
 
-        $this->exportJson('get_pending_product.json', $response->json());
         $this->assertEqualsFixture('get_pending_product.json', $response->json());
     }
 
@@ -379,7 +373,7 @@ class ProductTest extends TestCase
                     'category_id' => 3
                 ],
                 'result' => 'search_by_child_category.json'
-            ],
+            ]
         ];
     }
 
@@ -391,7 +385,7 @@ class ProductTest extends TestCase
      */
     public function testSearchAsAdmin($filter, $fixture)
     {
-        $fixture = Str::replace('.json', '_as_admin.json', $fixture);
+        $fixture = Str::replace('search', 'search_as_admin', $fixture);
 
         $response = $this->actingAs($this->admin)->json('get', '/products', $filter);
 
@@ -408,7 +402,7 @@ class ProductTest extends TestCase
      */
     public function testSearchAsUser($filter, $fixture)
     {
-        $fixture = Str::replace('.json', '_as_user.json', $fixture);
+        $fixture = Str::replace('search', 'search_as_user', $fixture);
 
         $response = $this->actingAs($this->productOwner)->json('get', '/products', $filter);
 
@@ -423,9 +417,26 @@ class ProductTest extends TestCase
      * @param array $filter
      * @param string $fixture
      */
+    public function testSearchAsUserWithVisibilityLevel($filter, $fixture)
+    {
+        $fixture = Str::replace('search', 'search_with_visibility_level', $fixture);
+
+        $response = $this->actingAs($this->userWithSetVisibilityLevel)->json('get', '/products', $filter);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $this->assertEqualsFixture($fixture, $response->json());
+    }
+
+    /**
+     * @dataProvider getSearchFilters
+     *
+     * @param array $filter
+     * @param string $fixture
+     */
     public function testSearchAsGuest($filter, $fixture)
     {
-        $fixture = Str::replace('.json', '_as_guest.json', $fixture);
+        $fixture = Str::replace('search', 'search_as_guest', $fixture);
 
         $response = $this->json('get', '/products', $filter);
 

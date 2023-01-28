@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Role;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -50,6 +51,29 @@ class ProductRepository extends Repository
                     });
             });
         }
+
+        return $this;
+    }
+
+    public function filterByVisibilityLevel(): self
+    {
+        $user = Auth::user();
+
+        if (empty($user)) {
+            $this->query->where('visibility_level', Product::COMMON_VISIBILITY_LEVEL);
+
+            return $this;
+        }
+
+        if ($user->role_id === Role::ADMIN) {
+            return $this;
+        }
+
+        if ($user->id === Arr::get($this->filter, 'user_id')) {
+            return $this;
+        }
+
+        $this->query->where('visibility_level', '<=', $user->product_visibility_level);
 
         return $this;
     }

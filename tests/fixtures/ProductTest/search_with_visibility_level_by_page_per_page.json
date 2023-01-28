@@ -2,50 +2,50 @@
     "current_page": 2,
     "data": [
         {
-            "id": 3,
-            "price": 800,
+            "id": 7,
+            "price": 400,
             "user_id": 1,
-            "category_id": 4,
-            "title": "Third",
-            "author": "Vrubel",
-            "slug": "third",
-            "tags": "Third, Vrubel, Some, Tags",
+            "category_id": 1,
+            "title": "Seventh",
+            "author": "Shishkin",
+            "slug": "seventh",
+            "tags": "Seventh, Shishkin, Some, Tags",
             "description": "Lorem ipsum",
             "is_ai_safe": false,
-            "visibility_level": 2,
-            "width": 100,
-            "height": 200,
-            "weight": 0.4,
-            "status": "Pending",
-            "deleted_at": null,
-            "created_at": "2016-10-22T11:05:00.000000Z",
-            "updated_at": "2016-10-20T11:05:00.000000Z"
-        },
-        {
-            "id": 4,
-            "price": 700,
-            "user_id": 2,
-            "category_id": 4,
-            "title": "Fourth",
-            "author": "Aivazovkiy",
-            "slug": "fourth",
-            "tags": "Fourth, Aivazovkiy, Some, Tags",
-            "description": "Lorem ipsum",
-            "is_ai_safe": false,
-            "visibility_level": 3,
+            "visibility_level": 0,
             "width": 100,
             "height": 200,
             "weight": 0.4,
             "status": "Approved",
             "deleted_at": null,
-            "created_at": "2016-10-23T11:05:00.000000Z",
+            "created_at": "2016-10-26T11:05:00.000000Z",
+            "updated_at": "2016-10-20T11:05:00.000000Z"
+        },
+        {
+            "id": 10,
+            "price": 100,
+            "user_id": 2,
+            "category_id": 1,
+            "title": "Tenth",
+            "author": "Vasnetsov",
+            "slug": "tenth",
+            "tags": "Tenth, Vasnetsov, Some, Tags",
+            "description": "Lorem ipsum",
+            "is_ai_safe": true,
+            "visibility_level": 0,
+            "width": 100,
+            "height": 200,
+            "weight": 0.4,
+            "status": "Approved",
+            "deleted_at": null,
+            "created_at": "2016-10-29T11:05:00.000000Z",
             "updated_at": "2016-10-20T11:05:00.000000Z"
         }
     ],
     "first_page_url": "http:\/\/localhost\/products?page=1",
     "from": 3,
-    "last_page": 6,
-    "last_page_url": "http:\/\/localhost\/products?page=6",
+    "last_page": 3,
+    "last_page_url": "http:\/\/localhost\/products?page=3",
     "links": [
         {
             "url": "http:\/\/localhost\/products?page=1",
@@ -68,21 +68,6 @@
             "active": false
         },
         {
-            "url": "http:\/\/localhost\/products?page=4",
-            "label": "4",
-            "active": false
-        },
-        {
-            "url": "http:\/\/localhost\/products?page=5",
-            "label": "5",
-            "active": false
-        },
-        {
-            "url": "http:\/\/localhost\/products?page=6",
-            "label": "6",
-            "active": false
-        },
-        {
             "url": "http:\/\/localhost\/products?page=3",
             "label": "Next &raquo;",
             "active": false
@@ -93,5 +78,5 @@
     "per_page": 2,
     "prev_page_url": "http:\/\/localhost\/products?page=1",
     "to": 4,
-    "total": 11
+    "total": 6
 }

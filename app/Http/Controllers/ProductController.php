@@ -57,5 +57,4 @@ class ProductController extends Controller
 
         return response('', Response::HTTP_NO_CONTENT);
     }
-
 }

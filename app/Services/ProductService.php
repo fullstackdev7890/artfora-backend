@@ -51,6 +51,7 @@ class ProductService extends EntityService
             ->filterByQuery(['author', 'title', 'description', 'tags'])
             ->filterByStatus()
             ->filterByCategory()
+            ->filterByVisibilityLevel()
             ->getSearchResults();
     }
 }

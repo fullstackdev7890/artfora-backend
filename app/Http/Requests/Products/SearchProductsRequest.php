@@ -10,6 +10,12 @@ use App\Models\Product;
  * If a regular user(not admin) tries to search by products he will see only Approved products.
  * If they need to see their own products with other statuses they need to mention their `user_id` in
  * the request.
+ *
+ * By default, a user could see only products with visibility level lower than the value in `product_visibility_level`
+ * of the user.
+ * To see their own products with visibility level higher than visibility level from the profile they need to pass
+ * `user_id` as it is done for categories
+ *
  * Also, requesting parent category cause requesting child categories too.
  */
 class SearchProductsRequest extends Request
@@ -30,8 +36,6 @@ class SearchProductsRequest extends Request
             'desc' => 'boolean',
             'with' => 'array',
             'with.*' => 'string|required',
-            'visibility_level_from' => 'integer|min:' . Product::COMMON_VISIBILITY_LEVEL,
-            'visibility_level_to' => 'integer|max:' . Product::PORNO_VISIBILITY_LEVEL,
         ];
     }
 }
