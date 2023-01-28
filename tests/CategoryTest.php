@@ -210,7 +210,6 @@ class CategoryTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $this->exportJson($fixture, $response->json());
         $this->assertEqualsFixture($fixture, $response->json());
     }
 }
