@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Arr;
 use Artel\Support\Services\EntityService;
 use App\Repositories\ProductRepository;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
@@ -36,6 +37,10 @@ class ProductService extends EntityService
 
     public function search($filters)
     {
+        if (Arr::get($filters, 'order_by') === 'random') {
+            $filters['order_by'] = DB::raw('random()');
+        }
+
         return $this
             ->with(Arr::get($filters, 'with', []))
             ->withCount(Arr::get($filters, 'with_count', []))
