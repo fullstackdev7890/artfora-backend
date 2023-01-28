@@ -20,7 +20,7 @@ class ProductService extends EntityService
 
     public function create($data)
     {
-        if (is_string($data['tags'])) {
+        if (isset($data['tags']) && is_string($data['tags'])) {
             $data['tags'] = explode(',', $data['tags']);
         }
 
@@ -29,6 +29,17 @@ class ProductService extends EntityService
         return $this->repository
             ->with(['media'])
             ->create($data);
+    }
+
+    public function update($where, $data)
+    {
+        if (isset($data['tags']) && is_string($data['tags'])) {
+            $data['tags'] = explode(',', $data['tags']);
+        }
+
+        return $this->repository
+            ->with(['media'])
+            ->update($where, $data);
     }
 
     public function search($filters)

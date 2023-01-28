@@ -44,11 +44,15 @@ class ProductController extends Controller
     {
         $service->update($id, $request->onlyValidated());
 
-        return response('', Response::HTTP_NO_CONTENT);
+        return response()->json([ 'status' => 'Success' ]);
     }
 
     public function delete(DeleteProductRequest $request, ProductService $service, $id)
     {
+        if ($request->input('force')) {
+            $service->force();
+        }
+
         $service->delete($id);
 
         return response('', Response::HTTP_NO_CONTENT);

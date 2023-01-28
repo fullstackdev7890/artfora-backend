@@ -34,7 +34,6 @@ INSERT INTO products(id, price, user_id, category_id, title, author, slug, descr
 INSERT INTO media_product (product_id, media_id) VALUES
   (1, 1),
   (1, 2),
-  (1, 3),
   (2, 1),
   (3, 1),
   (4, 1);

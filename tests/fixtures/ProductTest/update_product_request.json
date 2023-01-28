@@ -5,8 +5,6 @@
     "author": "Updated author",
     "description": "Updated description",
     "is_ai_safe": false,
-    "tags": [
-        "updated", "tags"
-    ],
-    "visibility_level": "nudity"
+    "tags": "updated,tags",
+    "visibility_level": 3
 }

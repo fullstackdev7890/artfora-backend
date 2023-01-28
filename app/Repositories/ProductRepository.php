@@ -21,4 +21,11 @@ class ProductRepository extends Repository
             $entity->media()->sync($data['media']);
         }
     }
+
+    protected function afterUpdateHook(?Model $entity, array $data)
+    {
+        if (isset($data['media'])) {
+            $entity->media()->sync($data['media']);
+        }
+    }
 }

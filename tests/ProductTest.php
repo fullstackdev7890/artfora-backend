@@ -42,16 +42,27 @@ class ProductTest extends TestCase
 
         $response = $this->actingAs($this->user)->json('post', '/products', $data);
 
+        $product = Product::find($response->json('id'));
+
         $expected = $this->getJsonFixture('create_product_response.json');
         Arr::forget($expected, 'media');
-        $expected['tags'] = app(PostgresArray::class)->set(
-            Product::find($response->json('id')),
-            'tags',
-            $expected['tags'],
-            []
-        );
+        $expected['tags'] = app(PostgresArray::class)->set($product, 'tags', $expected['tags'], []);
 
         $this->assertDatabaseHas('products', $expected);
+    }
+
+    public function testCreateCheckMedia()
+    {
+        $data = $this->getJsonFixture('create_product_request.json');
+
+        $response = $this->actingAs($this->user)->json('post', '/products', $data);
+
+        foreach ($data['media'] as $mediaId) {
+            $this->assertDatabaseHas('media_product', [
+                'media_id' => $mediaId,
+                'product_id' => $response->json('id')
+            ]);
+        }
     }
 
     public function testCreateNoAuth()
@@ -67,11 +78,38 @@ class ProductTest extends TestCase
     {
         $data = $this->getJsonFixture('update_product_request.json');
 
-        $response = $this->actingAs($this->user)->json('put', '/products/2', $data);
+        $response = $this->actingAs($this->productOwner)->json('put', '/products/2', $data);
 
         $response->assertOk();
+    }
+
+    public function testUpdateCheckDB()
+    {
+        $data = $this->getJsonFixture('update_product_request.json');
+
+        $this->actingAs($this->productOwner)->json('put', '/products/2', $data);
+
+        $data['id'] = 2;
+        Arr::forget($data, 'media');
+        $data['tags'] = app(PostgresArray::class)->set(
+            Product::find(2),
+            'tags',
+            explode(',', $data['tags']),
+            []
+        );
 
         $this->assertDatabaseHas('products', $data);
+    }
+
+    public function testUpdateCheckMedia()
+    {
+        $data = $this->getJsonFixture('update_product_request.json');
+
+        $this->actingAs($this->admin)->json('put', '/products/1', $data);
+
+        $this->assertDatabaseHas('media_product', [ 'media_id' => 1, 'product_id' => 1 ]);
+        $this->assertDatabaseMissing('media_product', [ 'media_id' => 2, 'product_id' => 1 ]);
+        $this->assertDatabaseHas('media_product', [ 'media_id' => 3, 'product_id' => 1 ]);
     }
 
     public function testUpdateTryToChangeStatus()
@@ -80,7 +118,7 @@ class ProductTest extends TestCase
             'status' => Product::APPROVED_STATUS
         ]);
 
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     public function testUpdateWithoutPermission()
@@ -155,6 +193,15 @@ class ProductTest extends TestCase
         $response->assertStatus(Response::HTTP_NO_CONTENT);
 
         $this->assertSoftDeleted('products', [ 'id' => 2 ]);
+    }
+
+    public function testForceDeleteAsTheOwner()
+    {
+        $response = $this->actingAs($this->productOwner)->json('delete', '/products/2', [
+            'force' => 1
+        ]);
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     public function testDeleteWithoutPermission()
