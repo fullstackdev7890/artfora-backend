@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Users;
 
 use App\Http\Requests\Request;
+use App\Models\Product;
 use App\Models\Role;
 use App\Services\UserService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -18,6 +19,7 @@ class UpdateUserRequest extends Request
     public function rules(): array
     {
         $userId = $this->route('id');
+        $visibilityLevels = join(',', Product::VISIBILITY_LEVELS);
 
         return [
             'username' => "string|unique:users,username,{$userId}",
@@ -31,6 +33,7 @@ class UpdateUserRequest extends Request
             'external_link' => 'string|nullable',
             'background_image_id' => 'integer|exists:media,id|nullable',
             'avatar_image_id' => 'integer|exists:media,id|nullable',
+            'product_visibility_level' => "integer|in:{$visibilityLevels}",
             'data' => 'array',
             'data.media_filters' => 'array'
         ];

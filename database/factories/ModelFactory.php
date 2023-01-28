@@ -61,3 +61,28 @@ $factory->define(App\Models\PasswordReset::class, function (Faker\Generator $fak
         'token' => $faker->word,
     ];
 });
+
+$factory->define(App\Models\Category::class, function (Faker\Generator $faker) {
+    return [
+        'title' => $faker->word,
+    ];
+});
+
+$factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
+    return [
+        'width' => $faker->randomNumber(),
+        'height' => $faker->randomNumber(),
+        'price' => $faker->randomNumber(),
+        'user_id' => 1,
+        'category_id' => 1,
+        'weight' => $faker->randomFloat(2, 0, 10000),
+        'author' => $faker->word,
+        'title' => $faker->word,
+        'slug' => $faker->word,
+        'description' => $faker->word,
+        'status' => $faker->word,
+        'tags' => $faker->word,
+        'visibility_level' => $faker->word,
+        'is_ai_safe' => $faker->boolean,
+    ];
+});

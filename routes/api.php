@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TwoFactorAuthEmailController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\UserController;
@@ -19,6 +21,12 @@ use App\Http\Controllers\SettingController;
 */
 
 Route::group(['middleware' => 'auth'], function () {
+    Route::post('/auth/2fa/sms/enable', ['uses' => AuthController::class . '@enableSms2fa']);
+    Route::post('/auth/2fa/sms/confirm', ['uses' => AuthController::class . '@confirmSms2fa']);
+
+    Route::post('/auth/2fa/otp/generate', ['uses' => AuthController::class . '@getOtpQrCode']);
+    Route::post('/auth/2fa/otp/confirm', ['uses' => AuthController::class . '@confirmOtp2fa']);
+
     Route::post('/users', ['uses' => UserController::class . '@create']);
     Route::put('/users/{id}', ['uses' => UserController::class . '@update']);
     Route::delete('/users/{id}', ['uses' => UserController::class . '@delete']);
@@ -35,14 +43,18 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/settings/{name}', ['uses' => SettingController::class . '@get']);
     Route::get('/settings', ['uses' => SettingController::class . '@search']);
 
-    Route::post('/auth/2fa/sms/enable', ['uses' => AuthController::class . '@enableSms2fa']);
-    Route::post('/auth/2fa/sms/confirm', ['uses' => AuthController::class . '@confirmSms2fa']);
+    Route::post('/categories', [CategoryController::class, 'create']);
+    Route::put('/categories/{id}', [CategoryController::class, 'update']);
+    Route::delete('/categories/{id}', [CategoryController::class, 'delete']);
 
-    Route::post('/auth/2fa/otp/generate', ['uses' => AuthController::class . '@getOtpQrCode']);
-    Route::post('/auth/2fa/otp/confirm', ['uses' => AuthController::class . '@confirmOtp2fa']);
+    Route::post('/products', [ProductController::class, 'create']);
+    Route::put('/products/{id}', [ProductController::class, 'update']);
+    Route::delete('/products/{id}', [ProductController::class, 'delete']);
 });
 
 Route::group(['middleware' => 'guest'], function () {
+    Route::get('/status', ['uses' => StatusController::class . '@status']);
+
     Route::get('/auth/refresh', ['uses' => AuthController::class . '@refreshToken'])
         ->middleware(['jwt.refresh']);
 
@@ -58,5 +70,9 @@ Route::group(['middleware' => 'guest'], function () {
     Route::post('/auth/2fa/sms/check', ['uses' => AuthController::class . '@check2faSms']);
     Route::post('/auth/2fa/otp/check', ['uses' => AuthController::class . '@check2faOtp']);
 
-    Route::get('/status', ['uses' => StatusController::class . '@status']);
+    Route::get('/categories/{id}', [CategoryController::class, 'get']);
+    Route::get('/categories', [CategoryController::class, 'search']);
+
+    Route::get('/products/{id}', [ProductController::class, 'get']);
+    Route::get('/products', [ProductController::class, 'search']);
 });

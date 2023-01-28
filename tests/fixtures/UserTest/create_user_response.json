@@ -9,6 +9,7 @@
     "description": "",
     "country": "USA",
     "external_link": null,
+    "product_visibility_level": 2,
     "data": {
         "media_filters": {
             "page": 1,

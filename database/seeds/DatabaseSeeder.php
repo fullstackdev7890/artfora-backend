@@ -13,5 +13,7 @@ class DatabaseSeeder extends Seeder
         $this->call(TwoFactorAuthEmailSeeder::class);
     
         $this->call(PasswordResetSeeder::class);
+    
+        $this->call(CategorySeeder::class);
     }
 }

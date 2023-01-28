@@ -42,7 +42,8 @@ class User extends Authenticatable implements JWTSubject
         'avatar_image_id',
         '2fa_type',
         'is_2fa_enabled',
-        'otp_secret'
+        'otp_secret',
+        'product_visibility_level'
     ];
 
     protected $guarded = [
@@ -89,4 +90,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsTo(Media::class);
     }
+
+    public function product()
+    {
+        return $this->hasOne(Product::class);
+    }
+
 }
