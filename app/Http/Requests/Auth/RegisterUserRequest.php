@@ -15,7 +15,8 @@ class RegisterUserRequest extends Request
             'tagname' => 'required|string|unique:users,tagname',
             'email' => 'required|string|email',
             'password' => 'required|string|same:confirm',
-            'confirm' => 'required|string'
+            'confirm' => 'required|string',
+            'redirect_after_verification'  => 'string'
         ];
     }
 
