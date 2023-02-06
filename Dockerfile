@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/artel-workshop/projects/top-secret-escort/backend:php8.1-fpm
+FROM artelworkshop/default-php8.1:1.0
 RUN rm -rf /app/storage/logs
 RUN mkdir /app /home/${short_branch}-esc
 WORKDIR /app
