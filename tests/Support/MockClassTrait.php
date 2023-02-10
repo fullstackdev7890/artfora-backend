@@ -32,5 +32,7 @@ trait MockClassTrait
         }
 
         $this->app->instance($class, $mock);
+
+        return $mock;
     }
 }

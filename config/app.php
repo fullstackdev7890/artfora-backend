@@ -195,7 +195,8 @@ return [
         \App\Providers\OtpProvider::class,
         \App\Providers\TwilioProvider::class,
         \App\Providers\TokenGeneratorProvider::class,
-        \App\Providers\EmailTwoFactorAuthProvider::class
+        \App\Providers\EmailTwoFactorAuthProvider::class,
+        \App\Providers\MtCaptchaProvider::class
     ],
 
     /*

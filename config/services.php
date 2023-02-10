@@ -41,4 +41,7 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'mtcaptcha' => [
+        'secret' => env('MTCAPTCHA_PRIVATE_KEY')
+    ]
 ];

@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\ContactUs;
 
+use App\Facades\MtCaptcha;
 use App\Http\Requests\Request;
 use App\Services\UserService;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CommissionRequest extends Request
@@ -13,7 +15,8 @@ class CommissionRequest extends Request
         return [
             'name' => 'string|required',
             'email' => 'string|email|required',
-            'text' => 'string|required'
+            'text' => 'string|required',
+            'mtcaptcha_token' => 'string|required'
         ];
     }
 
@@ -26,5 +29,9 @@ class CommissionRequest extends Request
         }
 
         parent::validateResolved();
+
+        if (!MtCaptcha::verify($this->input('mtcaptcha_token'))) {
+            throw new BadRequestHttpException('MTCaptcha verification failed');
+        }
     }
 }

@@ -2,13 +2,18 @@
 
 namespace App\Tests;
 
+use App\Facades\MtCaptcha;
 use App\Mails\CommissionRequestMail;
 use App\Mails\ContactUsMail;
 use App\Services\SettingService;
+use App\Tests\Support\MockClassTrait;
+use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Response;
 
 class ContactUsTest extends TestCase
 {
+    use MockClassTrait;
+
     protected string $adminEmail;
 
     public function setUp(): void
@@ -20,6 +25,8 @@ class ContactUsTest extends TestCase
 
     public function testContactUsRequest()
     {
+        MtCaptcha::shouldReceive('verify')->andReturn(true);
+
         $data = $this->getJsonFixture('contact_us_request.json');
 
         $response = $this->post('/contact-us', $data);
@@ -27,8 +34,29 @@ class ContactUsTest extends TestCase
         $response->assertOk();
     }
 
+    public function testContactUsRequestCatchaFailed()
+    {
+        Http::shouldReceive('get')
+            ->with('https://service.mtcaptcha.com/mtcv1/api/checktoken', [
+                'privatekey' => env('MTCAPTCHA_PRIVATE_KEY'),
+                'token' => 'token'
+            ])
+            ->andReturn($this->mockClass(Response::class, [[
+                'method' => 'json',
+                'result' => false
+            ]]));
+
+        $data = $this->getJsonFixture('contact_us_request.json');
+
+        $response = $this->post('/contact-us', $data);
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+    }
+
     public function testContactUsRequestCheckEmail()
     {
+        MtCaptcha::shouldReceive('verify')->andReturn(true);
+
         $data = $this->getJsonFixture('contact_us_request.json');
 
         $this->post('/contact-us', $data);
@@ -43,6 +71,8 @@ class ContactUsTest extends TestCase
 
     public function testCommissionUsRequest()
     {
+        MtCaptcha::shouldReceive('verify')->andReturn(true);
+
         $data = $this->getJsonFixture('commission_request.json');
 
         $response = $this->post('/users/1/commission', $data);
@@ -52,6 +82,8 @@ class ContactUsTest extends TestCase
 
     public function testCommissionUsRequestCheckEmail()
     {
+        MtCaptcha::shouldReceive('verify')->andReturn(true);
+
         $data = $this->getJsonFixture('commission_request.json');
 
         $this->post('/users/1/commission', $data);
