@@ -6,19 +6,33 @@
 @section('content')
     <table width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <td align="center"
-                style="font-size: 32px; font-family: Helvetica, Arial, sans-serif; color: #333333; padding-top: 30px;"
-                class="padding-copy">Welcome {{$user['first_name']}}</td>
-        </tr>
-        <tr>
             <td align="left"
-                style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;"
+                style="padding: 0; font-size: 16px; line-height: 25px; font-family: 'Atkinson Hyperlegible', sans-serif; color: #c1c1c0;"
                 class="padding-copy"
             >
-                Thanks for signing up as a ARTfora partner, we're thrilled to have you on board.
-                The first thing we need you to do is verify your email address by clicking on the button below:
+                Thank you for signing up for ARTfora.
             </td>
         </tr>
+
+        <tr>
+            <td align="left"
+                style="padding: 1rem 0 0 0; font-size: 16px; line-height: 25px; font-family: 'Atkinson Hyperlegible', sans-serif; color: #c1c1c0;"
+                class="padding-copy"
+            >
+                Please click the button at the bottom or paste the website address into your browser to verify your
+                email address.
+            </td>
+        </tr>
+
+        <tr>
+            <td align="left"
+                style="padding: 1rem 0 2rem 0; font-size: 16px; line-height: 25px; font-family: 'Atkinson Hyperlegible', sans-serif; color: #FFFFFF;"
+                class="padding-copy"
+            >
+                <a href="{{config('app.frontend_url')}}/verify-email?token={{ $hash }}&redirect={{ $redirect }}" style="color: #FFFFFF;">{{config('app.frontend_url')}}/verify-email?token={{ $hash }}&redirect={{ $redirect }}</a>
+            </td>
+        </tr>
+
         <tr>
             <td align="center">
                 <!-- BULLETPROOF BUTTON -->
@@ -27,13 +41,13 @@
                         <td align="center" style="padding-top: 25px;" class="padding">
                             <table border="0" cellspacing="0" cellpadding="0" class="mobile-button-container">
                                 <tr>
-                                    <td align="center" style="border-radius: 5px;" bgcolor="#329BFB">
+                                    <td align="center" style="border-radius: 10px;" bgcolor="#c1c1c0">
                                         <a
                                             href="{{config('app.frontend_url')}}/verify-email?token={{ $hash }}&redirect={{ $redirect }}"
                                             target="_blank"
-                                            style="font-size: 16px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; border-radius: 3px; padding: 15px 25px; border: 1px solid #329BFB; display: inline-block;"
+                                            style="border-radius: 10px; font-family: Prozak, sans-serif; font-weight: 700; font-size: 2em; letter-spacing: 4px; color: #3a3a39; text-decoration: none; padding: 5px 25px; border: 1px solid #c1c1c0; display: inline-block;"
                                             class="mobile-button">
-                                            Verify email
+                                            YUP, IT'S ME
                                         </a>
                                     </td>
                                 </tr>
@@ -50,7 +64,7 @@
     <table width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td align="left"
-                style="padding: 20px 0 50px 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;"
+                style="padding: 20px 0 50px 0; font-size: 16px; line-height: 25px; font-family: 'Atkinson Hyperlegible', sans-serif; color: #666666;"
                 class="padding-copy">If you have any questions, feel free to reach out to our <a
                     href="mailto:hello@artfora.com">partner success team</a> – we're lighting quick at replying.
             </td>
