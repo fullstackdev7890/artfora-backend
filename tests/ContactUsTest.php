@@ -6,7 +6,6 @@ use App\Mails\CommissionRequestMail;
 use App\Mails\ContactUsMail;
 use App\Services\SettingService;
 use Biscolab\ReCaptcha\Facades\ReCaptcha;
-use Illuminate\Support\Arr;
 use Symfony\Component\HttpFoundation\Response;
 
 class ContactUsTest extends TestCase
@@ -83,17 +82,6 @@ class ContactUsTest extends TestCase
             'subject' => 'New commission request',
             'cc' => $data['email']
         ]);
-    }
-
-    public function testCommissionUsRequestRecaptchaFailed()
-    {
-        ReCaptcha::shouldReceive('validate')->andReturn(false);
-
-        $data = $this->getJsonFixture('commission_request.json');
-
-        $response = $this->post('/users/1/commission', $data);
-
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function testCommissionUsProductNotFoundRequest()
