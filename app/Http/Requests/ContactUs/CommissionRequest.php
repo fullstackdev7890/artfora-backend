@@ -13,7 +13,7 @@ class CommissionRequest extends Request
         return [
             'name' => 'string|required',
             'email' => 'string|email|required',
-            'message' => 'string|required'
+            'text' => 'string|required'
         ];
     }
 
