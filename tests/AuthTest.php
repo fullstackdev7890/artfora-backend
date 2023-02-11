@@ -418,7 +418,7 @@ class AuthTest extends TestCase
             'email' => $this->user->email
         ]);
 
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
     public function testRefreshToken()
