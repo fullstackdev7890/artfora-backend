@@ -153,7 +153,7 @@ class AuthController extends Controller
         $code = $request->input('code');
 
         if (!EmailTwoFactorAuthorization::check($email, $code)) {
-            return response()->json([ 'message' => 'Wrong code' ], Response::HTTP_UNAUTHORIZED);
+            return response()->json([ 'message' => 'Wrong code' ], Response::HTTP_BAD_REQUEST);
         }
 
         $user = $userService->findBy('email', $email);
