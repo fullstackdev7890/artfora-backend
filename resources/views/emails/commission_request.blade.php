@@ -6,26 +6,34 @@
 @section('content')
     <table width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <td align="center"
-                style="font-size: 32px; font-family: Helvetica, Arial, sans-serif; color: #333333; padding-top: 30px;"
+            <td align="left"
+                style="padding: 0 0 20px 0; font-size: 16px; line-height: 25px; font-family: 'Atkinson Hyperlegible', sans-serif; color: #c1c1c0;"
                 class="padding-copy"
             >
-                {{ $name }} sent commission request to {{ $user['username'] }}
+                <i>COMMISSION FROM:</i>
+                <br>
+                {{ $name }}
             </td>
         </tr>
+
         <tr>
             <td align="left"
-                style="padding: 20px; text-align: center; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;"
+                style="padding: 0 0 20px 0; font-size: 16px; line-height: 25px; font-family: 'Atkinson Hyperlegible', sans-serif; color: #c1c1c0;"
                 class="padding-copy"
             >
-                <b>Contact back email <a href="mailto:{{$email}}">{{$email}}</a></b>
+                <i>SENDER'S EMAIL ADDRESS:</i>
+                <br>
+                <a style="color: white;" href="mailto:{{$email}}">{{$email}}</a>
             </td>
         </tr>
+
         <tr>
             <td align="left"
-                style="padding: 20px 20px; text-align: center; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;"
+                style="padding: 0; font-size: 16px; line-height: 25px; font-family: 'Atkinson Hyperlegible', sans-serif; color: #c1c1c0;"
                 class="padding-copy"
             >
+                <i>MESSAGE:</i>
+                <br>
                 {{ $text }}
             </td>
         </tr>
