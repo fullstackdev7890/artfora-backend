@@ -1,0 +1,5 @@
+/vendor
+/storage
+/.git
+/.github
+/docker
