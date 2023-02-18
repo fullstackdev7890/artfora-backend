@@ -59,7 +59,8 @@ class Product extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)
+            ->with('avatar_image');
     }
 
     public function category()
