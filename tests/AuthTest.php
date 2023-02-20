@@ -49,6 +49,16 @@ class AuthTest extends TestCase
         $this->assertDatabaseHas('users', $data);
     }
 
+    public function testRegisterExistedTagname()
+    {
+        $data = $this->getJsonFixture('new_user.json');
+        $data['tagname'] = 'Gerhard Feest';
+
+        $response = $this->json('post', '/auth/register', $data);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     public function testRegisterCheckVerificationToken()
     {
         TokenGenerator::shouldReceive('getRandom')->andReturn('test_token')->once();
