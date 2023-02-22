@@ -42,7 +42,7 @@ class Kernel extends HttpKernel
 
         'api' => [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            'throttle:api',
+//            'throttle:api', // TEMPORARY DISABLED DUE TO https://gitlab.com/artel-workshop/projects/artfora/artfora-backend/-/issues/16
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             'bindings'
         ],
