@@ -9,7 +9,7 @@ class CheckRestorePasswordTokenRequest extends Request
     public function rules(): array
     {
         return [
-            'token' => 'required|string|exists:users,reset_password_hash'
+            'token' => 'required|string|exists:password_resets,token'
         ];
     }
 }

@@ -23,6 +23,7 @@ use App\Http\Requests\Auth\Confirm2faSmsRequest;
 use App\Http\Requests\Auth\Check2faOtpRequest;
 use App\Mails\AccountConfirmationMail;
 use App\Models\User;
+use App\Services\PasswordResetService;
 use App\Services\TwoFactorAuthEmailService;
 use App\Services\UserService;
 use Illuminate\Http\Response;
@@ -126,8 +127,13 @@ class AuthController extends Controller
         return response('', Response::HTTP_NO_CONTENT);
     }
 
-    public function checkRestorePasswordToken(CheckRestorePasswordTokenRequest $request)
+    public function checkRestorePasswordToken(
+        CheckRestorePasswordTokenRequest $request,
+        PasswordResetService $passwordResetService
+    )
     {
+
+
         return response('', Response::HTTP_NO_CONTENT);
     }
 
