@@ -52,7 +52,7 @@ class AuthController extends Controller
 
         $user = $service->findBy('email', $login);
 
-        if (!$user['email_verified_at']) {
+        if (empty($user['email_verified_at'])) {
             return response()->json([
                 'message' => 'You should verify your account'
             ], Response::HTTP_NOT_ACCEPTABLE);
