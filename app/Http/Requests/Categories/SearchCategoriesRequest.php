@@ -18,6 +18,7 @@ class SearchCategoriesRequest extends Request
             'query' => 'string|nullable',
             'with.*' => 'string|required',
             'parent_id' => 'integer|nullable|exists:categories,id',
+            'only_parents' => 'boolean'
         ];
     }
 }
