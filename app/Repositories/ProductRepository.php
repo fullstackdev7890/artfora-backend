@@ -42,12 +42,12 @@ class ProductRepository extends Repository
 
     public function filterByCategory(): self
     {
-        if (isset($this->filter['category_id'])) {
+        if (isset($this->filter['categories'])) {
             $this->query->where(function (Builder $subQuery) {
                 $subQuery
-                    ->where('category_id', $this->filter['category_id'])
+                    ->whereIn('category_id', $this->filter['categories'])
                     ->orWhereHas('category', function ($categoryQuery) {
-                        $categoryQuery->where('parent_id', $this->filter['category_id']);
+                        $categoryQuery->whereIn('parent_id', $this->filter['categories']);
                     });
             });
         }

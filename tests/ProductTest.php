@@ -363,14 +363,14 @@ class ProductTest extends TestCase
             ],
             [
                 'filter' => [
-                    'category_id' => 2,
+                    'categories' => [2],
                     'with' => ['category.parent']
                 ],
                 'result' => 'search_by_parent_category.json'
             ],
             [
                 'filter' => [
-                    'category_id' => 3
+                    'categories' => [3]
                 ],
                 'result' => 'search_by_child_category.json'
             ]
