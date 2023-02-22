@@ -24,6 +24,7 @@ class CategoryService extends EntityService
             ->withCount(Arr::get($filters, 'with_count', []))
             ->searchQuery($filters)
             ->filterByQuery(['title'])
+            ->filterOnlyParents()
             ->getSearchResults();
     }
 }
