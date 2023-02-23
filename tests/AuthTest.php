@@ -478,7 +478,7 @@ class AuthTest extends TestCase
             'login' => 'not_exists@example.com'
         ]);
 
-        $response->assertStatus(Response::HTTP_OK);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function testForgotPasswordEmailNotConfirmed()
@@ -487,7 +487,7 @@ class AuthTest extends TestCase
             'login' => 'not.confirmed@email.com'
         ]);
 
-        $response->assertStatus(Response::HTTP_OK);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function testRestorePassword()
