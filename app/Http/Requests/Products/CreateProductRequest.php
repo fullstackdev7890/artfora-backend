@@ -28,7 +28,7 @@ class CreateProductRequest extends Request
             'author' => 'string',
             'title' => 'string|required',
             'description' => 'string|required',
-            'tags' => 'string|required',
+            'tags' => 'required_if:is_ai_safe,false',
             'visibility_level' => "integer|required|in:{$visibilityLevels}",
             'is_ai_safe' => 'boolean',
             'media' => 'array',
