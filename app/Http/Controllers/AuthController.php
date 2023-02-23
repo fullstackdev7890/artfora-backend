@@ -23,7 +23,6 @@ use App\Http\Requests\Auth\Confirm2faSmsRequest;
 use App\Http\Requests\Auth\Check2faOtpRequest;
 use App\Mails\AccountConfirmationMail;
 use App\Models\User;
-use App\Services\PasswordResetService;
 use App\Services\TwoFactorAuthEmailService;
 use App\Services\UserService;
 use Illuminate\Http\Response;
