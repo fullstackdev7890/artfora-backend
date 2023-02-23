@@ -127,13 +127,8 @@ class AuthController extends Controller
         return response('', Response::HTTP_NO_CONTENT);
     }
 
-    public function checkRestorePasswordToken(
-        CheckRestorePasswordTokenRequest $request,
-        PasswordResetService $passwordResetService
-    )
+    public function checkRestorePasswordToken(CheckRestorePasswordTokenRequest $request)
     {
-
-
         return response('', Response::HTTP_NO_CONTENT);
     }
 
