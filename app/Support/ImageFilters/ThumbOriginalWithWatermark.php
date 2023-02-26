@@ -18,12 +18,19 @@ class ThumbOriginalWithWatermark implements FilterInterface
 
         $draw = new ImagickDraw();
 
-        $draw->setFont('Arial');
-        $draw->setFontSize(20);
+        $draw->setFont('Prozak.ttf');
+        $draw->setFontSize(45);
         $draw->setFillColor('#00000001');
 
-        $draw->setGravity(Imagick::GRAVITY_SOUTHEAST);
+        $draw->setGravity(Imagick::GRAVITY_NORTH);
+        $newImage->getCore()->annotateImage($draw, 10, 45, 0, str_repeat($text, 100));
 
-        return $newImage->annotateImage($draw, 10, 12, 0, $text);
+        $draw->setGravity(Imagick::GRAVITY_SOUTH);
+        $newImage->getCore()->annotateImage($draw, 10, 45, 0, str_repeat($text, 100));
+
+        $draw->setGravity(Imagick::GRAVITY_CENTER);
+        $newImage->getCore()->annotateImage($draw, 10, 45, 0, str_repeat($text, 100));
+
+        return $newImage;
     }
 }
