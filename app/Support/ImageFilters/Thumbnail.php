@@ -4,11 +4,11 @@ namespace App\Support\ImageFilters;
 
 use Intervention\Image\Image;
 
-class Thumb354X540 extends Thumb
+class Thumbnail extends Thumb
 {
     protected function getSize()
     {
-        return [354, 540];
+        return [354, null];
     }
 
     protected function addWatermark(Image $image)

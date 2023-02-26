@@ -15,9 +15,7 @@ abstract class Thumb implements FilterInterface
     {
         list($width, $height) = $this->getSize();
 
-        $image->fit($width, $height, function ($constraint) {
-            $constraint->upsize();
-        });
+        $image->getCore()->thumbnailImage($width, $height);
 
         return $this->addWatermark($image);
     }
