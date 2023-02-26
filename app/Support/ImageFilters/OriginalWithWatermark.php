@@ -8,7 +8,7 @@ use Intervention\Image\Image;
 use ImagickDraw;
 use Imagick;
 
-class ThumbOriginalWithWatermark implements FilterInterface
+class OriginalWithWatermark implements FilterInterface
 {
     public function applyFilter(Image $image)
     {
