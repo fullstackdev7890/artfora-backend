@@ -39,7 +39,9 @@ class UserController extends Controller
 
     public function profile(GetUserProfileRequest $request, UserService $service)
     {
-        $result = $service->find($request->user()->id);
+        $result = $service
+            ->with(['avatar_image', 'background_image'])
+            ->find($request->user()->id);
 
         return response()->json($result);
     }
