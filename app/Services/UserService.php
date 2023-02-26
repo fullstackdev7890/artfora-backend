@@ -89,7 +89,7 @@ class UserService extends EntityService
 
         $record = $this->passwordResetRepository->create([
             'email' => $email,
-            'token' => TokenGenerator::getRandom(128),
+            'token' => TokenGenerator::getRandom(64),
             'created_at' => Carbon::now()
         ]);
 

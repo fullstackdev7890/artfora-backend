@@ -13,4 +13,13 @@ class CategoryRepository extends Repository
     {
         $this->setModel(Category::class);
     }
+
+    public function filterOnlyParents(): self
+    {
+        if (isset($this->filter['only_parents'])) {
+            $this->query->whereNull('parent_id');
+        }
+
+        return $this;
+    }
 }

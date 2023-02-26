@@ -33,7 +33,7 @@ class ProductRepository extends Repository
             return $this;
         }
 
-        if (!isset($this->filter['user_id']) || ($this->filter['user_id'] !== $user->id)) {
+        if (!isset($this->filter['user_id']) || ((int)$this->filter['user_id'] !== $user->id)) {
             $this->query->where('status', Product::APPROVED_STATUS);
         }
 

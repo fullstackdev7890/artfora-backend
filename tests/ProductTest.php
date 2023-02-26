@@ -357,20 +357,27 @@ class ProductTest extends TestCase
             ],
             [
                 'filter' => [
+                    'user_id' => '2',
+                    'status' => Product::PENDING_STATUS,
+                ],
+                'result' => 'search_by_user_with_filter.json'
+            ],
+            [
+                'filter' => [
                     'status' => Product::PENDING_STATUS
                 ],
                 'result' => 'search_by_status.json'
             ],
             [
                 'filter' => [
-                    'category_id' => 2,
+                    'categories' => [2],
                     'with' => ['category.parent']
                 ],
                 'result' => 'search_by_parent_category.json'
             ],
             [
                 'filter' => [
-                    'category_id' => 3
+                    'categories' => [3]
                 ],
                 'result' => 'search_by_child_category.json'
             ]
