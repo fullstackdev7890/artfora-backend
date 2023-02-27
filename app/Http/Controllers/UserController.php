@@ -25,7 +25,9 @@ class UserController extends Controller
 
     public function get(GetUserRequest $request, UserService $service, $id)
     {
-        $result = $service->find($id);
+        $result = $service
+            ->with(['avatar_image', 'background_image'])
+            ->find($id);
 
         return response()->json($result);
     }
