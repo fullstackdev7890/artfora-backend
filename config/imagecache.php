@@ -31,7 +31,7 @@ return [
     */
 
     'paths' => [
-        public_path('storage')
+        storage_path('app')
     ],
 
     /*
@@ -51,6 +51,7 @@ return [
     */
 
     'templates' => [
+        'small-thumbnail' => App\Support\ImageFilters\Thumbnail::class,
         'thumbnail' => App\Support\ImageFilters\Thumbnail::class,
         // this is a route to original image w/o watermarks. It is named that way so that no one would not find the route by accident
         '6f726967696e616c' => App\Support\ImageFilters\Original::class,
