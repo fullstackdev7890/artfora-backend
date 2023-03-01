@@ -11,7 +11,7 @@ class RegisterUserRequest extends Request
     public function rules(): array
     {
         return [
-            'username' => 'required|string',
+            'username' => 'required|string|unique:users,username',
             'tagname' => 'required|string|unique:users,tagname',
             'email' => 'required|string|email',
             'password' => 'required|string|same:confirm',

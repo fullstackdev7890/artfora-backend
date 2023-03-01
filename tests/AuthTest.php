@@ -49,6 +49,16 @@ class AuthTest extends TestCase
         $this->assertDatabaseHas('users', $data);
     }
 
+    public function testRegisterExistedUsername()
+    {
+        $data = $this->getJsonFixture('new_user.json');
+        $data['username'] = 'Gerhard Feest';
+
+        $response = $this->json('post', '/auth/register', $data);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     public function testRegisterExistedTagname()
     {
         $data = $this->getJsonFixture('new_user.json');
