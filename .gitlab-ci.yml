@@ -1,115 +1,74 @@
 stages:
-  - prepare
-  - tests
+  - build
   - deploy
 
+
 variables:
-  CI_PROJECT_NAME: laravel
-  DOMAIN: laravel-empty-project.ronasit.com
-  DOCKERFILE: ./Dockerfile
-  CHART_REPO: ronasit/laravel
-  CHART_VERSION: &ref 7.2.4
-  CHART_VALUES: k8s/values.yaml
-  DOCKER_CONTAINER_REGISTRY: gcr.io/ronas-it-development/${CI_PROJECT_NAME}-${CI_ENVIRONMENT_SLUG}
-  APP_NAME: Laravel
-  FILESYSTEM_DRIVER: local
-  GOOGLE_CLOUD_STORAGE_BUCKET: ronasit-development
-  GOOGLE_CLOUD_PROJECT_ID: ronas-it-development
+  DOMAIN: dev23.artfora.com
+  short_branch: $short_branch
+  CI_PROJECT_NAME: $CI_PROJECT_NAME
+  CI_COMMIT_SHORT_SHA: $CI_COMMIT_SHORT_SHA
+  proj_name: artfora
+  network_docker_name: artfora
+  network_docker: "192.168.12.0/24"
 
-include:
-  - project: 'k8s-tools/charts/laravel'
-    ref: *ref
-    file: '/helpers/.gitlab-ci-template.yml'
+build:
+  stage: build
+  when: manual
+  before_script:
+    - sudo mkdir -p /home/${proj_name}-${CI_COMMIT_SHORT_SHA}
+    - > 
+      docker volume create --opt type=none --opt device=/home/${proj_name}-${CI_COMMIT_SHORT_SHA} ${proj_name}-${CI_COMMIT_SHORT_SHA} --opt o=bind
+      ## if symlink exist delete them and recreate to build
+    - > 
+      sudo ln -sfn /home/${proj_name}-${CI_COMMIT_SHORT_SHA} /home/${proj_name}
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
 
-php_dependencies:
-  stage: prepare
-  image: ronasit/php-nginx:7.3
-  artifacts:
-    paths:
-    - vendor
-    expire_in: 1 hour
   script:
-    - composer install
-  tags:
-    - docker
-    - linux
+    - cat Dockerfile | envsubst > Dockerfile.exec
+    - cat docker/nginx/nginx.tpl | envsubst > docker/nginx/nginx.conf
+    - cat docker/nginx/conf.d/sample.tpl | envsubst > docker/nginx/conf.d/sample.conf
+    - cat Dockerfile.exec
+    - cat $env > .env
+    - docker build . -t "${proj_name}-${CI_COMMIT_SHORT_SHA}" --file Dockerfile.exec
 
-tests:
-  stage: tests
-  variables:
-    DB_CONNECTION: pgsql
-    DB_HOST: postgres
-    POSTGRES_USER: forge
-    POSTGRES_DB: forge
-    POSTGRES_PASSWORD: ""
-    REDIS_HOST: "redis"
-    MAIL_DRIVER: log
-    FILESYSTEM_DRIVER: testing
-    APP_ENV: testing
-    APP_DEBUG: "true"
-    APP_LOG_LEVEL: debug
-    APP_URL: http://localhost
-    DATA_COLLECTOR_KEY: laravel
-  image: ronasit/php-nginx:7.3
-  services:
-    - name: ronasit/postgres:9.6
-      alias: postgres
-  artifacts:
-    paths:
-    - vendor
-    expire_in: 1 hour
-  script:
-    - composer install
-    - echo 'APP_KEY=' > .env
-    - php artisan jwt:secret
-    - php artisan key:generate
-    - cp .env .env.testing
-    - php vendor/bin/phpunit --stop-on-failure ./tests/
-  after_script:
-    - cat storage/logs/*.log || true
+
+  environment:
+    name: $CI_COMMIT_REF_NAME
+
+  only:
+    - staging
+    - development
+    - production
   tags:
-    - docker
-    - linux
+    - artfora
 
 deploy:
-  extends: .deploy
+  stage: deploy
+  before_script:
+    - docker volume create --name="${proj_name}-${CI_COMMIT_SHORT_SHA}"
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+  script:
+    - cat docker-compose.example | envsubst > docker-compose.yml
+    - cat docker-compose.yml
+    - docker-compose up -d
+    - docker exec ${proj_name} php artisan migrate --force
+  after_script:
+    - echo "--- clean old volumes ---"
+    - volume_list=$(docker volume ls | grep "${proj_name}" | grep -v ${CI_COMMIT_SHORT_SHA} | awk '{print $2}') && for item in ${volume_list//\\n\ }; do docker volume rm $item; done
+    - > 
+      dir_list=$(sudo ls /home/| grep "${proj_name}" | grep -v "${CI_COMMIT_SHORT_SHA}" ) && 
+      for item in ${dir_list//\\n\ };
+      do sudo rm -rf "/home/$item"; 
+      done
+    # - echo "--- clean unused images ---"
+    # - docker system prune -a -f
+    # - docker stop ${proj_name} nginx && docker start ${proj_name} nginx
   environment:
-    name: review/$CI_COMMIT_REF_NAME
-    url: https://${CI_ENVIRONMENT_SLUG}.${DOMAIN}
-    on_stop: stop
-  when: manual
-  except:
-    - development
-    - master
-    - production
-    - tags
-
-stop:
-  extends: .stop
-  environment:
-    name: review/$CI_COMMIT_REF_NAME
-    action: stop
-  except:
-    - development
-    - master
-    - production
-    - tags
-        
-deploy_development:
-  extends: .deploy
-  environment:
-    name: "development"
-    url: https://dev.${DOMAIN}
+    name: $CI_COMMIT_REF_NAME
   only:
+    - staging
     - development
-    
-deploy_staging:
-  extends: .deploy
-  variables:
-    SECRET_PREFIX: K8S_SECRET_STG_
-  environment:
-    name: "staging"
-    url: https://stg.${DOMAIN}
-  only:
-    - web
-
+    - production
+  tags:
+    - artfora
