@@ -5,7 +5,7 @@ stages:
 
 #
 variables:
-  DOMAIN: top-secret-artforas.artel-workshop.com
+  DOMAIN: dev.artfora.artel-workshop.com
   short_branch: $short_branch
   CI_PROJECT_NAME: $CI_PROJECT_NAME
   CI_COMMIT_SHORT_SHA: $CI_COMMIT_SHORT_SHA
