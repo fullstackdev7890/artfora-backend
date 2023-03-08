@@ -11,7 +11,7 @@ services:
     container_name: ${short_branch}-${CI_PROJECT_NAME}
     restart: on-failure
     networks:
-      - escort
+      - artfora
   nginx:
     container_name: nginx
     image: nginx:1.20.1
@@ -28,14 +28,14 @@ services:
       - 443:443
       - 80:80
     networks:
-      - escort
+      - artfora
     restart: on-failure
     depends_on:
       - ${short_branch}-${CI_PROJECT_NAME}
     restart: on-failure
 
 networks:
-  escort:
+  artfora:
     external: true
 
 volumes:
