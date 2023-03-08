@@ -2,15 +2,18 @@ FROM artelworkshop/default-php8.1:1.0
 
 RUN apt-get update && apt-get install -y libmagickwand-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
-# install imagick
-# Version is not officially released https://pecl.php.net/get/imagick but following works for PHP 8
-RUN mkdir -p /usr/src/php/ext/imagick; \
-    curl -fsSL https://github.com/Imagick/imagick/archive/06116aa24b76edaf6b1693198f79e6c295eda8a9.tar.gz | tar xvz -C "/usr/src/php/ext/imagick" --strip 1; \
-    docker-php-ext-install imagick;
+RUN apt-get install -y libmagickwand-dev --no-install-recommends && pecl install imagick
+RUN docker-php-ext-enable imagick
 
+RUN rm -rf /app/storage/logs
+RUN mkdir /app /home/${short_branch}
 WORKDIR /app
-COPY ./ /app
+COPY . /app
 RUN composer install
-RUN chown -R www-data:www-data /app
+USER root
 
+RUN ln -s /app/ /home/${short_branch}
+RUN ln -s /home/storage /app/public/storage
+RUN ln -s /home/logs  /app/storage/logs
+RUN chown -R www-data:www-data /app
 EXPOSE 9000
