@@ -3,7 +3,7 @@ stages:
   # - tests
   - deploy
 
-
+#
 variables:
   DOMAIN: top-secret-artforas.artel-workshop.com
   short_branch: $short_branch
