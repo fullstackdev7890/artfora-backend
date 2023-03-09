@@ -13,6 +13,8 @@ variables:
 
 build:
   stage: build
+  #disable cache
+  cache: []
   before_script:
     - sudo mkdir -p /home/${short_branch}/${short_branch}-${CI_PROJECT_NAME}-${CI_COMMIT_SHORT_SHA}
     - > 
