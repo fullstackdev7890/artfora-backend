@@ -19,8 +19,8 @@ services:
       - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
       - /etc/letsencrypt/:/etc/letsencrypt
-      - /home/dev-${CI_PROJECT_NAME}:/home/dev-esc/${CI_PROJECT_NAME}
-      - /home/stg-${CI_PROJECT_NAME}:/home/stg-esc/${CI_PROJECT_NAME}
+      - /home/dev-artfora:/home/dev-artfora/
+      - /var
       - ${short_branch}-pv-storage:/home/storage
       - ${short_branch}-pv-logs:/home/logs 
       - /var/log/nginx:/var/log/nginx
