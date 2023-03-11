@@ -35,12 +35,14 @@ services:
     restart: on-failure
 
 networks:
-  ${network_docker_name}:
+  artfora:
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 192.168.12.0/24
+    name: artfora
+
 
 
 volumes:
