@@ -11,7 +11,7 @@ services:
     container_name: ${short_branch}-${CI_PROJECT_NAME}
     restart: on-failure
     networks:
-      - artfora-network
+      - artfora
   nginx:
     container_name: nginx
     image: nginx:1.20.1
@@ -28,19 +28,16 @@ services:
       - 443:443
       - 80:80
     networks:
-      - artfora-network
+      - artfora
     restart: on-failure
     depends_on:
       - ${short_branch}-${CI_PROJECT_NAME}
     restart: on-failure
 
 networks:
-  artfora-network:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 192.168.12.0/24
+  artfora:
+    external:
+      name: artfora
 
 
 volumes:
