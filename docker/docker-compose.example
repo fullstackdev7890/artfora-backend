@@ -29,6 +29,8 @@ services:
       - 80:80
     networks:
       - artfora
+    depends_on:
+      - ${short_branch}-${CI_PROJECT_NAME}
     restart: on-failure
     depends_on:
       - ${short_branch}-${CI_PROJECT_NAME}
