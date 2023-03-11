@@ -75,7 +75,7 @@ deploy:
       do sudo rm -rf "/home/${short_branch}/$item"; 
       done
     - echo "--- clean unused images ---"
-  #  - docker system prune -a -f
+    - docker system prune -a -f
  #   - docker stop ${short_branch}-${CI_PROJECT_NAME} nginx && docker start ${short_branch}-${CI_PROJECT_NAME} nginx
   environment:
     name: $CI_COMMIT_REF_NAME
