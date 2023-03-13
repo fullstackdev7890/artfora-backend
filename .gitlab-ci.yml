@@ -3,7 +3,7 @@ stages:
   # - tests
   - deploy
 
-#
+
 variables:
   DOMAIN: dev.artfora.artel-workshop.com
   short_branch: $short_branch
