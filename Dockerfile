@@ -5,7 +5,6 @@ RUN apt-get update && apt-get install -y libmagickwand-dev --no-install-recommen
 RUN apt-get install -y libmagickwand-dev --no-install-recommends && pecl install imagick
 RUN docker-php-ext-enable imagick
 
-RUN rm -rf /app/storage/logs
 RUN mkdir /app /home/${short_branch}
 WORKDIR /app
 COPY . /app
