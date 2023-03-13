@@ -66,6 +66,7 @@ deploy:
     - docker-compose up -d
     # - docker exec ${short_branch}-${CI_PROJECT_NAME} mv /app/vars /app/.env
     - docker exec ${short_branch}-${CI_PROJECT_NAME} php artisan migrate --force
+    - docker exec ${short_branch}-${CI_PROJECT_NAME} ln -s /home/storage /app/storage/app
   after_script:
     - echo "--- clean old volumes ---"
     - volume_list=$(docker volume ls | grep "${short_branch}-${CI_PROJECT_NAME}" | grep -v ${CI_COMMIT_SHORT_SHA} | awk '{print $2}') && for item in ${volume_list//\\n\ }; do docker volume rm $item; done

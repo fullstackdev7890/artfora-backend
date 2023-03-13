@@ -13,7 +13,7 @@ RUN composer install
 USER root
 
 RUN ln -s /app/ /home/${short_branch}/${short_branch}-${CI_PROJECT_NAME}
-# RUN ln -s /home/storage /app/public/storage
+# RUN ln -s /home/storage /app/storage/app
 # RUN ln -s /home/logs  /app/storage/logs
 RUN chown -R www-data:www-data /app
 EXPOSE 9000
