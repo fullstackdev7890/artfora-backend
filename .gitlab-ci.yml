@@ -1,6 +1,5 @@
 stages:
   - build
-  # - tests
   - deploy
 
 
