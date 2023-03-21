@@ -4,6 +4,7 @@ services:
     build: .
     volumes:
       - ./:/app/
+      - ./docker/php-fpmdocker-fpm.ini:/usr/local/etc/php/conf.d/docker-fpm.ini
       - ./docker/php-fpm/php.ini-development:/usr/local/etc/php/php.ini-development
       - ./docker/php-fpm/php.ini-production:/usr/local/etc/php/php.ini-production
     container_name: artfora-php
