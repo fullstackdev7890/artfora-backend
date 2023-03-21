@@ -15,5 +15,5 @@ RUN ln -s /app/ /home/${short_branch}/${short_branch}-${CI_PROJECT_NAME}
 # RUN ln -s /home/storage /app/storage/app
 # RUN ln -s /home/logs  /app/storage/logs
 RUN chown -R www-data:www-data /app
-RUN echo "upload_max_filesize = 100M \npost_max_size = 100M >> /usr/local/etc/php/conf.d/docker-fpm.ini
+RUN echo "upload_max_filesize = 100M \n post_max_size = 100M" >> /usr/local/etc/php/conf.d/docker-fpm.ini
 EXPOSE 9000
