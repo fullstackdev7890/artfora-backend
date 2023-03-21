@@ -1,7 +1,7 @@
 stages:
   - build
   - deploy
-
+#
 
 variables:
   DOMAIN: dev.artfora.artel-workshop.com
