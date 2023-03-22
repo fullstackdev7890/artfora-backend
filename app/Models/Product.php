@@ -10,6 +10,10 @@ class Product extends Model
 {
     use ModelTrait, SoftDeletes;
 
+    const SEARCH_QUERY_FIELDS = [
+        'author', 'title', 'description', 'tags', 'user.username', 'user.tagname'
+    ];
+
     const APPROVED_STATUS = 'Approved';
     const REJECTED_STATUS = 'Rejected';
     const PENDING_STATUS = 'Pending';

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Product;
 use Illuminate\Support\Arr;
 use Artel\Support\Services\EntityService;
 use App\Repositories\ProductRepository;
@@ -41,6 +42,8 @@ class ProductService extends EntityService
             $filters['order_by'] = DB::raw('random()');
         }
 
+        $queryBy = Arr::get($filters, 'query_by', Product::SEARCH_QUERY_FIELDS);
+
         return $this
             ->with(Arr::get($filters, 'with', []))
             ->withCount(Arr::get($filters, 'with_count', []))
@@ -48,7 +51,7 @@ class ProductService extends EntityService
             ->filterBy('user_id')
             ->filterBy('status')
             ->filterBy('is_ai_safe')
-            ->filterByQuery(['author', 'title', 'description', 'tags'])
+            ->filterByQuery(Arr::wrap($queryBy))
             ->filterByStatus()
             ->filterByCategory()
             ->filterByVisibilityLevel()

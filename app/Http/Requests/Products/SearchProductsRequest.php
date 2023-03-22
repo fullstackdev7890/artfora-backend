@@ -23,6 +23,7 @@ class SearchProductsRequest extends Request
     public function rules(): array
     {
         $statuses = join(',', Product::STATUSES);
+        $searchQueryFields = join(',',Product::SEARCH_QUERY_FIELDS);
 
         return [
             'page' => 'integer',
@@ -32,6 +33,7 @@ class SearchProductsRequest extends Request
             'categories' => 'array',
             'categories.*' => 'integer|exists:categories,id',
             'query' => 'string|nullable',
+            'query_by' => "string|in:{$searchQueryFields}|nullable",
             'status' => "string|in:{$statuses}",
             'order_by' => 'string|in:created_at,random',
             'desc' => 'boolean',

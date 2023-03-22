@@ -337,6 +337,14 @@ class ProductTest extends TestCase
             ],
             [
                 'filter' => [
+                    'query' => 'owner',
+                    'query_by' => 'user.tagname',
+                    'with' => ['user']
+                ],
+                'result' => 'search_by_query_by.json'
+            ],
+            [
+                'filter' => [
                     'order_by' => 'created_at',
                     'desc' => 1
                 ],
