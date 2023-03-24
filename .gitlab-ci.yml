@@ -42,8 +42,8 @@ build:
    - development
    - production
  tags:
-   - artfora
-
+   - docker-runner-artel
+   
 deploy:
  stage: deploy
  image: 
@@ -108,4 +108,6 @@ deploy:
    - development
    - production
  tags:
-   - artfora
+   - docker-runner-artel
+
+
