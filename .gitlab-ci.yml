@@ -86,6 +86,7 @@ deploy:
    # - docker exec ${short_branch}-${CI_PROJECT_NAME} /bin/bash -c "echo $env > /app/.env"
    - cat docker-compose.yml
    - scp docker-compose.yml root@${host}:/home/${short_branch}/docker-composes/
+   - scp -r docker/nginx root@${host}:/root/
    - docker-compose -H "ssh://root@${host}" up -d
    # - docker exec ${short_branch}-${CI_PROJECT_NAME} mv /app/vars /app/.env
    - docker -H "ssh://root@${host}" exec ${short_branch}-${CI_PROJECT_NAME} php artisan migrate --force
