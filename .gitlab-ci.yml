@@ -20,6 +20,8 @@ build:
 
  script:
    - echo $CI_COMMIT_REF_NAME
+   - cat Dockerfile | envsubst > Dockerfile.exec
+   - cat Dockerfile.exec
    - cat $env > .env
    - cat .env
    - >
