@@ -27,7 +27,7 @@ build:
      /kaniko/executor
      --use-new-run=true
      --cleanup
-     --cache=true
+     --cache
      --cache-dir=/tmp
      --snapshotMode=redo
      --context "${CI_PROJECT_DIR}"
