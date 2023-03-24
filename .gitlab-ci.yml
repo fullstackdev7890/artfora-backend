@@ -57,7 +57,6 @@ deploy:
     - echo "$ssh_priv_key" | tr -d '\r' | ssh-add -
     - chmod 700 -R /root/.ssh/
     - cat /root/.ssh/id_rsa
-    - cat ${ssh_pub_key} > /root/.ssh/id_rsa.pub
 # local init docker-compose
     - apk update && apk add gettext docker docker-compose bash
     - cat docker/docker-compose.dev.yml | envsubst > docker-compose.yml
@@ -93,7 +92,7 @@ deploy:
    - docker -H "ssh://root@${host}" exec ${short_branch}-${CI_PROJECT_NAME} ln -s /home/storage /app/storage/app
  after_script:
    - echo "--- clean old volumes ---"
-   - volume_list=$(docker -H "ssh://root@${host} volume ls | grep "${short_branch}-${CI_PROJECT_NAME}" | grep -v ${CI_COMMIT_SHORT_SHA} | awk '{print $2}') && for item in ${volume_list//\\n\ }; do docker -H "ssh://root@${host}" volume rm $item; done
+   - volume_list=$(docker -H "ssh://root@${host}" volume ls | grep "${short_branch}-${CI_PROJECT_NAME}" | grep -v ${CI_COMMIT_SHORT_SHA} | awk '{print $2}') && for item in ${volume_list//\\n\ }; do docker -H "ssh://root@${host}" volume rm $item; done
    - > 
      dir_list=$(sudo ls /home/${short_branch}/ | grep "${short_branch}-${CI_PROJECT_NAME}" | grep -v "${CI_COMMIT_SHORT_SHA}" ) && 
      for item in ${dir_list//\\n\ };
