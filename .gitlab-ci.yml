@@ -59,7 +59,7 @@ deploy:
     - cat /root/.ssh/id_rsa
 # local init docker-compose
     - apk update && apk add gettext docker docker-compose bash
-    - cat docker/docker-compose.dev.yml | envsubst > docker-compose.yml
+    - cat docker/docker-compose.example | envsubst > docker-compose.yml
 #remote commands
     - docker -H "ssh://root@${host}" volume create --name="${short_branch}-${CI_PROJECT_NAME}-${CI_COMMIT_SHORT_SHA}"
     - ssh root@${host} "mkdir -p /home/${short_branch}/docker-composes"
