@@ -12,10 +12,9 @@ variables:
 build:
  stage: build
  image: 
-   name: gcr.io/kaniko-project/executor:v1.9.0-debug
+   name: artelworkshop/alpine-kaniko1.9:latest
    entrypoint: [""]
  before_script:
-   - apt-get update && apt-get install -y gettext
    - mkdir -p /kaniko/.docker
    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
 
@@ -49,7 +48,7 @@ build:
 deploy:
  stage: deploy
  image: 
-   name: kroniak/ssh-client
+   name: artelworkshop/alpine-kaniko1.9:latest
  before_script:
  ##for ini ssh
     - eval $(ssh-agent -s)
