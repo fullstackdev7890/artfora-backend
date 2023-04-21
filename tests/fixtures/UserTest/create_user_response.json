@@ -7,7 +7,7 @@
     "email_verification_token": "123123123",
     "email_verification_token_sent_at": "2018-11-11 11:11:11",
     "description": "",
-    "country": "USA",
+    "country": "",
     "external_link": null,
     "product_visibility_level": 2,
     "data": {
