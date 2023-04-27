@@ -388,6 +388,26 @@ class ProductTest extends TestCase
                     'categories' => [3]
                 ],
                 'result' => 'search_by_child_category.json'
+            ],
+            [
+                'filter' => [
+                    'author' => 'Picasso'
+                ],
+                'result' => 'search_by_author.json'
+            ],
+            [
+                'filter' => [
+                    'username' => 'User owner of some products',
+                    'with' => ['user']
+                ],
+                'result' => 'search_by_username.json'
+            ],
+            [
+                'filter' => [
+                    'tagname' => 'owner',
+                    'with' => ['user']
+                ],
+                'result' => 'search_by_tagname.json'
             ]
         ];
     }

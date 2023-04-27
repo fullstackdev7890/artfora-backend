@@ -39,6 +39,9 @@ class SearchProductsRequest extends Request
             'desc' => 'boolean',
             'with' => 'array',
             'with.*' => 'string|required',
+            'author' => 'string',
+            'username' => 'string',
+            'tagname' => 'string'
         ];
     }
 }
