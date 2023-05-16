@@ -1,19 +1,26 @@
-FROM artelworkshop/default-php8.1:1.0
+FROM php:8.1-fpm
+ARG USERID=1000
+ARG USERNAME=laravel
 
-RUN apt-get update && apt-get install -y libmagickwand-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*
+#installing composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-RUN apt-get install -y libmagickwand-dev --no-install-recommends && pecl install imagick
+RUN apt-get update && apt-get install -y \
+    libfreetype6-dev libpq-dev libwebp-dev libgd-dev \
+    libzip4 libzip-dev\
+    libmagickwand-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*
+
+RUN pecl install imagick
 RUN docker-php-ext-enable imagick
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp &&\
+    docker-php-ext-install gd pdo_pgsql pgsql zip exif
 
-RUN mkdir /app /home/${short_branch}
+RUN useradd -m -u ${USERID} ${USERNAME}
+
 WORKDIR /app
 COPY . /app
-RUN composer install
-USER root
 
-RUN ln -s /app/ /home/${short_branch}/${short_branch}-${CI_PROJECT_NAME}
-# RUN ln -s /home/storage /app/storage/app
-# RUN ln -s /home/logs  /app/storage/logs
 RUN chown -R www-data:www-data /app
 RUN echo "upload_max_filesize = 100M \n post_max_size = 100M" >> /usr/local/etc/php/conf.d/docker-fpm.ini
 EXPOSE 9000
+USER ${USERNAME}
