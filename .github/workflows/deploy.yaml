@@ -21,8 +21,8 @@ jobs:
       
       - name: Install Dependencies       
         working-directory: ${{env.PATH_PROD}}
-        run: docker-compose -f docker-compose.prod.yml exec php composer install --no-ansi --no-interaction --no-plugins --no-progress --optimize-autoloader
+        run: docker-compose -f docker-compose.prod.yml exec -T php composer install --no-ansi --no-interaction --no-plugins --no-progress --optimize-autoloader
 
       - name: Migrations up
         working-directory: ${{env.PATH_PROD}}
-        run: docker-compose -f docker-compose.prod.yml exec php php artisan migrate -n
+        run: docker-compose -f docker-compose.prod.yml exec -T php php artisan migrate -n
