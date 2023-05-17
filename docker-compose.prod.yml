@@ -4,11 +4,9 @@ services:
     build: .
     volumes:
       - ./:/app/
-   #   - ./docker/php-fpm/docker-fpm.ini:/usr/local/etc/php/conf.d/docker-fpm.ini
-   #   - ./docker/php-fpm/php.ini-development:/usr/local/etc/php/php.ini-development
-   #   - ./docker/php-fpm/php.ini-production:/usr/local/etc/php/php.ini-production
-    container_name: artfora-php
     restart: on-failure
+    networks:
+      - artfora
   web-server:
     container_name: artfora-nginx
     image: nginx:1.20.1
@@ -18,10 +16,12 @@ services:
 #      - /etc/letsencrypt/:/etc/letsencrypt
       - ./:/app/
     ports:
-      - 8080:80
+      - 8081:80
     restart: on-failure
     depends_on:
       - php
+    networks:
+      - artfora
   db:
     container_name: artfora-pgsql
     image: postgres:15rc2
@@ -31,3 +31,8 @@ services:
       POSTGRES_DB: ${DB_DATABASE}
     volumes:
       - ./storage/pgsql:/var/lib/postgresql/data
+    networks:
+      - artfora
+networks:
+  artfora:
+    external: true

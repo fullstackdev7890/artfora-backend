@@ -6,11 +6,11 @@ on:
       - development
 
 env:
-  PATH_PROD: /home/actions-runner/projects/artfora23-backend
+  PATH_PROD: /home/dev/projects/artfora23-backend
 
 jobs:
   deploy:
-    runs-on: prod
+    runs-on: dev23ArtforaBackend
     name: Production
     steps:
       - name: Git       
@@ -21,8 +21,8 @@ jobs:
       
       - name: Install Dependencies       
         working-directory: ${{env.PATH_PROD}}
-        run: docker exec artfora-php composer install --no-ansi --no-interaction --no-plugins --no-progress --optimize-autoloader
+        run: docker-compose exec php composer install --no-ansi --no-interaction --no-plugins --no-progress --optimize-autoloader
 
       - name: Migrations up
         working-directory: ${{env.PATH_PROD}}
-        run: docker exec artfora-php php artisan migrate -n
+        run: docker-compose exec php php artisan migrate -n
