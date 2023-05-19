@@ -4,6 +4,7 @@ namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\Request;
 use App\Services\UserService;
+use App\Models\User;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Carbon\Carbon;
 
@@ -11,17 +12,15 @@ class RegisterUserRequest extends Request
 {
     public function rules(): array
     {
-        $user = app(UserService::class)
-            ->findBy('email', $this->input('email'));
         $current = Carbon::now();
-        if ($user && !$user['email_verified_at'] && $current > (new Carbon($user['email_verification_token_sent_at']))->addMinutes(30)) {
-            app(UserService::class)->force()->delete($user['id']);
-        }
+        User::where('email_verified_at', '=', null)
+            ->where('email_verification_token_sent_at', '<', $current->subMinutes(30))
+            ->forceDelete();
 
         return [
-            'username' => 'required|string|unique:users,username',
+            'username' => 'required|string',
             'tagname' => 'required|string|unique:users,tagname',
-            'email' => 'required|string|email',
+            'email' => 'required|string|email|unique:users,email',
             'password' => 'required|string|same:confirm',
             'confirm' => 'required|string',
             'redirect_after_verification'  => 'string'
