@@ -9,16 +9,7 @@
                 style="padding: 0; font-size: 16px; line-height: 25px; font-family: 'Atkinson Hyperlegible', sans-serif; color: #c1c1c0;"
                 class="padding-copy"
             >
-                <h1 style="font-size: 20px;">Hello!</h1>
-            </td>
-        </tr>
-
-        <tr>
-            <td align="left"
-                style="padding: 0; font-size: 16px; line-height: 25px; font-family: 'Atkinson Hyperlegible', sans-serif; color: #c1c1c0;"
-                class="padding-copy"
-            >
-                Please enter this number to the form on the site:
+                <h1 style="font-size: 20px;">Your authentication code:</h1>
             </td>
         </tr>
 
@@ -31,14 +22,5 @@
             </td>
         </tr>
 
-        <tr>
-            <td align="left"
-                style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: 'Atkinson Hyperlegible', sans-serif; color: #c1c1c0;"
-                class="padding-copy"
-            >
-                Regards,<br>
-                <span style="font-family: Prozak, sans-serif; font-weight: 700; letter-spacing: 4px; color: #c1c1c0; font-size: 30px;">ARTfora</span>
-            </td>
-        </tr>
     </table>
 @endsection
