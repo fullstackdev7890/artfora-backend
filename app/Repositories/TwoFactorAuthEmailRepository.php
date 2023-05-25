@@ -18,7 +18,7 @@ class TwoFactorAuthEmailRepository extends Repository
     public function filterByActuality(): self
     {
         if (!empty($this->filter['only_actual'])) {
-            $this->query->where('created_at', '>=', Carbon::now()->subHour());
+            $this->query->where('created_at', '>=', Carbon::now()->subMinutes(10));
         }
 
         return $this;
