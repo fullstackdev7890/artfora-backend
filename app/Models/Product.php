@@ -18,10 +18,10 @@ class Product extends Model
     const REJECTED_STATUS = 'Rejected';
     const PENDING_STATUS = 'Pending';
 
-    const COMMON_VISIBILITY_LEVEL = 0;
-    const NUDITY_VISIBILITY_LEVEL = 1;
-    const EROTIC_VISIBILITY_LEVEL = 2;
-    const PORNO_VISIBILITY_LEVEL = 3;
+    const COMMON_VISIBILITY_LEVEL = 1;
+    const NUDITY_VISIBILITY_LEVEL = 2;
+    const EROTIC_VISIBILITY_LEVEL = 3;
+    const PORNO_VISIBILITY_LEVEL = 4;
 
     const STATUSES = [
         self::APPROVED_STATUS,
