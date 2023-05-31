@@ -37,6 +37,7 @@ class ProductController extends Controller
     {
         $result = $service->search($request->onlyValidated());
 
+
         return response()->json($result);
     }
 
