@@ -57,7 +57,7 @@ class ProductService extends EntityService
             ->filterBy('user.tagname', 'tagname')
             ->filterByQuery(Arr::wrap($queryBy))
             ->filterByStatus()
-            ->filterByCategory()
+            // ->filterByCategory()
             ->filterByVisibilityLevel()
             ->getSearchResults();
     }
