@@ -26,6 +26,7 @@ class ProductService extends EntityService
 
         return $this->repository
             ->with(['media'])
+            ->with(['categories'])
             ->create($data);
     }
 

@@ -45,9 +45,9 @@ class ProductRepository extends Repository
         if (isset($this->filter['categories'])) {
             $this->query->where(function (Builder $subQuery) {
                 $subQuery
-                    ->whereIn('category_id', $this->filter['categories'])
-                    ->orWhereHas('category', function ($categoryQuery) {
-                        $categoryQuery->whereIn('parent_id', $this->filter['categories']);
+                    ->whereHas('category', function ($categoryQuery) {
+                        $categoryQuery->whereIn('category_id', $this->filter['categories']);
+                        $categoryQuery->orWhereIn('parent_id', $this->filter['categories']);
                     });
             });
         }
@@ -82,6 +82,7 @@ class ProductRepository extends Repository
     {
         if (isset($data['media'])) {
             $entity->media()->sync($data['media']);
+            $entity->categor()->sync($data['categories']);
         }
     }
 
@@ -89,6 +90,7 @@ class ProductRepository extends Repository
     {
         if (isset($data['media'])) {
             $entity->media()->sync($data['media']);
+            $entity->category()->sync($data['categories']);
         }
     }
 }
