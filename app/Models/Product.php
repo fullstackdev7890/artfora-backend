@@ -67,7 +67,7 @@ class Product extends Model
             ->with(['avatar_image', 'background_image']);
     }
 
-    public function category()
+    public function categories()
     {
         return $this->belongsToMany(Category::class);
     }
