@@ -15,6 +15,7 @@ class SearchCategoriesRequest extends Request
             'order_by' => 'string',
             'desc' => 'boolean',
             'with' => 'array',
+            'author' => 'string',
             'query' => 'string|nullable',
             'with.*' => 'string|required',
             'parent_id' => 'integer|nullable|exists:categories,id',
