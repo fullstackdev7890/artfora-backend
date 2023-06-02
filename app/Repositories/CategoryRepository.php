@@ -30,6 +30,25 @@ class CategoryRepository extends Repository
         return $this;
     }
 
+    public function filterByUsername(): self
+    {
+        if ($this->filter['username'] !== '') {
+            $this->query->whereHas('children', function ($categoryQuery) {
+                $categoryQuery->where(function (Builder $subQuery) {
+                    $subQuery->whereHas('products', function ($productQuery) {
+                        $productQuery->where(function (Builder $subQuery) {
+                            $subQuery->whereHas('user', function($userQuery) {
+                                $userQuery->where('username', $this->filter['username']);
+                            });
+                        });
+                    });
+                });
+            });
+        }
+
+        return $this;
+    }
+
     public function filterOnlyParents(): self
     {
         if (isset($this->filter['only_parents'])) {

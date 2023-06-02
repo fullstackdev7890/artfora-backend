@@ -26,6 +26,7 @@ class CategoryService extends EntityService
             ->filterByQuery(['title'])
             ->filterOnlyParents()
             ->filterByAuthor()
+            ->filterByUsername()
             ->getSearchResults();
     }
 }
