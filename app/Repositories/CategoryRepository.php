@@ -17,7 +17,7 @@ class CategoryRepository extends Repository
 
     public function filterByAuthor(): self
     {
-        if ($this->filter['author'] !== '') {
+        if (isset($this->filter['author'])) {
             $this->query->whereHas('children', function ($categoryQuery) {
                 $categoryQuery->where(function (Builder $subQuery) {
                     $subQuery->whereHas('products', function ($productQuery) {
@@ -32,7 +32,7 @@ class CategoryRepository extends Repository
 
     public function filterByUsername(): self
     {
-        if ($this->filter['username'] !== '') {
+        if (isset($this->filter['username'])) {
             $this->query->whereHas('children', function ($categoryQuery) {
                 $categoryQuery->where(function (Builder $subQuery) {
                     $subQuery->whereHas('products', function ($productQuery) {
