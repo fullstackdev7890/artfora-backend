@@ -43,7 +43,8 @@ class User extends Authenticatable implements JWTSubject
         '2fa_type',
         'is_2fa_enabled',
         'otp_secret',
-        'product_visibility_level'
+        'product_visibility_level',
+        'more_external_link'
     ];
 
     protected $guarded = [
@@ -63,7 +64,12 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     protected $casts = [
-        'data' => 'array'
+        'data' => 'array',
+        'more_external_link' => 'array'
+    ];
+
+    protected $attributes = [
+        'more_external_link' => [],
     ];
 
     public function getJWTIdentifier()
