@@ -68,10 +68,6 @@ class User extends Authenticatable implements JWTSubject
         'more_external_link' => 'array'
     ];
 
-    protected $attributes = [
-        'more_external_link' => [],
-    ];
-
     public function getJWTIdentifier()
     {
         return $this->getKey();
