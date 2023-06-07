@@ -257,7 +257,7 @@ class AuthController extends Controller
 
     public function textData()
     {
-        $text = Text::all();
+        $text = Text::where('text_name','welcome_1')->orWhere('text_name','welcome_2')->get();
 
         return response()->json([
             'text' => $text,
