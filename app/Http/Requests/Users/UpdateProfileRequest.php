@@ -26,7 +26,8 @@ class UpdateProfileRequest extends Request
             'avatar_image_id' => 'integer|exists:media,id|nullable',
             'product_visibility_level' => "integer|in:{$visibilityLevels}",
             'data' => 'array',
-            'data.media_filters' => 'array'
+            'data.media_filters' => 'array',
+            'more_external_link' => 'array'
         ];
     }
 }
