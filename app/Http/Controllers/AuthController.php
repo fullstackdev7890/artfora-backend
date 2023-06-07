@@ -22,6 +22,7 @@ use App\Http\Requests\Auth\Enable2faSmsRequest;
 use App\Http\Requests\Auth\Confirm2faSmsRequest;
 use App\Http\Requests\Auth\Check2faOtpRequest;
 use App\Mails\AccountConfirmationMail;
+use App\Models\Text;
 use App\Models\User;
 use App\Services\TwoFactorAuthEmailService;
 use App\Services\UserService;
@@ -252,5 +253,14 @@ class AuthController extends Controller
             'token' => $token,
             'user' => $user
         ])->header('Authorization', $token);
+    }
+
+    public function textData()
+    {
+        $text = Text::all();
+
+        return response()->json([
+            'text' => $text,
+        ]);
     }
 }
