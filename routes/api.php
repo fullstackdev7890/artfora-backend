@@ -8,6 +8,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\TextController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -72,6 +74,8 @@ Route::group(['middleware' => ['guest', 'api']], function () {
 
     Route::get('/categories/{id}', [CategoryController::class, 'get']);
     Route::get('/categories', [CategoryController::class, 'search']);
+
+    Route::get('/texts', [TextController::class, 'search']);
 
     Route::get('/products/{id}', [ProductController::class, 'get']);
     Route::get('/products', [ProductController::class, 'search']);

@@ -14,4 +14,9 @@ class Text extends Model
         'text_content',
         'text_colour'
     ];
+    
+    const SEARCH_QUERY_FIELDS = [
+        'text_name'
+    ];
+
 }
