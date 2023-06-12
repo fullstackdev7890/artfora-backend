@@ -22,15 +22,11 @@ class UpdateProductRequest extends Request
 
     public function authorize(): bool
     {
-        if ($this->user()->role_id === Role::ADMIN) {
-            return true;
-        }
-
         if ($this->user()->id !== $this->product->user_id) {
             return false;
         }
 
-        return !$this->input('status') || ($this->input('status') === $this->product->status);
+        return true;
     }
 
     public function rules(): array
