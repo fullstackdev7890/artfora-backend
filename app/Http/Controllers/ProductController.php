@@ -9,6 +9,7 @@ use App\Http\Requests\Products\GetProductRequest;
 use App\Http\Requests\Products\SearchProductsRequest;
 use App\Services\ProductService;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -51,6 +52,14 @@ class ProductController extends Controller
     {
         if ($request->input('force')) {
             $service->force();
+        }
+
+        $product = $service
+            ->with('media')
+            ->find($id);
+
+        foreach ($product->media as $key => $media) {
+            Storage::delete($media['link']);
         }
 
         $service->delete($id);
