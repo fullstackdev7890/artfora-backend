@@ -4,11 +4,10 @@ namespace App\Models;
 
 use Artel\Support\Traits\ModelTrait;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use ModelTrait, SoftDeletes;
+    use ModelTrait;
 
     const SEARCH_QUERY_FIELDS = [
         'author', 'title', 'description', 'tags', 'user.username', 'user.tagname'
