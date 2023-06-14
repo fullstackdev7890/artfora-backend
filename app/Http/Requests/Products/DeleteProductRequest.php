@@ -22,7 +22,7 @@ class DeleteProductRequest extends Request
             return false;
         }
 
-        return !$this->input('force');
+        return true;
     }
 
     public function rules(): array
