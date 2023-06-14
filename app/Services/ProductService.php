@@ -58,7 +58,6 @@ class ProductService extends EntityService
             ->filterByQuery(Arr::wrap($queryBy))
             ->filterByStatus()
             ->filterByCategory()
-            ->filterByVisibilityLevel()
             ->getSearchResults();
     }
 }
