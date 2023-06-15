@@ -20,9 +20,12 @@ class CreateProductRequest extends Request
         $visibilityLevels = join(',', Product::VISIBILITY_LEVELS);
 
         return [
-            'width' => 'integer',
-            'height' => 'integer',
-            'price' => 'integer|required',
+            'width' => 'numeric',
+            'height' => 'numeric',
+            'depth' => 'numeric',
+            'price' => 'numeric',
+            'price_in_euro' => 'numeric',
+            'shipping_in_euro' => 'numeric',
             'categories' => 'array',
             'categories.*' => 'integer|exists:categories,id',
             'weight' => 'numeric',
