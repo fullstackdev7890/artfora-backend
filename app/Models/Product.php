@@ -39,6 +39,9 @@ class Product extends Model
     protected $fillable = [
         'width',
         'height',
+        'depth',
+        'price_in_euro',
+        'shipping_in_euro',
         'price',
         'user_id',
         'category_id',
