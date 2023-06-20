@@ -17,9 +17,12 @@ class ContactUsController extends BaseController
     {
         $email = $service->get('contact_us.email');
 
-        $mail = new ContactUsMail($email, $request->onlyValidated());
-        $mail->cc($request->input('email'));
+        if ($email) {
+            $mail = new ContactUsMail($email, $request->onlyValidated());
+            Mail::queue($mail);    
+        }
 
+        $mail = new ContactUsMail($request->input('email'), $request->onlyValidated());
         Mail::queue($mail);
 
         return response()->json([ 'status' => 'Success' ]);
