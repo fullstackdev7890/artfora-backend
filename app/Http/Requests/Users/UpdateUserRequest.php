@@ -36,7 +36,8 @@ class UpdateUserRequest extends Request
             'product_visibility_level' => "integer|in:{$visibilityLevels}",
             'data' => 'array',
             'data.media_filters' => 'array',
-            'more_external_link' => 'array'
+            'more_external_link' => 'array',
+            'can_add_product' => 'boolean',
         ];
     }
 
