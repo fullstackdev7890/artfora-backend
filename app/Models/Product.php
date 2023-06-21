@@ -61,6 +61,11 @@ class Product extends Model
     protected $casts = [
         'data' => 'array',
         'is_ai_safe' => 'boolean',
+        'price_in_euro' => 'float',
+        'shipping_in_euro' => 'float',
+        'width' => 'float',
+        'height' => 'float',
+        'depth' => 'float',
         'weight' => 'float'
     ];
 
