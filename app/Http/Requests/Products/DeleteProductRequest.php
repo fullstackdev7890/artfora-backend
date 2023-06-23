@@ -24,6 +24,7 @@ class DeleteProductRequest extends Request
 
         return true;
     }
+    
 
     public function rules(): array
     {
