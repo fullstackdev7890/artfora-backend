@@ -27,10 +27,12 @@ class TextService extends EntityService
 
         $queryBy = Arr::get($filters, 'query_by', Text::SEARCH_QUERY_FIELDS);
 
-        return $this
-            ->with(Arr::get($filters, 'with', []))
-            ->withCount(Arr::get($filters, 'with_count', []))
-            ->searchQuery($filters)
-            ->getSearchResults();
+        // return $this
+        //     ->with(Arr::get($filters, 'with', []))
+        //     ->withCount(Arr::get($filters, 'with_count', []))
+        //     ->searchQuery($filters)
+        //     ->getSearchResults();
+        $records =Text::all();
+        return $records;
     }
 }
