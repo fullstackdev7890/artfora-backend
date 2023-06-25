@@ -44,6 +44,7 @@ class UpdateProductRequest extends Request
             'price' => 'numeric',
             'price_in_euro' => 'numeric',
             'shipping_in_euro' => 'numeric',
+            'quantity_for_sale' => 'numeric',
             'categories' => 'array',
             'categories.*' => 'integer|exists:categories,id',
             'weight' => 'numeric',
