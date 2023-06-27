@@ -86,4 +86,5 @@ Route::group(['middleware' => ['guest', 'api']], function () {
     Route::post('/users/{id}/commission', [ContactUsController::class, 'commission']);
     Route::post('/contact-us', [ContactUsController::class, 'contactUs']);
     Route::get('/text', [AuthController::class, 'textData']);
+    Route::get('/stripe-connect/{id}', [UserController::class, 'stripeConnect']);
 });
