@@ -45,7 +45,8 @@ class User extends Authenticatable implements JWTSubject
         'otp_secret',
         'product_visibility_level',
         'more_external_link',
-        'can_add_product'
+        'can_add_product',
+        'stripe_account_id',
     ];
 
     protected $guarded = [
