@@ -111,7 +111,7 @@ class UserController extends Controller
             $stripeAccountLink['strip_account_link'] =  $account_url;
 
         } catch (\Exception $e) {
-            throw new NotFoundHttpException(__('validation.exceptions.not_found', ['entity' => 'User']));
+            throw $e;
         }
         return response()->json($stripeAccountLink);
     }
