@@ -75,7 +75,7 @@ class UserController extends Controller
      *
      * @param UserService $service
      * @param integer $id
-     * @param return json object
+     * @return json object
      */
     public function stripeConnect(UserService $service, $id) 
     {
@@ -98,6 +98,7 @@ class UserController extends Controller
                 $account = $this->stripeAccout($userInfo, $stripeSecretKey);
                 $account_id = $account->id;
                 $userInfo->stripe_account_id = $account_id;
+                $userInfo->stripe_status = 'inactive';
                 $userInfo->save();
 
                 // Create new stripe account link
@@ -120,7 +121,7 @@ class UserController extends Controller
      *
      * @param object $userInfo
      * @param string $stripeSecretKey
-     * @param return object $account
+     * @return object $account
      */
     private function stripeAccout($userInfo, $stripeSecretKey)
     {
@@ -139,7 +140,7 @@ class UserController extends Controller
      *
      * @param int $account_id
      * @param string $stripeSecretKey
-     * @param return object $account_link
+     * @return object $account_link
      */
     private function stripeAccoutLink($account_id, $stripeSecretKey)
     {
