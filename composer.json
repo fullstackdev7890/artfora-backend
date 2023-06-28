@@ -9,8 +9,8 @@
   "type": "project",
   "require": {
     "php": "^8.0.2",
-    "ext-openssl": "*",
     "ext-imagick": "*",
+    "ext-openssl": "*",
     "artel/laravel-helpers": ">=2.2.3",
     "biscolab/laravel-recaptcha": "^5.0",
     "guzzlehttp/guzzle": "^7.2",
@@ -20,6 +20,7 @@
     "laravel/tinker": "2.*",
     "php-open-source-saver/jwt-auth": "^2.0",
     "psr/simple-cache": "^2.0",
+    "stripe/stripe-php": "^10.16@beta",
     "twilio/sdk": "^7.0@RC",
     "wccplatform/otphp": "^7.0"
   },
