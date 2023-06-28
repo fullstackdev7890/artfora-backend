@@ -67,6 +67,7 @@ class UserController extends Controller
     public function search(SearchUserRequest $request, UserService $service)
     {
         $result = $service->search($request->onlyValidated());
+        return response()->json($result);
     }
 
     /**
