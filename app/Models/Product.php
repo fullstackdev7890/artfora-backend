@@ -42,7 +42,7 @@ class Product extends Model
         'depth',
         'price_in_euro',
         'shipping_in_euro',
-        
+        'quantity_for_sale',
         'price',
         'user_id',
         'category_id',
