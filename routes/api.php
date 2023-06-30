@@ -10,6 +10,8 @@ use App\Http\Controllers\MediaController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TextController;
 use App\Http\Controllers\FilterController;
+use App\Http\Controllers\WebhookController;
+use App\Http\Controllers\StripePaymentController;
 
 
 /*
@@ -87,4 +89,6 @@ Route::group(['middleware' => ['guest', 'api']], function () {
     Route::post('/contact-us', [ContactUsController::class, 'contactUs']);
     Route::get('/text', [AuthController::class, 'textData']);
     Route::get('/stripe-connect/{id}', [UserController::class, 'stripeConnect']);
+    Route::post('webhook', [WebhookController::class, 'index']);
+    Route::post('order_payment', [StripePaymentController::class, 'index']);
 });
