@@ -28,7 +28,8 @@ class OrderItemService extends EntityService
     public function create($data)
     { 
         $pendingOrder = Order::where('order_status', 'checkout')->where('user_id', $data['user_id'])->first();
-
+        $product=Product::where('id', $data['prod_id'])->first();
+        $productUser=User::where('id', $product['user_id'])->first();
 
                 // $data['slug'] = Str::slug($data['prod_title']);
         if($pendingOrder){
@@ -63,15 +64,15 @@ class OrderItemService extends EntityService
                 "inv_phone" => $user['inv_phone'],
                 "inv_email" => $user['inv_email'],
                 "inv_att" => $user['inv_att'],
-                "dev_address" => $user['dev_address'], 
-                "dev_address2" => $user['dev_address2'], 
-                "dev_zip" => $user['dev_zip'], 
-                "dev_city" => $user['dev_city'], 
-                "dev_state" => $user['dev_state'], 
-                "dev_country" => $user['dev_country'], 
-                "dev_phone" => $user['dev_phone'],
-                "dev_email" => $user['dev_email'],
-                "dev_att" => $user['dev_att'],
+                "dev_address" => $productUser['dev_address'], 
+                "dev_address2" => $productUser['dev_address2'], 
+                "dev_zip" => $productUser['dev_zip'], 
+                "dev_city" => $productUser['dev_city'], 
+                "dev_state" => $productUser['dev_state'], 
+                "dev_country" => $productUser['dev_country'], 
+                "dev_phone" => $productUser['dev_phone'],
+                "dev_email" => $productUser['dev_email'],
+                "dev_att" => $productUser['dev_att'],
                 "order_status" => 'checkout', 
                 "total" => $data['price']* $data['quantity'], 
                 'transaction_id' => null,
