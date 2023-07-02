@@ -21,6 +21,7 @@ class OrderItem extends Model
         "prod_weight",
         "prod_colour",
         "quantity", 
-        "price"
+        "price",
+        'prod_id'
     ];
 }

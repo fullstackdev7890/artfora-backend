@@ -77,6 +77,10 @@ Route::group(['middleware' => ['guest', 'api']], function () {
 
     Route::get('/categories/{id}', [CategoryController::class, 'get']);
     Route::get('/categories', [CategoryController::class, 'search']);
+    
+    Route::post('/order-item', [OrderItemController::class, 'create']);
+    Route::get('/order-item', [OrderItemController::class, 'read']);
+    Route::delete('/order-item/{id}', [OrderItemController::class, 'delete']);
 
     Route::get('/texts', [TextController::class, 'search']);
 

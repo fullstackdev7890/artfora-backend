@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('order_items', function (Blueprint $table) {
-            Schema::dropIfExists('order_items');
+            $table->integer('prod_id')->nullable();
         });
     }
 

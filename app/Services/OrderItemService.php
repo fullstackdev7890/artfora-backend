@@ -21,7 +21,10 @@ class OrderItemService extends EntityService
     {  
         $this->setRepository(OrderItemRepository::class);
     }
-
+    public function read(){
+        $orderItems = OrderItem::all();
+        return $orderItems;
+    }
     public function create($data)
     { 
         $pendingOrder = Order::where('order_status', 'checkout')->where('user_id', $data['user_id'])->first();
@@ -30,8 +33,19 @@ class OrderItemService extends EntityService
                 // $data['slug'] = Str::slug($data['prod_title']);
         if($pendingOrder){
              $data['order_id'] = $pendingOrder['id'];
-             return $this->repository
+             $duplicatedItem=OrderItem::where('prod_id', $data['prod_id'])->where('order_id', $data['order_id'])->first();
+             if($duplicatedItem){
+                $duplicatedItem['quantity']=$duplicatedItem['quantity'] + 1;
+                $duplicatedItem->save();
+                return $duplicatedItem;
+                
+
+             }
+             else{
+                return $this->repository
                         ->create($data);
+             }
+             
         }
         else{
             $user = User::where('id', $data['user_id'])->first();
@@ -72,5 +86,10 @@ class OrderItemService extends EntityService
                     ->create($data);
             }
             
+    }
+    public function delete($id){
+        OrderItem::destroy($id);
+        return;
+
     }
 }
