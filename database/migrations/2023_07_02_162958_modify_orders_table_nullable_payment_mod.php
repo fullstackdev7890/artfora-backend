@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('stripe_status', 20)->nullable();
+        Schema::table('orders', function (Blueprint $table) {
+            $table->string('payment_mode')->nullable()->change();
         });
     }
 
@@ -25,8 +25,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
+        Schema::table('orders', function (Blueprint $table) {
         });
     }
 };

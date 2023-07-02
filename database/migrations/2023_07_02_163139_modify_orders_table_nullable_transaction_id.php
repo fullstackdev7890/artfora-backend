@@ -13,14 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('order_items', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('order_id')->constrained('orders');
-            $table->foreignId('item_id')->constrained('products');
-            $table->integer('item_quantity');
-            $table->integer('price');
-            $table->integer('vendor_id');
-            $table->timestamps();
+        Schema::table('orders', function (Blueprint $table) {
+            $table->string('transaction_id')->nullable()->change();
         });
     }
 
@@ -31,5 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
+        Schema::table('orders', function (Blueprint $table) {
+            //
+        });
     }
 };
