@@ -47,7 +47,27 @@ class User extends Authenticatable implements JWTSubject
         'more_external_link',
         'can_add_product',
         'stripe_account_id',
-        'stripe_status'
+        'stripe_status',
+        'inv_name',
+        "inv_address",
+        "inv_address2", 
+        "inv_zip", 
+        "inv_city", 
+        "inv_state", 
+        "inv_country",
+        "inv_phone",
+        "inv_email",
+        "inv_att",
+        'dev_name',
+        "dev_address", 
+        'dev_address2', 
+        "dev_zip", 
+        'dev_city', 
+        "dev_state", 
+        "dev_country", 
+        "dev_phone",
+        "dev_email",
+        "dev_att",
     ];
 
     protected $guarded = [
