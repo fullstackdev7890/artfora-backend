@@ -13,6 +13,7 @@ use App\Http\Controllers\FilterController;
 use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\StripePaymentController;
 use App\Http\Controllers\OrderItemController;
+use App\Http\Controllers\CartItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -81,6 +82,11 @@ Route::group(['middleware' => ['guest', 'api']], function () {
     Route::post('/order-item', [OrderItemController::class, 'create']);
     Route::get('/order-item', [OrderItemController::class, 'read']);
     Route::delete('/order-item/{id}', [OrderItemController::class, 'delete']);
+
+    Route::post('/cart-item', [CartItemController::class, 'create']);
+    Route::get('/cart-item', [CartItemController::class, 'read']);
+    Route::delete('/cart-item/{id}', [CartItemController::class, 'delete']);
+
 
     Route::get('/texts', [TextController::class, 'search']);
 

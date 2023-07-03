@@ -4,17 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Artel\Support\Traits\ModelTrait;
 class CartItem extends Model
 {
     use HasFactory;
-<<<<<<< HEAD
+    use ModelTrait;
     protected $fillable = [
-        "id",
-        "user_id",
-        "product_id", 
-        "quantity",
+        'user_id',
+        'product_id',
+        'quantity',
     ];
-=======
->>>>>>> 29d656ddd524cf1fc28563f01e9162203a6dd6a3
+
+    
 }

@@ -13,15 +13,15 @@ class OrderItem extends Model
 
     protected $fillable = [
         "order_id", 
-        "prod_title",
-        "prod_artist",
-        "prod_height",
-        "prod_width",
-        "prod_depth",
-        "prod_weight",
-        "prod_colour",
+        "product_title",
+        "product_artist",
+        "product_height",
+        "product_width",
+        "product_depth",
+        "product_weight",
+        "product_colour",
         "quantity", 
         "price",
-        'prod_id'
+        'product_id'
     ];
 }
