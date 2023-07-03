@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Arr;
 use Artel\Support\Services\EntityService;
 use App\Repositories\CartItemRepository;
+use App\Models\CartItem;
 
 /**
  * @mixin CartItemRepository
@@ -16,24 +17,28 @@ class CartItemService extends EntityService
     {
         $this->setRepository(CartItemRepository::class);
     }
+    public function read(){
+
+        return $this->repository->with(['product'])->get();
+    }
 
     public function create($data)
     {
-        $existProduct=$this->repository->where('product_id',$data['product_id'])->first();
+        $existProduct=CartItem::where('product_id',$data['product_id'])->first();
         if($existProduct){
-            $existProduct->quantity += 1;
+            $existProduct['quantity'] = $existProduct['quantity'] + 1;
             $existProduct->save();
-            return $existProduct;
+            return $existProduct->load(['product']);
         }
         
         else{
-        return $this->repository->create($data);
+        $res = $this->repository->create($data);
+        return $res->load(['product']);
         }
        
     }
     public function delete($id)
     {
-        // $this->repository->destroy($id);
         $cartItem = $this->find($id);
         if ($cartItem) 
         {
@@ -42,4 +47,5 @@ class CartItemService extends EntityService
         return;
        
     }
+    
 }

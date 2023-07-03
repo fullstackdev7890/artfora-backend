@@ -17,7 +17,12 @@ class CartItemController extends Controller
 
         return response()->json($result);
     }
-    public function read(){}
+    public function read(Request $request, CartItemService $service){
+
+        $result = $service->read();
+
+        return response()->json($result);
+    }
     public function delete(DeleteCartItemRequest $request, CartItemService $service,$id){
         $result = $service->delete($id);
     }

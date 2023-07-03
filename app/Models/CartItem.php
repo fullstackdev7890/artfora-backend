@@ -15,5 +15,14 @@ class CartItem extends Model
         'quantity',
     ];
 
-    
+    public function user()
+    {
+        return $this->belongsTo(User::class)
+            ->with(['avatar_image', 'background_image']);
+    }
+    public function product()
+    {
+        return $this->belongsTo(Product::class)
+            ->with(['media','user']);
+    }
 }
