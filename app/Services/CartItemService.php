@@ -17,14 +17,14 @@ class CartItemService extends EntityService
     {
         $this->setRepository(CartItemRepository::class);
     }
-    public function read(){
+    public function read($id){
 
-        return $this->repository->with(['product'])->get();
+        return CartItem::where('user_id', $id)->with(['product'])->get();
     }
 
     public function create($data)
     {
-        $existProduct=CartItem::where('product_id',$data['product_id'])->first();
+        $existProduct=CartItem::where('product_id',$data['product_id'])->where('user_id', $data['user_id'])->first();
         if($existProduct){
             $existProduct['quantity'] = $existProduct['quantity'] + 1;
             $existProduct->save();

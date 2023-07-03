@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use App\Services\CartItemService;
 use App\Http\Requests\CartItems\CreateCartItemRequest;
 use App\Http\Requests\CartItems\DeleteCartItemRequest;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class CartItemController extends Controller
@@ -17,9 +17,9 @@ class CartItemController extends Controller
 
         return response()->json($result);
     }
-    public function read(Request $request, CartItemService $service){
-
-        $result = $service->read();
+    public function read(Request $request, CartItemService $service,$id){
+       
+        $result = $service->read($id);
 
         return response()->json($result);
     }

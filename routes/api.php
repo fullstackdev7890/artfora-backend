@@ -86,7 +86,7 @@ Route::group(['middleware' => ['guest', 'api']], function () {
     Route::delete('/order-item/{id}', [OrderItemController::class, 'delete']);
 
     Route::post('/cart-item', [CartItemController::class, 'create']);
-    Route::get('/cart-item', [CartItemController::class, 'read']);
+    Route::get('/cart-item/{id}', [CartItemController::class, 'read']);
     Route::delete('/cart-item/{id}', [CartItemController::class, 'delete']);
 
 
