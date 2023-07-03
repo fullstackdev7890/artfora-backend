@@ -129,6 +129,8 @@ return [
 
     'exceptions' => [
         'not_found' => ':Entity does not exist',
+        'amount_not_found' => 'Amount must be greater than 0',
+        'stripe_payment_url_not_found' => 'Stripe payment URL not found',
     ]
 
 ];

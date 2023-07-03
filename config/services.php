@@ -40,6 +40,7 @@ return [
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+        'stripe_currency' => env('STRIPE_CURRENCY', 'EUR'),
     ],
 
     'mtcaptcha' => [
