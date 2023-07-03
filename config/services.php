@@ -40,6 +40,7 @@ return [
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+        'webhook_secret_order' => env('STRIPE_WEBHOOK_SECRET_ORDER'),
         'stripe_currency' => env('STRIPE_CURRENCY', 'EUR'),
     ],
 

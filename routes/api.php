@@ -14,6 +14,8 @@ use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\StripePaymentController;
 use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\CartItemController;
+use App\Http\Controllers\WebhookOrderController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -100,4 +102,6 @@ Route::group(['middleware' => ['guest', 'api']], function () {
     Route::get('/text', [AuthController::class, 'textData']);
     Route::get('/stripe-connect/{id}', [UserController::class, 'stripeConnect']);
     Route::post('order_payment', [StripePaymentController::class, 'index']);
+    Route::post('webhook', [WebhookController::class, 'index']);
+    Route::post('webhook-order', [WebhookOrderController::class, 'index']);
 });
