@@ -20,7 +20,7 @@ class StripePaymentController extends Controller
         $stripeSecretKey = config('services.stripe.secret');
         $response['status'] = "error";
         $response['stripe_payment_url'] = "";
-        $stripeSessionUrl = "";
+        $stripePaymentUrl = "";
         $userId = $request->input('user_id');
         $orderId = $request->input('order_id');
         $amount = $request->input('amount');
@@ -41,10 +41,13 @@ class StripePaymentController extends Controller
                 $stripeCustomerId = $this->stripeCustomer($userInfo, $stripeSecretKey);
                 $userInfo->stripe_customer_id = $stripeCustomerId;
                 $userInfo->save();
+                // create stripe session
+                $stripePaymentUrl = $this->createStripeSession($userInfo, $stripeSecretKey, $orderId, $amount);
             } else {
                 // create stripe session
                 $stripePaymentUrl = $this->createStripeSession($userInfo, $stripeSecretKey, $orderId, $amount);
             }
+
             if(empty($stripePaymentUrl)) {
                 throw new NotFoundHttpException(__('validation.exceptions.stripe_payment_url_not_found', ['entity' => '']));
             } else {
