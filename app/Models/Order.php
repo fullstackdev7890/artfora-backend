@@ -35,5 +35,6 @@ class Order extends Model
         "order_status", 
         "transaction_id", 
         "payment_mode", 
+        'total'
     ];
 }
