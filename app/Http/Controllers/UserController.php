@@ -52,9 +52,10 @@ class UserController extends Controller
 
     public function updateProfile(UpdateProfileRequest $request, UserService $service)
     {
-        $service->update($request->user()->id, $request->onlyValidated());
+        $result =  $service->update($request->user()->id, $request->onlyValidated());
 
         return response('', Response::HTTP_NO_CONTENT);
+        // return response()->json($result);
     }
 
     public function delete(DeleteUserRequest $request, UserService $service, $id)

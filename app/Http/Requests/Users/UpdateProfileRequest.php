@@ -27,7 +27,26 @@ class UpdateProfileRequest extends Request
             'product_visibility_level' => "integer|in:{$visibilityLevels}",
             'data' => 'array',
             'data.media_filters' => 'array',
-            'more_external_link' => 'array'
+            'more_external_link' => 'array',
+            "inv_address",
+            "inv_address2"=>'string|nullable', 
+            "inv_zip"=>'string', 
+            "inv_city"=>'string', 
+            "inv_state"=>'string', 
+            "inv_country"=>'string',
+            "inv_phone"=>'integer',
+            "inv_email"=>'string',
+            "inv_att"=>'string',
+            "dev_address"=>'string', 
+            "dev_address2"=>'string|nullable', 
+            "dev_zip"=>'string', 
+            "dev_city"=>'string', 
+            "dev_state"=>'string', 
+            "dev_country"=>'string', 
+            "dev_phone"=>'integer',
+            "dev_email"=>'string',
+            "dev_att"=>'string',
+
         ];
     }
 }
