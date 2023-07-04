@@ -2,23 +2,22 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Models\Order;
+use App\Services\UserService;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller as BaseController;
 use Stripe;
-use App\Services\UserService;
-use App\Services\OrderService;
 
 class WebhookOrderController extends BaseController
 {
     /**
-     * Update user order according to stripe response
+     * Update order table according to stripe response
      *
-     * @param UserService $service
+     * @param Order $ordeObject
      * @return json object 
      */
-    public function index(OrderService $ordeService)
+    public function index(Order $ordeObject)
     {
         $stripeSecretKey = config('services.stripe.secret');
         $sig_header = isset($_SERVER['HTTP_STRIPE_SIGNATURE']) ? $_SERVER['HTTP_STRIPE_SIGNATURE'] : "";
@@ -30,25 +29,23 @@ class WebhookOrderController extends BaseController
 		$response['message'] = 'Invalid data';
 
         $payload = @file_get_contents('php://input');
-        $postData = "";
+        $postData = null;
 
         try {	
-            $sig_header = isset($_SERVER['HTTP_STRIPE_SIGNATURE']);
 			$postData = Stripe\Webhook::constructEvent(
 			  $payload, $sig_header, $endpoint_webhook_secret
 			);
-		  } catch(Exception $e) {
-			// Invalid payload
-			$response['message'] = 'Invalid payload';
-
-		  } catch(Stripe\Exception\SignatureVerificationException $e) {
-			// Invalid signature
-			$response['message'] = 'Invalid signature';
-		  }
+        } catch(Exception $e) {
+            // Invalid payload
+            return $response['message'] = 'Invalid payload';
+        } catch(Stripe\Exception\SignatureVerificationException $e) {
+            // Invalid signature
+            return $response['message'] = 'Invalid signature';
+        }
 
         try {
             if($postData) {
-                if(isset($postData->type) && isset($postData->id)) { 
+                if(isset($postData->type) && isset($postData->id)) {
                     if($postData->type == 'checkout.session.completed') {
                         $object = $postData->data->object;
                         $transactionId = $object->payment_intent;
@@ -57,11 +54,9 @@ class WebhookOrderController extends BaseController
                         $status = $object->status;
                         $payment_status = $object->payment_status;
                         if(!empty($transactionId)) {
-
-                            if( $status == "complete" && $payment_status == "paid" ) {
-                                $orderInfo = $ordeService
+                            if( $status == "complete" && $payment_status == "paid" && !empty($orderId)) {
+                                $orderInfo = $ordeObject
                                 ->find($orderId);
-
                                 if(empty($orderInfo)) {
                                     $response['message'] = 'Order not found';  
                                 } else {
@@ -73,7 +68,6 @@ class WebhookOrderController extends BaseController
 			                        $response['status'] = 'success';
 			                        $response['message'] = 'Order data updated successfully';
                                 }
-
                             } else {
                                 $response['message'] = 'Payment not done';
                             }
@@ -89,7 +83,6 @@ class WebhookOrderController extends BaseController
             } else {
                 $response['message'] = 'Post data not found';
             }
-
         } catch (Exception $e) {
             return response()->json($response);
         }
