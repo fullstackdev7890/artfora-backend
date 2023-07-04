@@ -37,7 +37,7 @@ class UpdateProfileRequest extends Request
             "inv_country"=>'string',
             "inv_phone"=>'integer',
             "inv_email"=>'string',
-            "inv_att"=>'string',
+            "inv_att"=>'string|nullable',
             "dev_name"=>'string',
             "dev_address"=>'string', 
             "dev_address2"=>'string|nullable', 
@@ -47,7 +47,7 @@ class UpdateProfileRequest extends Request
             "dev_country"=>'string', 
             "dev_phone"=>'integer',
             "dev_email"=>'string',
-            "dev_att"=>'string',
+            "dev_att"=>'string|nullable',
 
         ];
     }
