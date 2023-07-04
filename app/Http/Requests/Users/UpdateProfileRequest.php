@@ -29,7 +29,7 @@ class UpdateProfileRequest extends Request
             'data.media_filters' => 'array',
             'more_external_link' => 'array',
             'inv_name'=>'string',
-            "inv_address",
+            "inv_address" =>'string',
             "inv_address2"=>'string|nullable', 
             "inv_zip"=>'string', 
             "inv_city"=>'string', 
