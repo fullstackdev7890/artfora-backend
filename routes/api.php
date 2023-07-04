@@ -15,6 +15,7 @@ use App\Http\Controllers\StripePaymentController;
 use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\WebhookOrderController;
+use App\Http\Controllers\CheckoutController;
 
 
 /*
@@ -58,6 +59,17 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/products', [ProductController::class, 'create']);
     Route::put('/products/{id}', [ProductController::class, 'update']);
     Route::delete('/products/{id}', [ProductController::class, 'delete']);
+    
+    Route::post('/order-item', [OrderItemController::class, 'create']);
+    Route::get('/order-item', [OrderItemController::class, 'read']);
+    Route::delete('/order-item/{id}', [OrderItemController::class, 'delete']);
+
+    Route::post('/cart-item', [CartItemController::class, 'create']);
+    Route::get('/cart-item/{id}', [CartItemController::class, 'read']);
+    Route::delete('/cart-item/{id}', [CartItemController::class, 'delete']);
+    Route::get('/checkout', [CheckoutController::class, 'checkout']);
+
+
 });
 
 Route::group(['middleware' => ['guest', 'api']], function () {
@@ -81,13 +93,9 @@ Route::group(['middleware' => ['guest', 'api']], function () {
     Route::get('/categories/{id}', [CategoryController::class, 'get']);
     Route::get('/categories', [CategoryController::class, 'search']);
     
-    Route::post('/order-item', [OrderItemController::class, 'create']);
-    Route::get('/order-item', [OrderItemController::class, 'read']);
-    Route::delete('/order-item/{id}', [OrderItemController::class, 'delete']);
+   
 
-    Route::post('/cart-item', [CartItemController::class, 'create']);
-    Route::get('/cart-item/{id}', [CartItemController::class, 'read']);
-    Route::delete('/cart-item/{id}', [CartItemController::class, 'delete']);
+   
 
 
     Route::get('/texts', [TextController::class, 'search']);
