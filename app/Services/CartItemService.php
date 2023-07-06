@@ -42,12 +42,14 @@ class CartItemService extends EntityService
                 "Slovenia" => 22,
                 "Slovakia" => 20,
             ];
-            if($vat_rates[$country]){
-                return $vat_rates[$country];
-            } 
-            else {
+            $key = array_search($country, array_keys($vat_rates));
+            if ($key !== false) {
+                $vat_rate = $vat_rates[$country];
+                return $vat_rate;
+            } else {
                 return 18;
             }
+           
     }
     
     public function __construct()
@@ -70,16 +72,16 @@ class CartItemService extends EntityService
         
         else{
 
-            $data['shipping']=rand(1, 10);
+            $data['shipping']=floatval(rand(1, 10));
             
-            $product=Product::where('id',$data['product_id'])->load(['user'])->first();
+            $product=Product::where('id',$data['product_id'])->with(['user'])->first();
             $sellerCountry=$product['user']['sel_country'];
-            $vat=getVatRate($sellerCountry);
-            $data['vat']=$vat;
+            $vat=$this->getVatRate($sellerCountry);
+            $data['vat']=floatval($vat);
             
             //we have to add shipping fee code when we add new cart items
-        $res = $this->repository->create($data);
-        return $res->load(['product']);
+            $res = $this->repository->create($data);
+            return $res->load(['product']);
         }
        
     }
