@@ -22,13 +22,11 @@ class CheckoutService extends EntityService
     }
 
     public function checkout($data,$id){
-        dd($data);
         
         $checkoutOrder = Order::where('order_status', 'checkout')->where('user_id', $id)->first();
         $cartItems=CartItem::where('user_id', $id)->with(['product'])->get();
       
         if($checkoutOrder ){
-            // addToOrderItem($checkoutOrder['id'], $cartItems);
             for ($i = 0; $i < count($cartItems); $i++) {
                 OrderItem::create([
                     "order_id"=>$checkoutOrder['id'],

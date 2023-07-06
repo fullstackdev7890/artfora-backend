@@ -24,6 +24,7 @@ class OrderItem extends Model
         "price",
         'product_id',
         'shipping',
+        'vat',
 
     ];
 }

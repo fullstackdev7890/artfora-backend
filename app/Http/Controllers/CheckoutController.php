@@ -12,8 +12,6 @@ class CheckoutController extends Controller
     {
         $id = $request->user()->id;
         $data = $request->onlyValidated();
-
-     
          $result = $service->checkout($data,$id);
 
         return response()->json($result);
