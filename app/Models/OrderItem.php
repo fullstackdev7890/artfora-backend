@@ -22,6 +22,8 @@ class OrderItem extends Model
         "product_colour",
         "quantity", 
         "price",
-        'product_id'
+        'product_id',
+        'shipping',
+
     ];
 }

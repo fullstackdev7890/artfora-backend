@@ -32,6 +32,7 @@ class CartItemService extends EntityService
         }
         
         else{
+            //we have to add shipping fee code when we add new cart items
         $res = $this->repository->create($data);
         return $res->load(['product']);
         }

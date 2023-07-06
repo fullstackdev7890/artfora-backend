@@ -8,6 +8,10 @@ class CheckoutRequest extends Request
 {
     public function rules(): array
     {
-        return [];
+        return ['cardNumber' => 'numeric',
+        'expireMonth' => 'numeric',
+        'expireYear' => 'numeric',
+        'cvc'=>'numeric',
+    ];
     }
 }
