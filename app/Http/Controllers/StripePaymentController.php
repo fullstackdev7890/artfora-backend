@@ -24,7 +24,6 @@ class StripePaymentController extends Controller
         $userId = $request->input('user_id');
         $orderId = $request->input('order_id');
         $amount = $request->input('amount');
-
         try {
             $userInfo = $service
             ->find($userId);
