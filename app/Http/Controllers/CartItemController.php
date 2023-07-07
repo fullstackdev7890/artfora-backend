@@ -14,14 +14,30 @@ class CartItemController extends Controller
         $data = $request->onlyValidated();
 
         $result = $service->create($data);
+                                                        
+
 
         return response()->json($result);
     }
     public function read(Request $request, CartItemService $service,$id){
        
         $result = $service->read($id);
+        $newArray = collect($result)
+        ->groupBy('product.user.id')
+        ->map(function ($group) {
+            $totalPrice = $group->sum('price_in_euro');
+            $totalShipping = $group->sum('shipping_in_euro');
+            return [
+                'user_id' => $group->first()['product']['user']['id'],
+                'carts' => $group->toArray(),
+                'total_price' => $totalPrice,
+                'total_shipping' => $totalShipping,
+            ];
+        })
+        ->values()
+        ->toArray();
 
-        return response()->json($result);
+        return response()->json($newArray);
     }
     public function delete(DeleteCartItemRequest $request, CartItemService $service,$id){
         $result = $service->delete($id);
