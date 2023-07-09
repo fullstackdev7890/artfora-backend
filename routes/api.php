@@ -77,7 +77,7 @@ Route::group(['middleware' => ['guest', 'api']], function () {
 
     Route::get('/auth/refresh', ['uses' => AuthController::class . '@refreshToken'])
         ->middleware(['jwt.refresh']);
-
+    Route::get('/auth/verify-remember-token/{remember_token}', [AuthController::class, 'verifyRememberToken']);
     Route::post('/auth/login', ['uses' => AuthController::class . '@login']);
     Route::post('/auth/register', [ 'uses' => AuthController::class . '@register' ]);
     Route::post('/auth/register/email/verify', ['uses' => AuthController::class . '@verifyEmail', 'as' => 'auth.confirm']);

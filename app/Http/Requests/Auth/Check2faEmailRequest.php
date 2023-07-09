@@ -15,7 +15,8 @@ class Check2faEmailRequest extends FormRequest
     {
         return [
             'email' => 'required|string|email|exists:users,email',
-            'code' => 'required'
+            'code' => 'required',
+            'remember_me' => 'boolean'
         ];
     }
 }

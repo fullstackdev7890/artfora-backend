@@ -27,11 +27,27 @@ use App\Models\User;
 use App\Services\TwoFactorAuthEmailService;
 use App\Services\UserService;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use PHPOpenSourceSaver\JWTAuth\JWTAuth;
-
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 class AuthController extends Controller
 {
+    public function verifyRememberToken(Request $request,JWTAuth $auth,$remember_token){
+       
+        if($remember_token){
+            $user = User::where('remember_token', $remember_token)->first();
+            $token = $auth->fromUser($user);
+            return response()->json([
+                'message' => 'Success',
+                'token' => $token,
+                'remember_token'=>$remember_token
+            ]);
+        }
+
+    }
     public function login(
         LoginRequest $request,
         UserService $service,
@@ -45,10 +61,9 @@ class AuthController extends Controller
             'password' => $request->input('password')
         ]);
 
-        if ($token === false) {
-            return response()->json([
-                'message' => __('auth.failed')
-            ], Response::HTTP_UNAUTHORIZED);
+       
+        if($token ===true){
+            return response()->json(true);
         }
 
         $user = $service->findBy('email', $login);
@@ -152,17 +167,29 @@ class AuthController extends Controller
     {
         $email = $request->input('email');
         $code = $request->input('code');
+        $remember_me = $request->input('remember_me');
 
         if (!EmailTwoFactorAuthorization::check($email, $code)) {
             return response()->json([ 'message' => 'Wrong code' ], Response::HTTP_BAD_REQUEST);
         }
-
+        $rememberTokenExpiration = Carbon::now()->addMonth();
         $user = $userService->findBy('email', $email);
         $token = $auth->fromUser($user);
+        $remember_token=null;
+        if($remember_me){
+            $remember_token = $auth->attempt([
+            'email' => $email,
+            'password' => 'starSTAR123!@#'
+        ],$remember_me,$rememberTokenExpiration);
+        }
+      
+        $user->remember_token=$remember_token;  
+        $user->save();  
 
         return response()->json([
             'message' => 'Success',
-            'token' => $token
+            'token' => $token,
+            'remember_token'=>$remember_token
         ]);
     }
 
