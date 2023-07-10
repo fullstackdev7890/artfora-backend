@@ -65,7 +65,7 @@ class CartItemService extends EntityService
     {
         $existProduct=CartItem::where('product_id',$data['product_id'])->where('user_id', $data['user_id'])->first();
         if($existProduct){
-            $existProduct['quantity'] = $existProduct['quantity'] + 1;
+            $existProduct['quantity'] = $existProduct['quantity'] + $data['quantity'];
             $existProduct->save();
             return $existProduct->load(['product']);
         }

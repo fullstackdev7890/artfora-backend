@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\User;
 use App\Models\CartItem;
 use App\Models\OrderItem;
+use App\Models\Product;
 
 /**
  * @mixin CheckoutRepository
@@ -41,6 +42,9 @@ class CheckoutService extends EntityService
                     "product_id"=>$cartItems[$i]['product_id'],
                     "shipping"=>$cartItems[$i]['shipping'],
                 ]);
+                $product=Product::where('id',$cartItems[$i]['product_id'])->first();
+                $product['quantity_for_sale']-=$cartItems[$i]['quantity'];
+                $product->save();
                 $cartItems[$i]->delete();
         };
         return ($checkoutOrder['id']);
@@ -133,9 +137,10 @@ class CheckoutService extends EntityService
                         "quantity"=>$cartItems[$i]['quantity'],
                         "product_id"=>$cartItems[$i]['product_id'],
                         "shipping"=>$cartItems[$i]['shipping'],
-
-        
                 ]);
+                $product=Product::where('id',$cartItems[$i]['product_id'])->first();
+                $product['quantity_for_sale']-=$cartItems[$i]['quantity'];
+                $product->save();
                 $cartItems[$i]->delete();
 
             }
