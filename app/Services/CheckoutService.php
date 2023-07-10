@@ -37,7 +37,7 @@ class CheckoutService extends EntityService
                     "product_height"=>$cartItems[$i]['product']['height'],
                     "product_weight"=>$cartItems[$i]['product']['weight'],
                     "product_depth"=>$cartItems[$i]['product']['depth'],
-                    "price"=>$cartItems[$i]['product']['price'],
+                    "price"=>$cartItems[$i]['product']['is_sale_price']===true?$cartItems[$i]['product']['sale_price_in_euro']:$cartItems[$i]['product']['price_in_euro'],
                     "quantity"=>$cartItems[$i]['quantity'],
                     "product_id"=>$cartItems[$i]['product_id'],
                     "shipping"=>$cartItems[$i]['shipping'],

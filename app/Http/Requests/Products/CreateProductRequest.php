@@ -37,7 +37,9 @@ class CreateProductRequest extends Request
             'visibility_level' => "integer|required|in:{$visibilityLevels}",
             'is_ai_safe' => 'boolean',
             'media' => 'array',
-            'media.*' => 'integer|exists:media,id'
+            'media.*' => 'integer|exists:media,id',
+            'is_sale_price'=>'boolean',
+            'sale_price_in_euro'=>'numeric'
         ];
     }
 }

@@ -25,7 +25,13 @@ class CartItemController extends Controller
         $newArray = collect($result)
         ->groupBy('product.user.id')
         ->map(function ($group) {
-            $totalPrice = $group->sum('product.price_in_euro');
+            $totalPrice = $group->sum(function ($item) {
+                if ($item->product->is_sale_price) {
+                    return $item->product->sale_price_in_euro * $item->quantity;
+                } else {
+                    return $item->product->price_in_euro * $item->quantity;
+                }
+            });
             $totalShipping = $group->sum('product.shipping_in_euro');
             return [
                 'user_id' => $group->first()['product']['user']['id'],
