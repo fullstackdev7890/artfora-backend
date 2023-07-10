@@ -12,7 +12,7 @@ class OrderItem extends Model
     use ModelTrait;
 
     protected $fillable = [
-        "order_id", 
+        "order_id",
         "product_title",
         "product_artist",
         "product_height",
@@ -20,7 +20,7 @@ class OrderItem extends Model
         "product_depth",
         "product_weight",
         "product_colour",
-        "quantity", 
+        "quantity",
         "price",
         'product_id',
         'shipping',

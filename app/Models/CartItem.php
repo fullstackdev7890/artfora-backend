@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Artel\Support\Traits\ModelTrait;
+
 class CartItem extends Model
 {
     use HasFactory;
@@ -25,6 +26,6 @@ class CartItem extends Model
     public function product()
     {
         return $this->belongsTo(Product::class)
-            ->with(['media','user']);
+            ->with(['media', 'user']);
     }
 }

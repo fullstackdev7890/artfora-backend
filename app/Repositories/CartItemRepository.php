@@ -13,6 +13,4 @@ class CartItemRepository extends Repository
     {
         $this->setModel(CartItem::class);
     }
-
-    
 }
