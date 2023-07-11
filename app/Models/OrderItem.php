@@ -27,4 +27,9 @@ class OrderItem extends Model
         'vat',
 
     ];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }
