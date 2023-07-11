@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Services\UserService;
+use App\Models\OrderItem;
+use App\Models\SellerPayoutHistory;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller as BaseController;
 use Stripe;
+
 
 class WebhookOrderController extends BaseController
 {
@@ -64,6 +66,44 @@ class WebhookOrderController extends BaseController
                                     $orderInfo->transaction_id = $transactionId;
                                     $orderInfo->save();
 
+                                    if($orderInfo) {
+                                        // Check seller payout history data
+                                        $payoutOrder = SellerPayoutHistory::where('order_id', $orderId)->get();
+                                        if($payoutOrder->isEmpty()) {
+                                        
+                                            $result = OrderItem::where('order_id', $orderId)
+                                            ->with(['product' => function($query) {
+                                                $query->select([
+                                                    'id', 'price', 'user_id'
+                                                ]);
+                                            }]) 
+                                            ->get();
+    
+                                            $orderItemData = collect($result)
+                                            ->groupBy('product.user_id')
+                                            ->map(function ($group) {
+                                                    $totalPrice = $group->sum(function ($item) {
+                                                    return $item->price;
+                                                });
+                                                return [
+                                                    'seller_id' => $group->first()['product']['user_id'],
+                                                    'total_price' => $totalPrice,
+                                                ];
+                                            })
+                                            ->values()
+                                            ->toArray();
+                                            // Create new seller payout history data
+                                            foreach($orderItemData as $data) {
+                                                $sellerPayoutHistoryObj = (new SellerPayoutHistory);
+                                                $sellerPayoutHistoryObj->seller_id = $data['seller_id'];
+                                                $sellerPayoutHistoryObj->order_id = $orderId;
+                                                $sellerPayoutHistoryObj->total_pay_amount = $data['total_price'];
+                                                $sellerPayoutHistoryObj->order_date = date("Y-m-d");
+                                                $sellerPayoutHistoryObj->save();
+                                            }
+                                        }
+                                    }
+
                                     $response['status_code'] = '200';
 			                        $response['status'] = 'success';
 			                        $response['message'] = 'Order data updated successfully';
@@ -84,6 +124,7 @@ class WebhookOrderController extends BaseController
                 $response['message'] = 'Post data not found';
             }
         } catch (Exception $e) {
+            $response['message'] = $e->getMessage();
             return response()->json($response);
         }
         return response()->json($response);
