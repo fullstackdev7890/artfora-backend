@@ -39,7 +39,6 @@ class UpdateUserRequest extends Request
             'more_external_link' => 'array',
             'can_add_product' => 'boolean',
             'buyer_support'=>'boolean',
-            'seller_support'=>'boolean'
         ];
     }
 

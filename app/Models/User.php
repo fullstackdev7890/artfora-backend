@@ -78,9 +78,9 @@ class User extends Authenticatable implements JWTSubject
         "sel_phone",
         "sel_email",
         "sel_att",
-        'seller_support',
+        "seller_support",
         "buyer_support",
-        'stripe_customer_id'
+        "stripe_customer_id"
     ];
 
     protected $guarded = [

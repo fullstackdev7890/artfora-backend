@@ -58,6 +58,8 @@ class UpdateProfileRequest extends Request
             "sel_phone"=>'string|nullable',
             "sel_email"=>'string',
             "sel_att"=>'string|nullable',
+            "seller_support"=>'boolean'
+
 
         ];
     }
