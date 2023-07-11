@@ -50,34 +50,37 @@ class User extends Authenticatable implements JWTSubject
         'stripe_status',
         'inv_name',
         "inv_address",
-        "inv_address2", 
-        "inv_zip", 
-        "inv_city", 
-        "inv_state", 
+        "inv_address2",
+        "inv_zip",
+        "inv_city",
+        "inv_state",
         "inv_country",
         "inv_phone",
         "inv_email",
         "inv_att",
         'dev_name',
-        "dev_address", 
-        'dev_address2', 
-        "dev_zip", 
-        'dev_city', 
-        "dev_state", 
-        "dev_country", 
+        "dev_address",
+        'dev_address2',
+        "dev_zip",
+        'dev_city',
+        "dev_state",
+        "dev_country",
         "dev_phone",
         "dev_email",
         "dev_att",
         'sel_name',
         "sel_address",
-        "sel_address2", 
-        "sel_zip", 
-        "sel_city", 
-        "sel_state", 
+        "sel_address2",
+        "sel_zip",
+        "sel_city",
+        "sel_state",
         "sel_country",
         "sel_phone",
         "sel_email",
         "sel_att",
+        'seller_support',
+        "buyer_support",
+        'stripe_customer_id'
     ];
 
     protected $guarded = [
@@ -130,5 +133,4 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasOne(Product::class);
     }
-
 }
