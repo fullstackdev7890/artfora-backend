@@ -37,15 +37,15 @@ class AuthController extends Controller
 {
     public function verifyRememberToken(Request $request,JWTAuth $auth,$remember_token){
        
-        if($remember_token){
-            $user = User::where('remember_token', $remember_token)->first();
-            $token = $auth->fromUser($user);
-            return response()->json([
-                'message' => 'Success',
-                'token' => $token,
-                'remember_token'=>$remember_token
-            ]);
-        }
+        // if($remember_token){
+        //     $user = User::where('remember_token', $remember_token)->first();
+        //     $token = $auth->fromUser($user);
+        //     return response()->json([
+        //         'message' => 'Success',
+        //         'token' => $token,
+        //         'remember_token'=>$remember_token
+        //     ]);
+        // }
 
     }
     public function login(
