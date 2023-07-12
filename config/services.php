@@ -42,6 +42,7 @@ return [
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
         'webhook_secret_order' => env('STRIPE_WEBHOOK_SECRET_ORDER'),
         'stripe_currency' => env('STRIPE_CURRENCY', 'EUR'),
+        'stripe_seller_payment_after_order_days' => env('STRIPE_SELLER_PAYMENT_AFTER_ORDER_DAYS', 10),
     ],
 
     'mtcaptcha' => [
