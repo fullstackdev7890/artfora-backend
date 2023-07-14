@@ -47,5 +47,13 @@ return [
 
     'mtcaptcha' => [
         'secret' => env('MTCAPTCHA_PRIVATE_KEY')
-    ]
+    ],
+    'fedex' => [
+        'client_id'=>env('FEDEX_CLIENT_ID'),
+        "client_secret"=>env("FEDEX_CLIENT_SECRET"),
+        'key' => env('FEDEX_API_KEY'),
+        'password' => env('FEDEX_API_PASSWORD'),
+        'account_number' => env('FEDEX_ACCOUNT_NUMBER'),
+        'meter_number' => env('FEDEX_METER_NUMBER'),
+    ],
 ];

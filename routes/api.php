@@ -16,7 +16,8 @@ use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\WebhookOrderController;
 use App\Http\Controllers\CheckoutController;
-
+use App\Http\Controllers\FedexController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,7 +60,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/products', [ProductController::class, 'create']);
     Route::put('/products/{id}', [ProductController::class, 'update']);
     Route::delete('/products/{id}', [ProductController::class, 'delete']);
-    
+
     Route::post('/order-item', [OrderItemController::class, 'create']);
     Route::get('/order-item', [OrderItemController::class, 'read']);
     Route::delete('/order-item/{id}', [OrderItemController::class, 'delete']);
@@ -69,7 +70,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/cart-item/{id}', [CartItemController::class, 'delete']);
     Route::get('/checkout', [CheckoutController::class, 'checkout']);
 
-
+    Route::post('/validate-postal-code', 'FedExController@validatePostalCode');
+    Route::post('/validate-address', [FedExController::class, 'addressValidation']);
+    Route::get('ship', [FedExController::class, 'ship']);
 });
 
 Route::group(['middleware' => ['guest', 'api']], function () {
@@ -79,7 +82,7 @@ Route::group(['middleware' => ['guest', 'api']], function () {
         ->middleware(['jwt.refresh']);
     Route::get('/auth/verify-remember-token/{remember_token}', [AuthController::class, 'verifyRememberToken']);
     Route::post('/auth/login', ['uses' => AuthController::class . '@login']);
-    Route::post('/auth/register', [ 'uses' => AuthController::class . '@register' ]);
+    Route::post('/auth/register', ['uses' => AuthController::class . '@register']);
     Route::post('/auth/register/email/verify', ['uses' => AuthController::class . '@verifyEmail', 'as' => 'auth.confirm']);
     Route::post('/auth/forgot-password', ['uses' => AuthController::class . '@forgotPassword']);
     Route::post('/auth/restore-password', ['uses' => AuthController::class . '@restorePassword']);
@@ -92,10 +95,10 @@ Route::group(['middleware' => ['guest', 'api']], function () {
 
     Route::get('/categories/{id}', [CategoryController::class, 'get']);
     Route::get('/categories', [CategoryController::class, 'search']);
-    
-   
 
-   
+
+
+
 
 
     Route::get('/texts', [TextController::class, 'search']);
