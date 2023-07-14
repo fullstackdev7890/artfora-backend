@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\SellerPayoutHistory;
+use App\Models\SellerSubscription;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -96,22 +97,34 @@ class StripePaymentController extends Controller
      * @param integer $amount
      * @return string $stripeSessionUrl
      */
-    private function createStripeSession($userInfo, $stripeSecretKey, $orderId = 0, $amount)
+    private function createStripeSession($userInfo, $stripeSecretKey, $orderId = 0, $amount, $mode = 'payment')
     {
         $stripePaymentUrl = "";
         $stripeCurrency = config('services.stripe.stripe_currency');
+        $stripePriceId = config('services.stripe.stripe_seller_subscription_price_id');
 
         try {
-            $paymentcart[] = [
-                'price_data' => [
-                    'currency' => strtolower( $stripeCurrency),
-                    'unit_amount' => $amount * 100,
-                    'product_data' => [
-                        'name' => "ARTfora Product"
+            if( $mode == 'subscription') {
+                $paymentcart[] = [
+                    [
+                      'price' => $stripePriceId,
+                      'quantity' => 1,
                     ],
-                ],
-                'quantity' => 1,
-            ];
+                ];
+            } else {
+                $paymentcart[] = [
+                    'price_data' => [
+                        'currency' => strtolower( $stripeCurrency),
+                        'unit_amount' => $amount * 100,
+                        'product_data' => [
+                            'name' => "ARTfora Product",
+                            'images' => ["https://claimalgo.com/wp-content/uploads/2023/07/ARTforaProduct2.jpg"],
+                        ],
+                    ],
+                    'quantity' => 1,
+                ];
+            }
+
             $stripe = new Stripe\StripeClient($stripeSecretKey);
             $sessions = $stripe->checkout->sessions->create([
             'success_url' => 'https://dev.artfora.artel-workshop.com/',
@@ -122,7 +135,7 @@ class StripePaymentController extends Controller
                 'user_id' => $userInfo->id,
                 'orderId' => $orderId
             ],
-            'mode' => 'payment',
+            'mode' => $mode,
             ]);
             if($sessions) {
                 $stripePaymentUrl = $sessions->url;
@@ -224,4 +237,55 @@ class StripePaymentController extends Controller
            throw $e;
         }
     }
+
+    /**
+     * Create seller subscription
+     *
+     * @param UserService $service
+     * @param integer $id
+     */
+    public function getSubscription(UserService $userService, $id) 
+    {
+        $stripeSecretKey = config('services.stripe.secret');
+        $orderId = 0;
+        $amount = 0;
+        $response['status'] = "error";
+        $response['stripe_payment_url'] = "";
+        $stripePaymentUrl = "";
+        try {  
+            $userInfo = $userService->find($id);
+
+            if(empty($userInfo)) {
+                throw new NotFoundHttpException(__('validation.exceptions.not_found', ['entity' => 'User']));
+            }
+
+            $subscriptionInfo = SellerSubscription::where(['stripe_status' => 'successed'])->first();
+            if(!empty($subscriptionInfo)) {
+                throw new NotFoundHttpException(__('validation.exceptions.subscription_exist', ['entity' => '']));
+            }
+
+            if(empty($userInfo->stripe_customer_id)) {
+                $stripeCustomerId = $this->stripeCustomer($userInfo, $stripeSecretKey);
+                $userInfo->stripe_customer_id = $stripeCustomerId;
+                $userInfo->save();
+                // create stripe subscription session
+                $stripePaymentUrl = $this->createStripeSession($userInfo, $stripeSecretKey, $orderId, $amount, 'subscription');
+                
+            } else {
+                // create stripe subscription session
+                $stripePaymentUrl = $this->createStripeSession($userInfo, $stripeSecretKey, $orderId, $amount, 'subscription');
+            }
+            if(empty($stripePaymentUrl)) {
+                throw new NotFoundHttpException(__('validation.exceptions.stripe_payment_url_not_found', ['entity' => '']));
+            } else {
+                $response['status'] = "success";
+                $response['stripe_payment_url'] = $stripePaymentUrl;
+            }
+
+        } catch (\Exception $e) {
+            throw $e;
+        }
+        return response()->json($response);
+    }
+
 }
