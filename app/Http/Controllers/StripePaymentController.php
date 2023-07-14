@@ -118,7 +118,7 @@ class StripePaymentController extends Controller
                         'unit_amount' => $amount * 100,
                         'product_data' => [
                             'name' => "ARTfora Product",
-                            'images' => ["https://claimalgo.com/wp-content/uploads/2023/07/ARTforaProduct2.jpg"],
+                            'images' => ["https://claimalgo.com/wp-content/uploads/2023/07/ARTforaProduct3.jpg"],
                         ],
                     ],
                     'quantity' => 1,
