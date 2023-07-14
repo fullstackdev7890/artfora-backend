@@ -19,4 +19,9 @@ class SellerPayoutHistory extends Model
         "pay_status",
         "pay_transaction_id",    
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'seller_id', 'id');
+    }
 }
