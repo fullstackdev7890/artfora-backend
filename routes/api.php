@@ -71,11 +71,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/checkout', [CheckoutController::class, 'checkout']);
 
     Route::post('/validate-postal-code', 'FedExController@validatePostalCode');
-    Route::post('/validate-address', [FedExController::class, 'addressValidation']);
     Route::get('ship', [FedExController::class, 'ship']);
 });
 
 Route::group(['middleware' => ['guest', 'api']], function () {
+    Route::post('/validate-address', [FedExController::class, 'addressValidation']);
+    Route::post('/validate-postal_code', [FedExController::class, 'postalCodeValidation']);
+    Route::post('/ship_rate', [FedExController::class, 'shipRate']);
+
     Route::get('/status', ['uses' => StatusController::class . '@status']);
 
     Route::get('/auth/refresh', ['uses' => AuthController::class . '@refreshToken'])
