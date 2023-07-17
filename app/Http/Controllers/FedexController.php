@@ -90,12 +90,8 @@ class FedexController extends Controller
                     ],
             ]),
         ]);
-        $statusCode = $response->getStatusCode();
-        if ($statusCode == 200) { $result = json_decode($response->getBody(), true);}
-        else{
-            $result = json_decode(false);
-        }
-        return $result;
+       
+        return json_decode($statusCode);
     }
 
     public function postalCodeValidation(PostalCodeValidationRequest $request)
