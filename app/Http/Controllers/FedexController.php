@@ -90,7 +90,8 @@ class FedexController extends Controller
                     ],
             ]),
         ]);
-       
+        $statusCode = $response->getStatusCode();
+        
         return json_decode($statusCode);
     }
 
