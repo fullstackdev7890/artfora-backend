@@ -111,6 +111,10 @@ class StripePaymentController extends Controller
                       'quantity' => 1,
                     ],
                 ];
+            $metaData = [
+                'user_id' => $userInfo->id,
+                'price_id' => $stripePriceId,
+            ];
             } else {
                 $paymentcart[] = [
                     'price_data' => [
@@ -123,6 +127,11 @@ class StripePaymentController extends Controller
                     ],
                     'quantity' => 1,
                 ];
+
+                $metaData = [
+                    'user_id' => $userInfo->id,
+                    'orderId' => $orderId
+                ];
             }
 
             $stripe = new Stripe\StripeClient($stripeSecretKey);
@@ -131,10 +140,7 @@ class StripePaymentController extends Controller
             'cancel_url' => 'https://dev.artfora.artel-workshop.com/',
             'customer' =>  $userInfo->stripe_customer_id,
             'line_items' => $paymentcart,
-            'metadata' => [
-                'user_id' => $userInfo->id,
-                'orderId' => $orderId
-            ],
+            'metadata' => $metaData,
             'mode' => $mode,
             ]);
             if($sessions) {
@@ -180,7 +186,6 @@ class StripePaymentController extends Controller
             }
             $payAmout = collect($sellerPayoutData)->sum('total_pay_amount');
             $balance = $this->retrieveBalance($stripe);
-            $balance = 130;
             if($balance < $payAmout) {
                 throw new NotFoundHttpException(__('validation.exceptions.stripe_low_balance', ['entity' => '']));  
             }
@@ -259,7 +264,7 @@ class StripePaymentController extends Controller
                 throw new NotFoundHttpException(__('validation.exceptions.not_found', ['entity' => 'User']));
             }
 
-            $subscriptionInfo = SellerSubscription::where(['stripe_status' => 'successed'])->first();
+            $subscriptionInfo = SellerSubscription::where(['stripe_status' => 'successed', 'seller_id' => $id])->first();
             if(!empty($subscriptionInfo)) {
                 throw new NotFoundHttpException(__('validation.exceptions.subscription_exist', ['entity' => '']));
             }
