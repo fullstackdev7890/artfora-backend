@@ -15,6 +15,7 @@ use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
 use Artel\Support\Services\EntityService;
 use Illuminate\Support\Facades\Mail;
+use GuzzleHttp\Client;
 
 /**
  * @property UserRepository $repository
@@ -60,7 +61,21 @@ class UserService extends EntityService
             $data['password'] = Hash::make($data['password']);
         }
 
-        return $this->repository->update($where, $data);
+
+
+        if($data['sel_email']){
+            
+            return $this->repository->update($where, $data);
+        }
+        elseif($data['inv_email'] || $data['del_email']){
+          
+            return $this->repository->update($where, $data);
+        }
+        else{
+
+            return $this->repository->update($where, $data);
+        }
+
     }
 
     public function verifyEmail($code): User
@@ -121,4 +136,7 @@ class UserService extends EntityService
 
         $this->update($userId, $data);
     }
+
+
+    
 }

@@ -6,15 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Artel\Support\Traits\ModelTrait;
 
-class SellerSubscription extends Model
+class SellerRenewHistory extends Model
 {
     use HasFactory;
     use ModelTrait;
+
     protected $fillable = [
         'seller_id',
         'subscription_id',
-        'price_id',
-        'stripe_status',
+        'price',
+        'transaction_id',
     ];
     protected $guarded = [
         'end_date',
