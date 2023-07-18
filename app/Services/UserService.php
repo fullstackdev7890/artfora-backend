@@ -60,21 +60,8 @@ class UserService extends EntityService
         if (!empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         }
-
-
-
-        if($data['sel_email']){
-            
             return $this->repository->update($where, $data);
-        }
-        elseif($data['inv_email'] || $data['del_email']){
-          
-            return $this->repository->update($where, $data);
-        }
-        else{
-
-            return $this->repository->update($where, $data);
-        }
+       
 
     }
 
