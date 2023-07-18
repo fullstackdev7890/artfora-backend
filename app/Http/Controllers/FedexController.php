@@ -151,27 +151,56 @@ class FedexController extends Controller
                 ],
                 'body' => json_encode([
                 'accountNumber' => ['value'=>config('services.fedex.account_number')],
+                'rateRequestControlParameters'=>[
+                    'returnTransitTimes'=>false,
+                    'servicesNeededOnRateFailure'=>true,
+                    'varaibleOptions'=>"FREIGHT_GUARANTEE",
+                    'rateSortOrder'=>"SERVICENAMETRAIDIIONAL",
+                ],
                 'requestedShipment'=>[
                     'shipper' => [
                         'address' => [
-                            'streetLines' => ['10 Fed Ex Pkwy'],
+                            'streetLines' => ['10 Fed Ex Pkwy',''],
                             'city' => 'Memphis',
                             'stateOrProvinceCode' => 'TN',
                             'postalCode' => '38115',
-                            'countryCode' => 'US'
+                            'countryCode' => 'US',
+                            'residential' => false
                         ]
                     ],
                     'recipient' => [
                         'address' => [
-                            'streetLines' => ['13450 Farmcrest Ct'],
+                            'streetLines' => ['13450 Farmcrest Ct',''],
                             'city' => 'Herndon',
                             'stateOrProvinceCode' => 'VA',
                             'postalCode' => '20171',
-                            'countryCode' => 'US'
+                            'countryCode' => 'US',
+                            'residential' => false
                         ]
                     ],
+                    'emailNotificationDetail'=>[
+                        'recipients'=>[
+                            [
+                                'emailAddress'=>'string',
+                                'notificationEventType'=>['ON_DELIVERY'],
+                                'smsDetails'=>[
+                                    'phoneNumber'=>'string',
+                                    'phoneNumberCountryCode'=>'string'
+                                ],
+                                'notificationEmailType'=>'HTML',
+                                'emailNotificationRecipientType'=>'BROKER',
+                                'notificationFormatType'=>'EMAIL',
+                                'locale'=>'string'
+                            ],
+                            'personalMessage'=>'string',
+                            'PrintedReference'=>[
+                                'type'=>'BILL_OF_LADING',
+                                'value'=>'string'
+                            ],
+                    ]],
                     'preferredCurrency'=>'EUR',
                     'pickupType' => 'DROPOFF_AT_FEDEX_LOCATION',
+                    'rateRequestTypes' => ['ACCOUNT','LIST'],
                     'serviceType' => 'INTERNATIONAL_PRIORITY',
                     'requestedPackageLineItems'=>[
                         [
@@ -201,12 +230,9 @@ class FedexController extends Controller
                         ]
                    
                     ]
-
                 ]
-             ] )
-                
+                ])
             ]);
-
             $statusCode = $response->getStatusCode();
             $responseData = json_decode($response->getBody(), true);
 
@@ -215,7 +241,7 @@ class FedexController extends Controller
             } else {
                 return response()->json(['message' => 'invalid']);
             }
-        } catch (Exception $e) {
+        } catch (RequestException $e) {
             return response()->json(['message' => 'An error occurred while validating the postal code']);
         }
 
