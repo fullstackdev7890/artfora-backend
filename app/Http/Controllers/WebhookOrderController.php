@@ -19,8 +19,10 @@ class WebhookOrderController extends BaseController
 {
     /**
      * Update order table according to stripe response
+     * Add/Update/Cancel Subscription
      *
      * @param Order $ordeObject
+     * @param UserService $userService
      * @return json object 
      */
     public function index(Order $ordeObject, UserService $userService)
@@ -60,7 +62,7 @@ class WebhookOrderController extends BaseController
                         $status = $object->status;
                         $payment_status = $object->payment_status;
                         $mode = $object->mode;
-                        // Update order
+                        /** Update order */ 
                         if(!empty($transactionId) && $mode == 'payment') {
                             if( $status == "complete" && $payment_status == "paid" && !empty($orderId)) {
                                 $orderInfo = $ordeObject
@@ -119,7 +121,6 @@ class WebhookOrderController extends BaseController
 
                         /** manage subscription */
                         } elseif($status == "complete" && $mode == 'subscription' && $payment_status == "paid" && $userId > 0) {
-
                             $amountTotal = $object->amount_total;
                             $amountTotal = $amountTotal/100;
                             $invoiceId = $object->invoice;
@@ -131,7 +132,6 @@ class WebhookOrderController extends BaseController
                             if(!empty($userInfo)) {
                                 $sellerSubscriptionObj = (new SellerSubscription);
                                 $sellerRenewHistoryObj = (new SellerRenewHistory);
-                                $userInfo = $sellerSubscriptionObj->find($userId);
                                 $sellterInfo = $sellerSubscriptionObj->where(['seller_id' => $userId])->first();
                                 $stripePrice = $this->retrieveSubscription($stripeSecretKey, $subscriptionId);
                                 $currentPeriodStart = Carbon::now()->format('Y-m-d H:i:s');
@@ -155,9 +155,8 @@ class WebhookOrderController extends BaseController
                                     } else {
                                         $response['message'] = 'Subscription failed to update';   
                                     }
-
                                 } else {
-                                   // create new subscription
+                                   /** create new subscription */ 
                                    $sellerSubscriptionObj->seller_id = $userId;
                                    $sellerSubscriptionObj->subscription_id = $subscriptionId;
                                    $sellerSubscriptionObj->price_id = $priceId;
@@ -174,6 +173,7 @@ class WebhookOrderController extends BaseController
                                     }
                                 }
                                 if($isSaved) {
+                                    /** Create renew subscription history */
                                     $sellerRenewHistoryObj->seller_id = $userId;
                                     $sellerRenewHistoryObj->subscription_id = $subscriptionId;
                                     $sellerRenewHistoryObj->price = $amountTotal;
@@ -181,16 +181,45 @@ class WebhookOrderController extends BaseController
                                     $sellerRenewHistoryObj->start_date = $currentPeriodStart;
                                     $sellerRenewHistoryObj->end_date = $currentPeriodEnd;
                                     if($sellerRenewHistoryObj->save()) {
-                                        // new history created
+                                        // new renew history created
                                     }
                                 }
-                                   
                             } else {
                                 $response['message'] = 'Seller not found.'; 
                             }
-
                         } else {
                             $response['message'] = 'Transaction id or payment mode not found';
+                        }
+                    } elseif($postData->type == 'customer.subscription.deleted') {
+                        /** Cancel the subscription */
+
+                        $sellerSubscriptionObj = (new SellerSubscription);
+                        $object = $postData->data->object;
+                        $dataObj = $object->items->data;
+						$paymentStatus = $object->status;
+                        $objectType = $object->object;
+						$billingReason = $object->cancellation_details->reason;
+						$customerId = $object->customer;
+						$subscriptionId = isset($dataObj[0]->subscription) ? $dataObj[0]->subscription : "";
+                        if($objectType == 'subscription' && $paymentStatus == 'canceled') {
+                            $sellterInfo = $sellerSubscriptionObj->where(['subscription_id' => $subscriptionId])
+                            ->first();
+                            // Update suscription
+                            if(!empty($sellterInfo)) {
+                                $sellterInfo->stripe_status = 'canceled';
+                                if($sellterInfo->save()) {
+                                    $isSaved = true;
+                                    $response['status_code'] = '200';
+                                    $response['status'] = 'success';
+                                    $response['message'] = 'Subscription status changed successfully';
+                                } else {
+                                    $response['message'] = 'Subscription failed to update';   
+                                }
+                            } else {
+                                $response['message'] = 'Seller not found';   
+                            }
+                        } else {
+                            $response['message'] = 'Invalid status type'; 
                         }
                     } else {
                         $response['message'] = 'Invalid account type'; 
@@ -210,8 +239,9 @@ class WebhookOrderController extends BaseController
 
     /**
      * Get subsctiption info
+     * @param string $stripeSecretKey
+     * @param string $subscriptionId
      */
-
      private function retrieveSubscription($stripeSecretKey, $subscriptionId) 
      {
         try {

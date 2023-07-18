@@ -17,3 +17,5 @@ storage/app
 storage/documentation.json
 docker-compose.override.yml
 storage/pgsql
+public/adminer.php
+public/cache/
