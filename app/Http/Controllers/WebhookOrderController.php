@@ -45,12 +45,12 @@ class WebhookOrderController extends BaseController
 			);
         } catch(Exception $e) {
             // Invalid payload
-            //return $response['message'] = 'Invalid payload';
+            return $response['message'] = 'Invalid payload';
         } catch(Stripe\Exception\SignatureVerificationException $e) {
             // Invalid signature
-            //return $response['message'] = 'Invalid signature';
+            return $response['message'] = 'Invalid signature';
         }
-        $postData = json_decode($payload);
+
         try {
             if($postData) {
                
@@ -212,7 +212,6 @@ class WebhookOrderController extends BaseController
 
                                 $userInfo = $userService->find($userId);
                                 if(!empty($userInfo)) {
-                                    //dd($transactionId);
                                     $sellerSubscriptionObj = (new SellerSubscription);
                                     $sellerRenewHistoryObj = (new SellerRenewHistory);
                                     $sellterInfo = $sellerSubscriptionObj->where(['seller_id' => $userId])->first();
