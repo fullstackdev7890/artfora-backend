@@ -16,6 +16,8 @@ class SellerRenewHistory extends Model
         'subscription_id',
         'price',
         'transaction_id',
+        'price_id',
+        'type',
     ];
     protected $guarded = [
         'end_date',

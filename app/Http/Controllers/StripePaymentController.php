@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\SellerPayoutHistory;
 use App\Models\SellerSubscription;
+use App\Models\StripePrice;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -97,7 +98,7 @@ class StripePaymentController extends Controller
      * @param integer $amount
      * @return string $stripeSessionUrl
      */
-    private function createStripeSession($userInfo, $stripeSecretKey, $orderId = 0, $amount, $mode = 'payment')
+    private function createStripeSession($userInfo, $stripeSecretKey, $orderId = 0, $amount, $mode = 'payment',  $priceId = "", $planType = 1)
     {
         $stripePaymentUrl = "";
         $stripeCurrency = config('services.stripe.stripe_currency');
@@ -107,15 +108,17 @@ class StripePaymentController extends Controller
             if( $mode == 'subscription') {
                 $paymentcart[] = [
                     [
-                      'price' => $stripePriceId,
+                      'price' => $priceId,
                       'quantity' => 1,
                     ],
                 ];
             $metaData = [
                 'user_id' => $userInfo->id,
-                'price_id' => $stripePriceId,
+                'price_id' => $priceId,
+                'plan_type' => $planType,
             ];
             } else {
+                $type = ($planType == 2) ? "donation" : "order";
                 $paymentcart[] = [
                     'price_data' => [
                         'currency' => strtolower( $stripeCurrency),
@@ -130,7 +133,8 @@ class StripePaymentController extends Controller
 
                 $metaData = [
                     'user_id' => $userInfo->id,
-                    'orderId' => $orderId
+                    'orderId' => $orderId,
+                    'type' => $type
                 ];
             }
 
@@ -249,7 +253,7 @@ class StripePaymentController extends Controller
      * @param UserService $service
      * @param integer $id
      */
-    public function getSubscription(UserService $userService, $id) 
+    public function getSubscription(UserService $userService, Request $request) 
     {
         $stripeSecretKey = config('services.stripe.secret');
         $orderId = 0;
@@ -257,14 +261,24 @@ class StripePaymentController extends Controller
         $response['status'] = "error";
         $response['stripe_payment_url'] = "";
         $stripePaymentUrl = "";
-        try {  
-            $userInfo = $userService->find($id);
+        try {
+            $sellerId = $request->input('seller_id');
+            $amount = (int)$request->input('amount');
+            $planType = (int)$request->input('plan_type');
+
+            if(!in_array($planType, [1, 2])) {
+                throw new NotFoundHttpException(__('validation.exceptions.plan_type_not_found', ['entity' => '1 or 2'])); 
+            }
+            if($amount < 1) {
+                throw new NotFoundHttpException(__('validation.exceptions.amount_not_found', ['entity' => '']));
+            }
+            $userInfo = $userService->find($sellerId);
 
             if(empty($userInfo)) {
                 throw new NotFoundHttpException(__('validation.exceptions.not_found', ['entity' => 'User']));
             }
 
-            $subscriptionInfo = SellerSubscription::where(['stripe_status' => 'successed', 'seller_id' => $id])->first();
+            $subscriptionInfo = SellerSubscription::where(['stripe_status' => 'successed', 'seller_id' => $sellerId])->first();
             if(!empty($subscriptionInfo)) {
                 throw new NotFoundHttpException(__('validation.exceptions.subscription_exist', ['entity' => '']));
             }
@@ -273,12 +287,26 @@ class StripePaymentController extends Controller
                 $stripeCustomerId = $this->stripeCustomer($userInfo, $stripeSecretKey);
                 $userInfo->stripe_customer_id = $stripeCustomerId;
                 $userInfo->save();
-                // create stripe subscription session
-                $stripePaymentUrl = $this->createStripeSession($userInfo, $stripeSecretKey, $orderId, $amount, 'subscription');
-                
+                // one type payment
+                if($planType == 2) {
+                     // create stripe session
+                     $stripePaymentUrl = $this->createStripeSession($userInfo, $stripeSecretKey, $orderId, $amount, 'payment', "", $planType);
+                } else {
+                    // Create stripe price ID
+                     $priceId = $this->createStripePriceId($stripeSecretKey, $amount);
+                    // create stripe subscription session
+                    $stripePaymentUrl = $this->createStripeSession($userInfo, $stripeSecretKey, $orderId, $amount, 'subscription', $priceId);  
+                }
             } else {
+                if($planType == 2) {
+                    // create stripe session
+                    $stripePaymentUrl = $this->createStripeSession($userInfo, $stripeSecretKey, $orderId, $amount, 'payment', "", $planType);
+                } else {
+                 // Create stripe price ID
+                 $priceId = $this->createStripePriceId($stripeSecretKey, $amount);
                 // create stripe subscription session
-                $stripePaymentUrl = $this->createStripeSession($userInfo, $stripeSecretKey, $orderId, $amount, 'subscription');
+                $stripePaymentUrl = $this->createStripeSession($userInfo, $stripeSecretKey, $orderId, $amount, 'subscription', $priceId);
+                }
             }
             if(empty($stripePaymentUrl)) {
                 throw new NotFoundHttpException(__('validation.exceptions.stripe_payment_url_not_found', ['entity' => '']));
@@ -293,4 +321,44 @@ class StripePaymentController extends Controller
         return response()->json($response);
     }
 
+    /**
+     * Create stripe price ID
+     *
+     * @return string
+     */
+    private function createStripePriceId($stripeSecretKey, $amout = 0) 
+    {
+        try {
+            $stripeCurrency = config('services.stripe.stripe_currency');
+            $stripeProductId = config('services.stripe.stripe_product_id');
+            $priceObj = (new StripePrice);
+
+            $priceInfo = $priceObj->where(['price' => $amout])->first();
+            if($priceInfo) {
+                return $priceInfo->price_id;
+            } else {
+                $stripe = new \Stripe\StripeClient($stripeSecretKey);
+                $price = $stripe->prices->create([
+                'unit_amount' => $amout*100,
+                'currency' => $stripeCurrency,
+                'recurring' => ['interval' => 'month'],
+                'product' => $stripeProductId,
+                ]);
+                if($price) {
+                    $priceId = $price->id;
+                    $priceObj->price_id =$priceId;
+                    $priceObj->price = $amout;
+                    $priceObj->type = 1;
+                    $priceObj->created_at = time(); 
+                    $priceObj->updated_at = time();
+                    if($priceObj->save()) {
+                        return $priceId;
+                    }
+                } 
+            }
+            return null;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
 }
