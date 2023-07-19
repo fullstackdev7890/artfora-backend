@@ -119,4 +119,5 @@ Route::group(['middleware' => ['guest', 'api']], function () {
     Route::post('webhook', [WebhookController::class, 'index']);
     Route::post('webhook-order', [WebhookOrderController::class, 'index']);
     Route::get('stripe-payout', [StripePaymentController::class, 'stripePayout']);
+    Route::get('stripe-subscription/{id}', [StripePaymentController::class, 'getSubscription']);
 });
