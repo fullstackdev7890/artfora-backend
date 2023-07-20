@@ -77,7 +77,6 @@ class FedexController extends Controller
         $auth = $this->getAccessToken();
 
         $token = $auth['access_token'];
-        dd($token);
 
         $response = $this->client->request('POST', 'address/v1/addresses/resolve', [
             'headers' => [
@@ -111,7 +110,6 @@ class FedexController extends Controller
     {
         $auth = $this->getAccessToken();
         $token = $auth['access_token'];
-        dd($token);
         try {
             $response = $this->client->request('GET', 'country/v1/postal/validate', [
                 'headers' => [
