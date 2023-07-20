@@ -169,7 +169,7 @@ class FedexController extends Controller
                         'streetLines' => [$seller->sel_address, $seller->sel_address2],
                         'city' => $seller->sel_city,
                         'stateOrProvinceCode' => $seller->sel_state,
-                        'postalCode' => $seller->sel_zip,
+                        'postalCode' => $seller->sel_postal,
                         'countryCode' => $this->getCountryCode($seller->sel_country),
                         'residential' => false
                     ]
@@ -179,7 +179,7 @@ class FedexController extends Controller
                         'streetLines' => [$isDelivery ? $buyer->dev_address : $buyer->inv_address, $isDelivery ? $buyer->dev_address2 : $buyer->inv_address2],
                         'city' => $isDelivery ? $buyer->dev_city : $buyer->inv_city,
                         'stateOrProvinceCode' => $isDelivery ? $buyer->dev_state : $buyer->inv_state,
-                        'postalCode' => $isDelivery ? $buyer->dev_zip : $buyer->inv_zip,
+                        'postalCode' => $isDelivery ? $buyer->dev_postal : $buyer->inv_postal,
                         'countryCode' => $this->getCountryCode($isDelivery ? $buyer->dev_country : $buyer->inv_country),
                         'residential' => false
                     ]
@@ -232,7 +232,7 @@ class FedexController extends Controller
                                 'streetLines' => [$seller->sel_address, $seller->sel_address2],
                                 'city' => $seller->sel_city,
                                 'stateOrProvinceCode' => $seller->sel_state,
-                                'postalCode' => $seller->sel_zip,
+                                'postalCode' => $seller->sel_postal,
                                 'countryCode' => $this->getCountryCode($seller->sel_country),
                                 'residential' => false
                             ]
@@ -242,7 +242,7 @@ class FedexController extends Controller
                                 'streetLines' => [$isDelivery ? $buyer->dev_address : $buyer->inv_address, $isDelivery ? $buyer->dev_address2 : $buyer->inv_address2],
                                 'city' => $isDelivery ? $buyer->dev_city : $buyer->inv_city,
                                 'stateOrProvinceCode' => $isDelivery ? $buyer->dev_state : $buyer->inv_state,
-                                'postalCode' => $isDelivery ? $buyer->dev_zip : $buyer->inv_zip,
+                                'postalCode' => $isDelivery ? $buyer->dev_postal : $buyer->inv_postal,
                                 'countryCode' => $this->getCountryCode($isDelivery ? $buyer->dev_country : $buyer->inv_country),
                                 'residential' => false
                             ]
