@@ -73,6 +73,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/validate-postal-code', 'FedExController@validatePostalCode');
     Route::get('ship', [FedExController::class, 'ship']);
     Route::post('/ship_rate', [FedExController::class, 'shipRate']);
+    Route::get('/countries', [FedExController::class, 'countries']);
 });
 
 Route::group(['middleware' => ['guest', 'api']], function () {

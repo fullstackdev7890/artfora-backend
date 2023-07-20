@@ -62,6 +62,32 @@ class FedexController extends Controller
             return;
         }
     }
+    public function countries()
+    {
+        $countryClient = new Client([
+            'base_uri' => 'api.fedex.com/country/v2/countries', // Replace with the FedEx API base URL
+            'timeout' => 10,
+        ]);
+
+        try {
+            $response = $countryClient->get('', [
+                'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                    'Authorization' => 'Bearer ' . $this->client_id,
+                ],
+                'query' => [
+                    '_' => '-' . $this->account_number
+                ]
+
+            ]);
+
+            $responseBody = json_decode($response->getBody(), true);
+
+            return $responseBody;
+        } catch (RequestException $e) {
+            return $e;
+        }
+    }
     public function getCountryCode($countryName)
     {
         $iso3166 = new ISO3166();
