@@ -65,7 +65,7 @@ class FedexController extends Controller
     public function countries()
     {
         $countryClient = new Client([
-            'base_uri' => 'api.fedex.com/country/v2/countries', // Replace with the FedEx API base URL
+            'base_uri' => 'https://api.fedex.com/country/v2/countries', // Replace with the FedEx API base URL
             'timeout' => 10,
         ]);
 
@@ -73,10 +73,11 @@ class FedexController extends Controller
             $response = $countryClient->get('', [
                 'headers' => [
                     'Content-Type' => 'application/x-www-form-urlencoded',
-                    'Authorization' => 'Bearer ' . $this->client_id,
+                    'Authorization' => 'Bearer l7xx8daef6fbb1724f21b2ada537e059ad7b',
                 ],
                 'query' => [
-                    '_' => '-' . $this->account_number
+                    '_' => '-1689800400',
+                    'type' => 'recipient'
                 ]
 
             ]);
@@ -117,7 +118,7 @@ class FedexController extends Controller
                             'city' => $request->input('city'),
                             'stateOrProvinceCode' => $request->input('state'),
                             'postalCode' => $request->input('postal_code'),
-                            'countryCode' => $this->getCountryCode($request->input('country')),
+                            'countryCode' => $request->input('country_code'),
                         ],
                     ],
                 ],
