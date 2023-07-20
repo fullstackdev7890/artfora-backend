@@ -12,16 +12,28 @@ use League\ISO3166\ISO3166;
 
 use App\Http\Requests\Fedex\AddressValidationRequest;
 use App\Http\Requests\Fedex\PostalCodeValidationRequest;
+use App\Http\Requests\Fedex\ShippingRateRequest;
 use Illuminate\Support\Str;
+use App\Models\Product;
+use App\Models\User;
+
 
 class FedexController extends Controller
 
 {
     private $client;
+    public $account_number;
+    public $meter_number;
+    public $client_id;
+    public $api_key;
+    public $client_secret;
 
 
     public function __construct()
     {
+        $this->client_id = config('services.fedex.client_id');
+        $this->client_secret = config('services.fedex.client_secret');
+        $this->account_number = config('services.fedex.account_number');
         $this->client = new Client([
             'base_uri' => 'https://apis-sandbox.fedex.com/', // Replace with the FedEx API base URL
             'timeout' => 10,
@@ -30,8 +42,6 @@ class FedexController extends Controller
     public function getAccessToken()
     {
         $grant_type = 'client_credentials';
-        $client_id = config('services.fedex.client_id');
-        $client_secret = config('services.fedex.client_secret');
 
         try {
             $response = $this->client->post('oauth/token', [
@@ -40,8 +50,8 @@ class FedexController extends Controller
                 ],
                 'form_params' => [
                     'grant_type' => 'client_credentials',
-                    'client_id' => $client_id,
-                    'client_secret' => $client_secret,
+                    'client_id' => $this->client_id,
+                    'client_secret' => $this->client_secret,
                 ],
             ]);
 
@@ -67,18 +77,14 @@ class FedexController extends Controller
         $auth = $this->getAccessToken();
 
         $token = $auth['access_token'];
-        $transactionId = Str::uuid()->toString();
+        dd($token);
 
         $response = $this->client->request('POST', 'address/v1/addresses/resolve', [
             'headers' => [
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer ' . $token,
-                // 'x-customer-transaction-id' => $transactionId,
-
-
             ],
             'body' => json_encode([
-
                 'addressesToValidate' => [
                     [
                         'address' => [
@@ -116,7 +122,7 @@ class FedexController extends Controller
 
                 ],
                 'query' => [
-                    'carrierCode' => "FDXE",
+                    'carrierCode' => ["FXCC"],
                     'countryCode' => $request->input('country_code'), // 'US
                     'postalCode' => $request->input('postal_code'),
                     'stateOrProvinceCode' => $request->input('state'),
@@ -138,116 +144,149 @@ class FedexController extends Controller
         }
     }
 
-    public function shipRate()
+    public function shipRate(ShippingRateRequest $request)
+
     {
+        $data = $request->onlyValidated();
+        $data['user_id'] = $request->user()->id;
         $auth = $this->getAccessToken();
         $token = $auth['access_token'];
+        $product = Product::where('id', $data['product_id'])->first();
+        $seller = User::where('id', $product->user_id)->first();
+        $buyer = User::where('id', $data['user_id'])->first();
+        $count = $data['count'];
+        $isDelivery = $buyer->dev_email ? true : false;
         // dd($token);
+        return (json_encode([
+            'accountNumber' => ['value' => $this->account_number],
+            'rateRequestControlParameters' => [
+                'returnTransitTimes' => true,
+                'servicesNeededOnRateFailure' => true,
+                'varaibleOptions' => "FREIGHT_GUARANTEE",
+                'rateSortOrder' => "COMMITASCENDING",
+            ],
+            'requestedShipment' => [
+                'shipper' => [
+                    'address' => [
+                        'streetLines' => [$seller->sel_address, $seller->sel_address2],
+                        'city' => $seller->sel_city,
+                        'stateOrProvinceCode' => $seller->sel_state,
+                        'postalCode' => $seller->sel_zip,
+                        'countryCode' => $this->getCountryCode($seller->sel_country),
+                        'residential' => false
+                    ]
+                ],
+                'recipient' => [
+                    'address' => [
+                        'streetLines' => [$isDelivery ? $buyer->dev_address : $buyer->inv_address, $isDelivery ? $buyer->dev_address2 : $buyer->inv_address2],
+                        'city' => $isDelivery ? $buyer->dev_city : $buyer->inv_city,
+                        'stateOrProvinceCode' => $isDelivery ? $buyer->dev_state : $buyer->inv_state,
+                        'postalCode' => $isDelivery ? $buyer->dev_zip : $buyer->inv_zip,
+                        'countryCode' => $this->getCountryCode($isDelivery ? $buyer->dev_country : $buyer->inv_country),
+                        'residential' => false
+                    ]
+                ],
+                'preferredCurrency' => 'USD',
+                'rateRequestType' => ['LIST'],
+                'pickupType' => 'CONTACT_FEDEX_TO_SCHEDULE',
+                'serviceType' => 'STANDARD_OVERNIGHT',
+                'requestedPackageLineItems' => [
+                    [
+                        'groupPackageCount' => $count,
+                        'weight' => [
+                            'value' => $product->weight,
+                            'units' => 'KG'
+                        ],
+                        'dimensions' => [
+                            'length' => $product->depth,
+                            'width' => $product->width,
+                            'height' => $product->height,
+                            'units' => 'CM'
+                        ],
+                        // 'declaredValue' => [
+                        //     'currency' => 'USD',
+                        //     'amount' => $count
+                        // ],
+
+                    ]
+                ],
+
+            ],
+            'carrierCodes' => ['FXCC']
+        ]));
         try {
             $response = $this->client->request('POST', 'rate/v1/rates/quotes', [
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'Authorization' => 'Bearer ' . $token,
-                    // 'x-customer-transaction-id' => $transactionId,
-
-
                 ],
                 'body' => json_encode([
-                    'accountNumber' => ['value' => config('services.fedex.account_number')],
+                    'accountNumber' => ['value' => $this->account_number],
                     'rateRequestControlParameters' => [
-                        'returnTransitTimes' => false,
+                        'returnTransitTimes' => true,
                         'servicesNeededOnRateFailure' => true,
                         'varaibleOptions' => "FREIGHT_GUARANTEE",
-                        'rateSortOrder' => "SERVICENAMETRAIDIIONAL",
+                        'rateSortOrder' => "COMMITASCENDING",
                     ],
                     'requestedShipment' => [
                         'shipper' => [
                             'address' => [
-                                'streetLines' => ['10 Fed Ex Pkwy', ''],
-                                'city' => 'Memphis',
-                                'stateOrProvinceCode' => 'TN',
-                                'postalCode' => '38115',
-                                'countryCode' => 'US',
+                                'streetLines' => [$seller->sel_address, $seller->sel_address2],
+                                'city' => $seller->sel_city,
+                                'stateOrProvinceCode' => $seller->sel_state,
+                                'postalCode' => $seller->sel_zip,
+                                'countryCode' => $this->getCountryCode($seller->sel_country),
                                 'residential' => false
                             ]
                         ],
                         'recipient' => [
                             'address' => [
-                                'streetLines' => ['13450 Farmcrest Ct', ''],
-                                'city' => 'Herndon',
-                                'stateOrProvinceCode' => 'VA',
-                                'postalCode' => '20171',
-                                'countryCode' => 'US',
+                                'streetLines' => [$isDelivery ? $buyer->dev_address : $buyer->inv_address, $isDelivery ? $buyer->dev_address2 : $buyer->inv_address2],
+                                'city' => $isDelivery ? $buyer->dev_city : $buyer->inv_city,
+                                'stateOrProvinceCode' => $isDelivery ? $buyer->dev_state : $buyer->inv_state,
+                                'postalCode' => $isDelivery ? $buyer->dev_zip : $buyer->inv_zip,
+                                'countryCode' => $this->getCountryCode($isDelivery ? $buyer->dev_country : $buyer->inv_country),
                                 'residential' => false
                             ]
                         ],
-                        'emailNotificationDetail' => [
-                            'recipients' => [
-                                [
-                                    'emailAddress' => '123@gmail.com',
-                                    'notificationEventType' => ['ON_DELIVERY'],
-                                    'smsDetails' => [
-                                        'phoneNumber' => '123123123',
-                                        'phoneNumberCountryCode' => '+380'
-                                    ],
-                                    'notificationEmailType' => 'HTML',
-                                    'emailNotificationRecipientType' => 'BROKER',
-                                    'notificationFormatType' => 'EMAIL',
-                                    'locale' => 'en_US'
-                                ],
-                                'personalMessage' => 'string',
-                                'printedReference' => [
-                                    'printedReferenceType' => 'BILL_OF_LADING',
-                                    'value' => 'string'
-                                ],
-                            ]
-                        ],
-                        'preferredCurrency' => 'EUR',
-                        'rateRequestTypes' => ['PREFERRED'],
-                        'pickupType' => 'DROPOFF_AT_FEDEX_LOCATION',
-                        'serviceType' => 'INTERNATIONAL_PRIORITY',
+                        'preferredCurrency' => 'USD',
+                        'rateRequestType' => ['LIST'],
+                        'pickupType' => 'CONTACT_FEDEX_TO_SCHEDULE',
+                        'serviceType' => 'STANDARD_OVERNIGHT',
                         'requestedPackageLineItems' => [
                             [
-                                'groupPackageCount' => 1,
+                                'groupPackageCount' => $count,
                                 'weight' => [
-                                    'value' => 2,
+                                    'value' => $product->weight,
                                     'units' => 'KG'
                                 ],
                                 'dimensions' => [
-                                    'length' => 10,
-                                    'width' => 10,
-                                    'height' => 10,
+                                    'length' => $product->depth,
+                                    'width' => $product->width,
+                                    'height' => $product->height,
                                     'units' => 'CM'
                                 ],
-                                'declaredValue' => [
-                                    'currency' => 'EUR',
-                                    'amount' => 100
-                                ],
-                                'variableHandlingChargeDetail' => [
-                                    'fixedValue' => [
-                                        'currency' => 'EUR',
-                                        'amount' => 10
-                                    ],
-                                    'percentValue' => 10,
-                                    'rateElementBasis' => 'BASE_CHARGE',
-                                    'rateType' => 'ACCOUNT'
-                                ]
-                            ]
+                                // 'declaredValue' => [
+                                //     'currency' => 'USD',
+                                //     'amount' => $count
+                                // ],
 
-                        ]
-                    ]
+                            ]
+                        ],
+
+                    ],
+                    'carrierCodes' => ['FXCC']
                 ])
             ]);
             $statusCode = $response->getStatusCode();
             $responseData = json_decode($response->getBody(), true);
 
             if ($statusCode == 200) {
-                return response()->json($responseData);
+                return response()->json($responseData->output->rateReplyDetails->ratedShipmentDetails->totalNetFedExCharge->amount);
             } else {
                 return response()->json(['message' => 'invalid']);
             }
         } catch (RequestException $e) {
-            // return response()->json(['message' => 'An error occurred while validating the postal code']);
             return $e;
         }
     }

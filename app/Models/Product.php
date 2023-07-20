@@ -56,7 +56,8 @@ class Product extends Model
         'visibility_level',
         'is_ai_safe',
         'sale_price_in_euro',
-        'is_sale_price'
+        'is_sale_price',
+        'alt_text'
     ];
 
     protected $hidden = ['pivot'];
@@ -70,8 +71,8 @@ class Product extends Model
         'height' => 'float',
         'depth' => 'float',
         'weight' => 'float',
-        'sale_price_in_euro'=>'float',
-        'is_sale_price'=>'boolean'
+        'sale_price_in_euro' => 'float',
+        'is_sale_price' => 'boolean'
     ];
 
     public function user()

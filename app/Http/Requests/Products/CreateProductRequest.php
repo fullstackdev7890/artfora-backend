@@ -39,7 +39,8 @@ class CreateProductRequest extends Request
             'media' => 'array',
             'media.*' => 'integer|exists:media,id',
             'is_sale_price'=>'boolean',
-            'sale_price_in_euro'=>'numeric'
+            'sale_price_in_euro'=>'numeric',
+            'alt_text'=>'string'
         ];
     }
 }
