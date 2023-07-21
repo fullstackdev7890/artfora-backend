@@ -278,10 +278,10 @@ class StripePaymentController extends Controller
                 throw new NotFoundHttpException(__('validation.exceptions.not_found', ['entity' => 'User']));
             }
 
-            $subscriptionInfo = SellerSubscription::where(['stripe_status' => 'successed', 'seller_id' => $sellerId])->first();
+           /* $subscriptionInfo = SellerSubscription::where(['stripe_status' => 'successed', 'seller_id' => $sellerId])->first();
             if(!empty($subscriptionInfo)) {
                 throw new NotFoundHttpException(__('validation.exceptions.subscription_exist', ['entity' => '']));
-            }
+            */
 
             if(empty($userInfo->stripe_customer_id)) {
                 $stripeCustomerId = $this->stripeCustomer($userInfo, $stripeSecretKey);
