@@ -13,7 +13,7 @@ class AddressValidationRequest extends Request
             'city' => 'string',
             'state' => 'string',
             'postal_code' => 'string',
-            'country_code'=>'string'
+            'code'=>'string'
         ];
     }
 }

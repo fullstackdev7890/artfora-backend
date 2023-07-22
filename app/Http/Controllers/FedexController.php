@@ -118,7 +118,7 @@ class FedexController extends Controller
                             'city' => $request->input('city'),
                             'stateOrProvinceCode' => $request->input('state'),
                             'postalCode' => $request->input('postal_code'),
-                            'countryCode' => $request->input('country_code'),
+                            'countryCode' => $request->input('code'),
                         ],
                     ],
                 ],
@@ -182,63 +182,7 @@ class FedexController extends Controller
         $count = $data['count'];
         $isDelivery = $buyer->dev_email ? true : false;
         // dd($token);
-        return (json_encode([
-            'accountNumber' => ['value' => $this->account_number],
-            'rateRequestControlParameters' => [
-                'returnTransitTimes' => true,
-                'servicesNeededOnRateFailure' => true,
-                'varaibleOptions' => "FREIGHT_GUARANTEE",
-                'rateSortOrder' => "COMMITASCENDING",
-            ],
-            'requestedShipment' => [
-                'shipper' => [
-                    'address' => [
-                        'streetLines' => [$seller->sel_address, $seller->sel_address2],
-                        'city' => $seller->sel_city,
-                        'stateOrProvinceCode' => $seller->sel_state,
-                        'postalCode' => $seller->sel_postal,
-                        'countryCode' => $this->getCountryCode($seller->sel_country),
-                        'residential' => false
-                    ]
-                ],
-                'recipient' => [
-                    'address' => [
-                        'streetLines' => [$isDelivery ? $buyer->dev_address : $buyer->inv_address, $isDelivery ? $buyer->dev_address2 : $buyer->inv_address2],
-                        'city' => $isDelivery ? $buyer->dev_city : $buyer->inv_city,
-                        'stateOrProvinceCode' => $isDelivery ? $buyer->dev_state : $buyer->inv_state,
-                        'postalCode' => $isDelivery ? $buyer->dev_postal : $buyer->inv_postal,
-                        'countryCode' => $this->getCountryCode($isDelivery ? $buyer->dev_country : $buyer->inv_country),
-                        'residential' => false
-                    ]
-                ],
-                'preferredCurrency' => 'USD',
-                'rateRequestType' => ['LIST'],
-                'pickupType' => 'CONTACT_FEDEX_TO_SCHEDULE',
-                'serviceType' => 'STANDARD_OVERNIGHT',
-                'requestedPackageLineItems' => [
-                    [
-                        'groupPackageCount' => $count,
-                        'weight' => [
-                            'value' => $product->weight,
-                            'units' => 'KG'
-                        ],
-                        'dimensions' => [
-                            'length' => $product->depth,
-                            'width' => $product->width,
-                            'height' => $product->height,
-                            'units' => 'CM'
-                        ],
-                        // 'declaredValue' => [
-                        //     'currency' => 'USD',
-                        //     'amount' => $count
-                        // ],
-
-                    ]
-                ],
-
-            ],
-            'carrierCodes' => ['FXCC']
-        ]));
+       
         try {
             $response = $this->client->request('POST', 'rate/v1/rates/quotes', [
                 'headers' => [
@@ -256,21 +200,21 @@ class FedexController extends Controller
                     'requestedShipment' => [
                         'shipper' => [
                             'address' => [
-                                'streetLines' => [$seller->sel_address, $seller->sel_address2],
-                                'city' => $seller->sel_city,
-                                'stateOrProvinceCode' => $seller->sel_state,
-                                'postalCode' => $seller->sel_postal,
-                                'countryCode' => $this->getCountryCode($seller->sel_country),
+                                'streetLines' => [$seller->sel_address??'', $seller->sel_address2??''],
+                                'city' => $seller->sel_city??'',
+                                'stateOrProvinceCode' => $seller->sel_state??'',
+                                'postalCode' => $seller->sel_postal??'',
+                                'countryCode' => $this->getCountryCode($seller->sel_country??''),
                                 'residential' => false
                             ]
                         ],
                         'recipient' => [
                             'address' => [
-                                'streetLines' => [$isDelivery ? $buyer->dev_address : $buyer->inv_address, $isDelivery ? $buyer->dev_address2 : $buyer->inv_address2],
-                                'city' => $isDelivery ? $buyer->dev_city : $buyer->inv_city,
-                                'stateOrProvinceCode' => $isDelivery ? $buyer->dev_state : $buyer->inv_state,
+                                'streetLines' => [$isDelivery ? $buyer->dev_address??'' : $buyer->inv_address??'', $isDelivery ? $buyer->dev_address2??"" : $buyer->inv_address2??''],
+                                'city' => $isDelivery ? $buyer->dev_city??'' : $buyer->inv_city??'',
+                                'stateOrProvinceCode' => $isDelivery ? $buyer->dev_state??'' : $buyer->inv_state??'',
                                 'postalCode' => $isDelivery ? $buyer->dev_postal : $buyer->inv_postal,
-                                'countryCode' => $this->getCountryCode($isDelivery ? $buyer->dev_country : $buyer->inv_country),
+                                'countryCode' => $this->getCountryCode($isDelivery ? $buyer->dev_country??'' : $buyer->inv_country??''),
                                 'residential' => false
                             ]
                         ],
@@ -280,15 +224,15 @@ class FedexController extends Controller
                         'serviceType' => 'STANDARD_OVERNIGHT',
                         'requestedPackageLineItems' => [
                             [
-                                'groupPackageCount' => $count,
+                                'groupPackageCount' => $count??'',
                                 'weight' => [
-                                    'value' => $product->weight,
+                                    'value' => $product->weight??'',
                                     'units' => 'KG'
                                 ],
                                 'dimensions' => [
-                                    'length' => $product->depth,
-                                    'width' => $product->width,
-                                    'height' => $product->height,
+                                    'length' => $product->depth??'',
+                                    'width' => $product->width??'',
+                                    'height' => $product->height??'',
                                     'units' => 'CM'
                                 ],
                                 // 'declaredValue' => [
