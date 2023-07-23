@@ -28,7 +28,7 @@ class CartItemController extends Controller
             ->groupBy('product.user.id')
             ->map(function ($group) {
                 $totalPrice = $group->sum(function ($item) {
-                    if ($item->product->is_sale_price) {
+                    if ($item->product->is_sale_price ===true) {
                         return $item->product->sale_price_in_euro * $item->quantity;
                     } else {
                         return $item->product->price_in_euro * $item->quantity;

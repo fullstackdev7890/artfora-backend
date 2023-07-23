@@ -181,8 +181,7 @@ class FedexController extends Controller
         $buyer = User::where('id', $data['user_id'])->first();
         $count = $data['count'];
         $isDelivery = $buyer->dev_email ? true : false;
-        // dd($token);
-       
+      return($token);
         try {
             $response = $this->client->request('POST', 'rate/v1/rates/quotes', [
                 'headers' => [
@@ -219,8 +218,8 @@ class FedexController extends Controller
                             ]
                         ],
                         'preferredCurrency' => 'USD',
-                        'rateRequestType' => ['LIST'],
-                        'pickupType' => 'CONTACT_FEDEX_TO_SCHEDULE',
+                        'rateRequestType' => ['PREFERRED'],
+                        'pickupType' => 'DROPOFF_AT_FEDEX_LOCATION',
                         'serviceType' => 'STANDARD_OVERNIGHT',
                         'requestedPackageLineItems' => [
                             [
