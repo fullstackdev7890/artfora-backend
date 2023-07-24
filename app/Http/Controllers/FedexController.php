@@ -95,7 +95,6 @@ class FedexController extends Controller
         $auth = $this->getAccessToken();
 
         $token = $auth['access_token'];
-        return ($token);
         try {
             $response = $this->client->request('POST', 'address/v1/addresses/resolve', [
                 'headers' => [
