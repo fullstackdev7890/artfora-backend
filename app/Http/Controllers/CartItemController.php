@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\CartItemService;
 use App\Http\Requests\CartItems\CreateCartItemRequest;
 use App\Http\Requests\CartItems\DeleteCartItemRequest;
-use Illuminate\Support\Facades\Auth;
+use App\Services\CartItemService;
 use Illuminate\Http\Request;
 
 class CartItemController extends Controller
@@ -15,8 +14,6 @@ class CartItemController extends Controller
         $data = $request->onlyValidated();
 
         $result = $service->create($data);
-
-
 
         return response()->json($result);
     }
@@ -28,17 +25,17 @@ class CartItemController extends Controller
             ->groupBy('product.user.id')
             ->map(function ($group) {
                 $totalPrice = $group->sum(function ($item) {
-                    if ($item->product->is_sale_price ===true) {
+                    if ($item->product->is_sale_price === true) {
                         return $item->product->sale_price_in_euro * $item->quantity;
                     } else {
                         return $item->product->price_in_euro * $item->quantity;
                     }
                 });
-                $totalShipping = $group->sum('product.shipping_in_euro');
+                $totalShipping = $group->sum('shipping');
                 return [
                     'user_id' => $group->first()['product']['user']['id'],
                     'carts' => $group->toArray(),
-                    'total_price' => $totalPrice,
+                    'total_price' => $totalPrice + $totalShipping,
                     'total_shipping' => $totalShipping,
                 ];
             })

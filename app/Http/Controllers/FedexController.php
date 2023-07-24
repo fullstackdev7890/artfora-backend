@@ -95,33 +95,37 @@ class FedexController extends Controller
         $auth = $this->getAccessToken();
 
         $token = $auth['access_token'];
-
-        $response = $this->client->request('POST', 'address/v1/addresses/resolve', [
-            'headers' => [
-                'Content-Type' => 'application/json',
-                'Authorization' => 'Bearer ' . $token,
-            ],
-            'body' => json_encode([
-                'addressesToValidate' => [
-                    [
-                        'address' => [
-                            'streetLines' => [$request->input('address'), $request->input('address2')],
-                            'city' => $request->input('city'),
-                            'stateOrProvinceCode' => $request->input('state'),
-                            'postalCode' => $request->input('postal_code'),
-                            'countryCode' => $request->input('code'),
+        try {
+            $response = $this->client->request('POST', 'address/v1/addresses/resolve', [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Bearer ' . $token,
+                ],
+                'body' => json_encode([
+                    'addressesToValidate' => [
+                        [
+                            'address' => [
+                                'streetLines' => [$request->input('address'), $request->input('address2')],
+                                'city' => $request->input('city'),
+                                'stateOrProvinceCode' => $request->input('state'),
+                                'postalCode' => $request->input('postal_code'),
+                                'countryCode' => $request->input('code'),
+                            ],
                         ],
                     ],
-                ],
-            ]),
-        ]);
-        $statusCode = $response->getStatusCode();
-        if ($statusCode == 200) {
-            $result = json_decode($response->getBody(), );
-        } else {
-            $result = json_decode(false);
+                ]),
+            ]);
+            $statusCode = $response->getStatusCode();
+            if ($statusCode == 200) {
+                $result = json_decode(true);
+            } else {
+                $result = json_decode(false);
+            }
+            return $result;
+        } catch (RequestException $e) {
+            return json_decode(false);
         }
-        return $result;
+        return json_decode(false);
     }
 
     public function postalCodeValidation(PostalCodeValidationRequest $request)
