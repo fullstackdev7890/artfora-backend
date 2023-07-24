@@ -95,6 +95,7 @@ class FedexController extends Controller
         $auth = $this->getAccessToken();
 
         $token = $auth['access_token'];
+        return ($token);
         try {
             $response = $this->client->request('POST', 'address/v1/addresses/resolve', [
                 'headers' => [
@@ -251,8 +252,12 @@ class FedexController extends Controller
                 return response()->json(['message' => 'invalid']);
             }
         } catch (RequestException $e) {
+            return response()->json(['message' => 'invalid']);
+
             return $e;
         }
+        return response()->json(['message' => 'invalid']);
+
     }
     public function service_availability(Request $request)
     {
