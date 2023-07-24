@@ -44,6 +44,7 @@ return [
         'stripe_currency' => env('STRIPE_CURRENCY', 'EUR'),
         'stripe_seller_payment_after_order_days' => env('STRIPE_SELLER_PAYMENT_AFTER_ORDER_DAYS', 10),
         'stripe_seller_subscription_price_id' => env('STRIPE_SELLER_SUBSCRIPTION_PRICE_ID'),
+        'stripe_product_id' => env('STRIPE_PRODUCT_ID'),
     ],
 
     'mtcaptcha' => [

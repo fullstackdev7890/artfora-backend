@@ -133,6 +133,7 @@ return [
         'stripe_payment_url_not_found' => 'Stripe payment URL not found',
         'stripe_low_balance' => 'Stripe payout has low balance. Please add balance.',
         'subscription_exist' => 'Subscription already exist',
+        'plan_type_not_found' => 'Plan type must be only :Entity',
     ]
 
 ];

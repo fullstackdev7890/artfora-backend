@@ -53,18 +53,22 @@ class WebhookOrderController extends BaseController
 
         try {
             if($postData) {
+               
                 if(isset($postData->type) && isset($postData->id)) {
                     if($postData->type == 'checkout.session.completed') {
+                       
                         $object = $postData->data->object;
                         $transactionId = $object->payment_intent;
                         $userId = (int)$object->metadata->user_id;
                         $orderId = isset($object->metadata->orderId) ? $object->metadata->orderId : "";
+                        $type = isset($object->metadata->type) ? $object->metadata->type : "";
                         $status = $object->status;
                         $payment_status = $object->payment_status;
                         $mode = $object->mode;
+                       
                         /** Update order */ 
-                        if(!empty($transactionId) && $mode == 'payment') {
-                            if( $status == "complete" && $payment_status == "paid" && !empty($orderId)) {
+                        if(!empty($transactionId) && $mode == 'payment' && $type == "order" && !empty($orderId)) {
+                            if( $status == "complete" && $payment_status == "paid") {
                                 $orderInfo = $ordeObject
                                 ->find($orderId);
                                 if(empty($orderInfo)) {
@@ -126,6 +130,7 @@ class WebhookOrderController extends BaseController
                             $invoiceId = $object->invoice;
                             $subscriptionId = $object->subscription;
                             $priceId = isset($object->metadata->price_id) ? $object->metadata->price_id : "";
+                            $planType = isset($object->metadata->plan_type) ? $object->metadata->plan_type : 1;
                             $isSaved = false;
 
                             $userInfo = $userService->find($userId);
@@ -163,6 +168,8 @@ class WebhookOrderController extends BaseController
                                    $sellerSubscriptionObj->stripe_status = 'successed';
                                    $sellerSubscriptionObj->start_date = $currentPeriodStart;
                                    $sellerSubscriptionObj->end_date = $currentPeriodEnd;
+                                   $sellerSubscriptionObj->price = $amountTotal;
+                                   $sellerSubscriptionObj->type = $planType;
                                    if($sellerSubscriptionObj->save()) {
                                         $isSaved = true;
                                         $response['status_code'] = '200';
@@ -172,6 +179,7 @@ class WebhookOrderController extends BaseController
                                         $response['message'] = 'Subscription failed to create';   
                                     }
                                 }
+
                                 if($isSaved) {
                                     /** Create renew subscription history */
                                     $sellerRenewHistoryObj->seller_id = $userId;
@@ -180,6 +188,8 @@ class WebhookOrderController extends BaseController
                                     $sellerRenewHistoryObj->transaction_id = $invoiceId;
                                     $sellerRenewHistoryObj->start_date = $currentPeriodStart;
                                     $sellerRenewHistoryObj->end_date = $currentPeriodEnd;
+                                    $sellerRenewHistoryObj->price_id = $priceId;
+                                    $sellerRenewHistoryObj->type = $planType;
                                     if($sellerRenewHistoryObj->save()) {
                                         // new renew history created
                                     }
@@ -187,6 +197,83 @@ class WebhookOrderController extends BaseController
                             } else {
                                 $response['message'] = 'Seller not found.'; 
                             }
+
+                             /** manage subscription */
+
+                        } elseif(!empty($transactionId) && $mode == 'payment' && $type == "donation") {
+                            if($status == "complete" && $payment_status == "paid") {
+                               
+                                $amountTotal = $object->amount_total;
+                                $amountTotal = $amountTotal/100;
+                                $subscriptionId = $object->subscription;
+                                $priceId = "";
+                                $planType = 2;
+                                $isSaved = false;
+
+                                $userInfo = $userService->find($userId);
+                                if(!empty($userInfo)) {
+                                    $sellerSubscriptionObj = (new SellerSubscription);
+                                    $sellerRenewHistoryObj = (new SellerRenewHistory);
+                                    $sellterInfo = $sellerSubscriptionObj->where(['seller_id' => $userId])->first();
+                                    
+                                    $currentPeriodStart = Carbon::now()->format('Y-m-d H:i:s');
+                                    
+                                    // Update suscription
+                                    if(!empty($sellterInfo)) {
+                                        $sellterInfo->subscription_id = "";
+                                        $sellterInfo->price_id = $transactionId;
+                                        $sellterInfo->stripe_status = 'successed';
+                                        $sellterInfo->start_date = $currentPeriodStart;
+                                        //$sellterInfo->end_date = $currentPeriodStart;
+                                        if($sellterInfo->save()) {
+                                            $isSaved = true;
+                                            $response['status_code'] = '200';
+                                            $response['status'] = 'success';
+                                            $response['message'] = 'Subscription updated successfully';
+                                        } else {
+                                            $response['message'] = 'Subscription failed to update';   
+                                        }
+                                    } else {
+                                       /** create new subscription */ 
+                                       $sellerSubscriptionObj->seller_id = $userId;
+                                       $sellerSubscriptionObj->subscription_id = "";
+                                       $sellerSubscriptionObj->price_id = $transactionId;
+                                       $sellerSubscriptionObj->stripe_status = 'successed';
+                                       $sellerSubscriptionObj->start_date = $currentPeriodStart;
+                                       //$sellerSubscriptionObj->end_date = $currentPeriodStart;
+                                       $sellerSubscriptionObj->price = $amountTotal;
+                                       $sellerSubscriptionObj->type = $planType;
+                                       if($sellerSubscriptionObj->save()) {
+                                            $isSaved = true;
+                                            $response['status_code'] = '200';
+                                            $response['status'] = 'success';
+                                            $response['message'] = 'Subscription added successfully';
+                                        } else {
+                                            $response['message'] = 'Subscription failed to create';   
+                                        }
+                                    }
+
+                                    if($isSaved) {
+                                        /** Create renew subscription history */
+                                        $sellerRenewHistoryObj->seller_id = $userId;
+                                        $sellerRenewHistoryObj->subscription_id = "";
+                                        $sellerRenewHistoryObj->price = $amountTotal;
+                                        $sellerRenewHistoryObj->transaction_id = $transactionId;
+                                        $sellerRenewHistoryObj->start_date = $currentPeriodStart;
+                                        $sellerRenewHistoryObj->end_date = $currentPeriodStart;
+                                        $sellerRenewHistoryObj->price_id = $transactionId;
+                                        $sellerRenewHistoryObj->type = $planType;
+                                        if($sellerRenewHistoryObj->save()) {
+                                            // new renew history created
+                                        }
+                                    }
+                                } else {
+                                    $response['message'] = 'Seller not found'; 
+                                } 
+                            } else {
+                                $response['message'] = 'Payment not found'; 
+                            }
+
                         } else {
                             $response['message'] = 'Transaction id or payment mode not found';
                         }
