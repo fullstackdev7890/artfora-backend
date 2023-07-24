@@ -2,24 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-
-use FedEx\AddressValidationService\Request as addressRequest;
-use FedEx\AddressValidationService\ComplexType;
-use League\ISO3166\ISO3166;
-
-use App\Http\Requests\Fedex\AddressValidationRequest;
 use App\Http\Requests\Fedex\PostalCodeValidationRequest;
 use App\Http\Requests\Fedex\ShippingRateRequest;
-use Illuminate\Support\Str;
 use App\Models\Product;
 use App\Models\User;
-
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use Illuminate\Http\Request;
+use League\ISO3166\ISO3166;
 
 class FedexController extends Controller
-
 {
     private $client;
     public $account_number;
@@ -27,7 +19,6 @@ class FedexController extends Controller
     public $client_id;
     public $api_key;
     public $client_secret;
-
 
     public function __construct()
     {
@@ -77,8 +68,8 @@ class FedexController extends Controller
                 ],
                 'query' => [
                     '_' => '-1689800400',
-                    'type' => 'recipient'
-                ]
+                    'type' => 'recipient',
+                ],
 
             ]);
 
@@ -126,7 +117,7 @@ class FedexController extends Controller
         ]);
         $statusCode = $response->getStatusCode();
         if ($statusCode == 200) {
-            $result = json_decode($response->getBody(),);
+            $result = json_decode($response->getBody(), );
         } else {
             $result = json_decode(false);
         }
@@ -144,16 +135,15 @@ class FedexController extends Controller
                     'Authorization' => 'Bearer ' . $token,
                     // 'x-customer-transaction-id' => $transactionId,
 
-
                 ],
                 'query' => [
                     'carrierCode' => ["FXCC"],
                     'countryCode' => $request->input('country_code'), // 'US
                     'postalCode' => $request->input('postal_code'),
                     'stateOrProvinceCode' => $request->input('state'),
-                    'shipDate' => '2020-12-25'
+                    'shipDate' => '2020-12-25',
 
-                ]
+                ],
             ]);
 
             $statusCode = $response->getStatusCode();
@@ -170,7 +160,6 @@ class FedexController extends Controller
     }
 
     public function shipRate(ShippingRateRequest $request)
-
     {
         $data = $request->onlyValidated();
         $data['user_id'] = $request->user()->id;
@@ -181,12 +170,15 @@ class FedexController extends Controller
         $buyer = User::where('id', $data['user_id'])->first();
         $count = $data['count'];
         $isDelivery = $buyer->dev_email ? true : false;
-      return($token);
         try {
             $response = $this->client->request('POST', 'rate/v1/rates/quotes', [
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'Authorization' => 'Bearer ' . $token,
+                ],
+                'query' => [
+                    '_' => '-' . $this->account_number,
+                    'type' => 'recipient',
                 ],
                 'body' => json_encode([
                     'accountNumber' => ['value' => $this->account_number],
@@ -199,23 +191,23 @@ class FedexController extends Controller
                     'requestedShipment' => [
                         'shipper' => [
                             'address' => [
-                                'streetLines' => [$seller->sel_address??'', $seller->sel_address2??''],
-                                'city' => $seller->sel_city??'',
-                                'stateOrProvinceCode' => $seller->sel_state??'',
-                                'postalCode' => $seller->sel_postal??'',
-                                'countryCode' => $this->getCountryCode($seller->sel_country??''),
-                                'residential' => false
-                            ]
+                                'streetLines' => [$seller->sel_address ?? '', $seller->sel_address2 ?? ''],
+                                'city' => $seller->sel_city ?? '',
+                                'stateOrProvinceCode' => $seller->sel_state ?? '',
+                                'postalCode' => $seller->sel_postal ?? '',
+                                'countryCode' => $this->getCountryCode($seller->sel_country ?? ''),
+                                'residential' => false,
+                            ],
                         ],
                         'recipient' => [
                             'address' => [
-                                'streetLines' => [$isDelivery ? $buyer->dev_address??'' : $buyer->inv_address??'', $isDelivery ? $buyer->dev_address2??"" : $buyer->inv_address2??''],
-                                'city' => $isDelivery ? $buyer->dev_city??'' : $buyer->inv_city??'',
-                                'stateOrProvinceCode' => $isDelivery ? $buyer->dev_state??'' : $buyer->inv_state??'',
+                                'streetLines' => [$isDelivery ? $buyer->dev_address ?? '' : $buyer->inv_address ?? '', $isDelivery ? $buyer->dev_address2 ?? "" : $buyer->inv_address2 ?? ''],
+                                'city' => $isDelivery ? $buyer->dev_city ?? '' : $buyer->inv_city ?? '',
+                                'stateOrProvinceCode' => $isDelivery ? $buyer->dev_state ?? '' : $buyer->inv_state ?? '',
                                 'postalCode' => $isDelivery ? $buyer->dev_postal : $buyer->inv_postal,
-                                'countryCode' => $this->getCountryCode($isDelivery ? $buyer->dev_country??'' : $buyer->inv_country??''),
-                                'residential' => false
-                            ]
+                                'countryCode' => $this->getCountryCode($isDelivery ? $buyer->dev_country ?? '' : $buyer->inv_country ?? ''),
+                                'residential' => false,
+                            ],
                         ],
                         'preferredCurrency' => 'USD',
                         'rateRequestType' => ['PREFERRED'],
@@ -223,28 +215,28 @@ class FedexController extends Controller
                         'serviceType' => 'STANDARD_OVERNIGHT',
                         'requestedPackageLineItems' => [
                             [
-                                'groupPackageCount' => $count??'',
+                                'groupPackageCount' => $count ?? '',
                                 'weight' => [
-                                    'value' => $product->weight??'',
-                                    'units' => 'KG'
+                                    'value' => $product->weight ?? '',
+                                    'units' => 'KG',
                                 ],
                                 'dimensions' => [
-                                    'length' => $product->depth??'',
-                                    'width' => $product->width??'',
-                                    'height' => $product->height??'',
-                                    'units' => 'CM'
+                                    'length' => $product->depth ?? '',
+                                    'width' => $product->width ?? '',
+                                    'height' => $product->height ?? '',
+                                    'units' => 'CM',
                                 ],
-                                // 'declaredValue' => [
-                                //     'currency' => 'USD',
-                                //     'amount' => $count
-                                // ],
+                                'declaredValue' => [
+                                    'currency' => 'USD',
+                                    'amount' => $count * ($product->is_sale_price ? $product->sale_price_in_euro : $product->price),
+                                ],
 
-                            ]
+                            ],
                         ],
 
                     ],
-                    'carrierCodes' => ['FXCC']
-                ])
+                    'carrierCodes' => ['FXCC'],
+                ]),
             ]);
             $statusCode = $response->getStatusCode();
             $responseData = json_decode($response->getBody(), true);
@@ -258,4 +250,33 @@ class FedexController extends Controller
             return $e;
         }
     }
+    public function service_availability(Request $request)
+    {
+        $auth = $this->getAccessToken();
+        $token = $auth['access_token'];
+        try {
+            $response = $this->client->request('POST', 'serviceavailability', [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Bearer ' . $token,
+                ],
+                'query' => [
+                    '_' => '-' . $this->account_number,
+                    'type' => 'recipient',
+                ],
+                'body' => json_encode([
+                    'countryCode' => $request->input->code]),
+            ]);
+            $statusCode = $response->getStatusCode();
+            $responseData = json_decode($response->getBody(), true);
+
+            if ($statusCode == 200) {
+                return response()->json($responseDatant);
+            } else {
+            }
+        } catch (RequestException $e) {
+            return $e;
+        }
+    }
+
 }

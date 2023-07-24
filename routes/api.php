@@ -1,22 +1,22 @@
 <?php
 
-use App\Http\Controllers\ContactUsController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\StatusController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\MediaController;
-use App\Http\Controllers\SettingController;
-use App\Http\Controllers\TextController;
-use App\Http\Controllers\FilterController;
-use App\Http\Controllers\WebhookController;
-use App\Http\Controllers\StripePaymentController;
-use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\CartItemController;
-use App\Http\Controllers\WebhookOrderController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\FedexController;
+use App\Http\Controllers\FilterController;
+use App\Http\Controllers\MediaController;
+use App\Http\Controllers\OrderItemController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\StatusController;
+use App\Http\Controllers\StripePaymentController;
+use App\Http\Controllers\TextController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\WebhookController;
+use App\Http\Controllers\WebhookOrderController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
-*/
+ */
 
 Route::group(['middleware' => 'auth'], function () {
     Route::post('/auth/2fa/sms/enable', ['uses' => AuthController::class . '@enableSms2fa']);
@@ -73,6 +73,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/validate-postal-code', 'FedExController@validatePostalCode');
     Route::get('ship', [FedExController::class, 'ship']);
     Route::post('/ship_rate', [FedExController::class, 'shipRate']);
+    Route::post('/service_availability', [FedExController::class, 'service_availability']);
     Route::get('/countries', [FedExController::class, 'countries']);
 });
 
@@ -99,11 +100,6 @@ Route::group(['middleware' => ['guest', 'api']], function () {
 
     Route::get('/categories/{id}', [CategoryController::class, 'get']);
     Route::get('/categories', [CategoryController::class, 'search']);
-
-
-
-
-
 
     Route::get('/texts', [TextController::class, 'search']);
 

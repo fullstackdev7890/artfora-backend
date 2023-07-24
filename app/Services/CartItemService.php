@@ -66,6 +66,7 @@ class CartItemService extends EntityService
         $existProduct=CartItem::where('product_id',$data['product_id'])->where('user_id', $data['user_id'])->first();
         if($existProduct){
             $existProduct['quantity'] = $existProduct['quantity'] + $data['quantity'];
+            $existProduct['shipping']=$data['shipping'];
             $existProduct->save();
             return $existProduct->load(['product']);
         }
@@ -76,6 +77,7 @@ class CartItemService extends EntityService
             
             $product=Product::where('id',$data['product_id'])->with(['user'])->first();
             $sellerCountry=$product['user']['sel_country'];
+            
             $vat=$this->getVatRate($sellerCountry);
             $data['vat']=floatval($vat);
             
