@@ -93,8 +93,8 @@ class FedexController extends Controller
     public function addressValidation(Request $request)
     {
         $auth = $this->getAccessToken();
-
         $token = $auth['access_token'];
+        // return ($token);
         try {
             $response = $this->client->request('POST', 'address/v1/addresses/resolve', [
                 'headers' => [
@@ -117,15 +117,15 @@ class FedexController extends Controller
             ]);
             $statusCode = $response->getStatusCode();
             if ($statusCode == 200) {
-                $result = json_decode(true);
+                $result = json_encode(['status' => true]);
             } else {
-                $result = json_decode(false);
+                $result = json_encode(['status' => false]);
             }
             return $result;
         } catch (RequestException $e) {
-            return json_decode(false);
+            $result = json_encode(['status' => false]);
         }
-        return json_decode(false);
+        $result = json_encode(['status' => false]);
     }
 
     public function postalCodeValidation(PostalCodeValidationRequest $request)
@@ -219,15 +219,15 @@ class FedexController extends Controller
                         'serviceType' => 'STANDARD_OVERNIGHT',
                         'requestedPackageLineItems' => [
                             [
-                                'groupPackageCount' => $count ?? '',
+                                'groupPackageCount' => $count ,
                                 'weight' => [
-                                    'value' => $product->weight ?? '',
+                                    'value' => $product->weight,
                                     'units' => 'KG',
                                 ],
                                 'dimensions' => [
-                                    'length' => $product->depth ?? '',
-                                    'width' => $product->width ?? '',
-                                    'height' => $product->height ?? '',
+                                    'length' => $product->depth,
+                                    'width' => $product->width,
+                                    'height' => $product->height,
                                     'units' => 'CM',
                                 ],
                                 'declaredValue' => [
@@ -235,6 +235,18 @@ class FedexController extends Controller
                                     'amount' => $count * ($product->is_sale_price ? $product->sale_price_in_euro : $product->price),
                                 ],
 
+                            ],
+                        ],
+                        'customsClearanceDetail' => [
+                            'commercialInvoice' => [
+                                'shipmentPurpose' => 'PERSONAL_USE',
+                            ],
+                            'freightOnValue' => 'CARRIER_RISK',
+                            'commodities' => [
+                                'weight' => [
+                                    'value' => $product->weight,
+                                    'units' => 'KG',
+                                ],
                             ],
                         ],
 
