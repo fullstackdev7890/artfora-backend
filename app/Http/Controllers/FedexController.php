@@ -247,7 +247,7 @@ class FedexController extends Controller
             $responseData = json_decode($response->getBody(), true);
 
             if ($statusCode == 200) {
-                return response()->json($responseData->output->rateReplyDetails->ratedShipmentDetails->totalNetFedExCharge->amount);
+                return response()->json(['message' => $responseData->output->rateReplyDetails->ratedShipmentDetails->totalNetFedExCharge->amount]);
             } else {
                 return response()->json(['message' => 'invalid']);
             }
