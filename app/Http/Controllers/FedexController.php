@@ -96,11 +96,12 @@ class FedexController extends Controller
         $token = $auth['access_token'];
         // return ($token);
         try {
-            $response = $this->client->request('POST', 'address/v1/addresses/resolve', [
+            $response = $this->client->request('POST', 'address/v1/addresses/resolve?_=-800668409', [
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'Authorization' => 'Bearer ' . $token,
                 ],
+                // 'query' => ['_' => '-' . $this->account_number],
                 'body' => json_encode([
                     'addressesToValidate' => [
                         [
@@ -116,16 +117,27 @@ class FedexController extends Controller
                 ]),
             ]);
             $statusCode = $response->getStatusCode();
+
             if ($statusCode == 200) {
-                $result = json_encode(['status' => true]);
+                $responseData = json_decode($response->getBody(), true);
+                if (count($responseData['output']['resolvedAddresses'][0]['customerMessages']) == 0) {
+                    $result = json_encode(true);
+                    return $result;
+
+                } else {
+                    $result = json_encode(false);
+                    return $result;
+
+                }
             } else {
-                $result = json_encode(['status' => false]);
+                $result = json_encode(false);
             }
             return $result;
         } catch (RequestException $e) {
-            $result = json_encode(['status' => false]);
+            $result = json_encode(false);
         }
-        $result = json_encode(['status' => false]);
+        $result = json_encode(false);
+        return $result;
     }
 
     public function postalCodeValidation(PostalCodeValidationRequest $request)
@@ -174,6 +186,7 @@ class FedexController extends Controller
         $buyer = User::where('id', $data['user_id'])->first();
         $count = $data['count'];
         $isDelivery = $buyer->dev_email ? true : false;
+
         try {
             $response = $this->client->request('POST', 'rate/v1/rates/quotes', [
                 'headers' => [
@@ -219,7 +232,7 @@ class FedexController extends Controller
                         'serviceType' => 'STANDARD_OVERNIGHT',
                         'requestedPackageLineItems' => [
                             [
-                                'groupPackageCount' => $count ,
+                                'groupPackageCount' => $count,
                                 'weight' => [
                                     'value' => $product->weight,
                                     'units' => 'KG',
@@ -247,6 +260,7 @@ class FedexController extends Controller
                                     'value' => $product->weight,
                                     'units' => 'KG',
                                 ],
+                                'quantity' => $count,
                             ],
                         ],
 
