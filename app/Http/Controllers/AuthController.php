@@ -33,20 +33,20 @@ use PHPOpenSourceSaver\JWTAuth\JWTAuth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
+
 class AuthController extends Controller
 {
-    public function verifyRememberToken(Request $request,JWTAuth $auth,$remember_token){
-       
-        // if($remember_token){
-        //     $user = User::where('remember_token', $remember_token)->first();
-        //     $token = $auth->fromUser($user);
-        //     return response()->json([
-        //         'message' => 'Success',
-        //         'token' => $token,
-        //         'remember_token'=>$remember_token
-        //     ]);
-        // }
-
+    public function verifyRememberToken(Request $request, JWTAuth $auth, $remember_token)
+    {
+        if ($remember_token) {
+            $user = User::where('remember_token', $remember_token)->first();
+            $token = $auth->fromUser($user);
+            return response()->json([
+                'message' => 'Success',
+                'token' => $token,
+                'remember_token' => $remember_token
+            ]);
+        }
     }
     public function login(
         LoginRequest $request,
@@ -54,19 +54,31 @@ class AuthController extends Controller
         TwoFactorAuthEmailService $authEmailService,
         JWTAuth $auth
     ) {
-        $login = strtolower($request->input('login'));
+        $email = strtolower($request->input('login'));
+        $remember_me = $request->input('remember_me');
+        $remember_token = null;
+        $token = null;
+        if ($remember_me) {
+            $remember_token = $auth->attempt([
+                'email' => $email,
+                'password' => $request->input('password')
+            ], $remember_me);
+        } else {
+            $token = $auth->attempt([
+                'email' => $email,
+                'password' => $request->input('password')
+            ]);
+        }
 
-        $token = $auth->attempt([
-            'email' => $login,
-            'password' => $request->input('password')
-        ]);
+        $user = $service->findBy('email', $email);
+        $user->remember_token = $remember_token;
+        $user->save();
 
-       
-        if($token ===true){
+        if ($token === true) {
             return response()->json(true);
         }
 
-        $user = $service->findBy('email', $login);
+        $user = $service->findBy('email', $email);
 
         if (empty($user['email_verified_at'])) {
             return response()->json([
@@ -153,43 +165,32 @@ class AuthController extends Controller
 
         $token = $auth->fromUser($user);
 
-        return response()->json([ 'token' => $token ]);
+        return response()->json(['token' => $token]);
     }
 
     public function resend2faEmail(Resend2faEmailRequest $request, TwoFactorAuthEmailService $service)
     {
         $service->send($request->input('email'));
 
-        return response()->json([ 'message' => 'Successfully sent' ]);
+        return response()->json(['message' => 'Successfully sent']);
     }
 
     public function check2faEmail(Check2faEmailRequest $request, UserService $userService, JWTAuth $auth)
     {
         $email = $request->input('email');
         $code = $request->input('code');
-        $remember_me = $request->input('remember_me');
 
         if (!EmailTwoFactorAuthorization::check($email, $code)) {
-            return response()->json([ 'message' => 'Wrong code' ], Response::HTTP_BAD_REQUEST);
+            return response()->json(['message' => 'Wrong code'], Response::HTTP_BAD_REQUEST);
         }
-        $rememberTokenExpiration = Carbon::now()->addMonth();
         $user = $userService->findBy('email', $email);
         $token = $auth->fromUser($user);
-        $remember_token=null;
-        if($remember_me){
-            $remember_token = $auth->attempt([
-            'email' => $email,
-            'password' => 'starSTAR123!@#'
-        ],$remember_me,$rememberTokenExpiration);
-        }
-      
-        $user->remember_token=$remember_token;  
-        $user->save();  
+        $remember_token = $user->remember_token;
 
         return response()->json([
             'message' => 'Success',
             'token' => $token,
-            'remember_token'=>$remember_token
+            'remember_token' => $remember_token
         ]);
     }
 
@@ -233,7 +234,7 @@ class AuthController extends Controller
         );
 
         if (!$isCodeCorrect) {
-            return response()->json([ 'message' => 'wrong code' ], Response::HTTP_BAD_REQUEST);
+            return response()->json(['message' => 'wrong code'], Response::HTTP_BAD_REQUEST);
         }
 
         $service->enable2FA($request->user()->id, User::SMS_2FA_TYPE);
@@ -245,7 +246,7 @@ class AuthController extends Controller
     {
         $data = OtpTwoFactorAuthorization::generate();
 
-        $service->update($request->user()->id, [ 'otp_secret' => $data['secret'] ]);
+        $service->update($request->user()->id, ['otp_secret' => $data['secret']]);
 
         return response()->json($data);
     }
@@ -258,7 +259,7 @@ class AuthController extends Controller
         );
 
         if (!$isCodeCorrect) {
-            return response()->json([ 'message' => 'wrong code' ], Response::HTTP_BAD_REQUEST);
+            return response()->json(['message' => 'wrong code'], Response::HTTP_BAD_REQUEST);
         }
 
         $service->enable2FA($request->user()->id, User::OTP_2FA_TYPE);
@@ -284,7 +285,7 @@ class AuthController extends Controller
 
     public function textData()
     {
-        $text = Text::where('text_name','welcome')->orderby('text_order')->get();
+        $text = Text::where('text_name', 'welcome')->orderby('text_order')->get();
 
         return response()->json([
             'text' => $text,
