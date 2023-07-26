@@ -40,12 +40,20 @@ class AuthController extends Controller
     {
         if ($remember_token) {
             $user = User::where('remember_token', $remember_token)->first();
-            $token = $auth->fromUser($user);
-            return response()->json([
-                'message' => 'Success',
-                'token' => $token,
-                'remember_token' => $remember_token
-            ]);
+            if (!empty($user)) {
+                $token = $auth->fromUser($user);
+                return response()->json([
+                    'message' => 'Success',
+                    'token' => $token,
+                    'remember_token' => $remember_token
+                ]);
+            } else {
+                return response()->json([
+                    'message' => 'Failed',
+                    'token' => '',
+                    'remember_token' => ''
+                ]);
+            }
         }
     }
     public function login(
