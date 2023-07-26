@@ -78,19 +78,19 @@ class UserController extends Controller
      * @param integer $id
      * @return json object
      */
-    public function stripeConnect(UserService $service, $id) 
+    public function stripeConnect(UserService $service, $id)
     {
         $stripeSecretKey = config('services.stripe.secret');
         $stripeAccountLink = [];
 
         try {
             $userInfo = $service
-            ->find($id);
+                ->find($id);
 
-            if(empty($userInfo)) {
+            if (empty($userInfo)) {
                 throw new NotFoundHttpException(__('validation.exceptions.not_found', ['entity' => 'User']));
             }
-            if(isset($userInfo->stripe_account_id)) {
+            if (isset($userInfo->stripe_account_id)) {
                 // Create stripe account link
                 $account_id = $userInfo->stripe_account_id;
                 $account_link = $this->stripeAccoutLink($account_id, $stripeSecretKey);
@@ -110,7 +110,6 @@ class UserController extends Controller
             $stripeAccountLink['user_id'] = $id;
             $stripeAccountLink['email'] = $userInfo->email;
             $stripeAccountLink['strip_account_link'] =  $account_url;
-
         } catch (\Exception $e) {
             throw $e;
         }

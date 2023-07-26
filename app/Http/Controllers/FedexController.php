@@ -123,11 +123,9 @@ class FedexController extends Controller
                 if (count($responseData['output']['resolvedAddresses'][0]['customerMessages']) == 0) {
                     $result = json_encode(true);
                     return $result;
-
                 } else {
                     $result = json_encode(false);
                     return $result;
-
                 }
             } else {
                 $result = json_encode(false);
@@ -282,7 +280,6 @@ class FedexController extends Controller
             return $e;
         }
         return response()->json(['message' => 'invalid']);
-
     }
     public function service_availability(Request $request)
     {
@@ -299,7 +296,8 @@ class FedexController extends Controller
                     'type' => 'recipient',
                 ],
                 'body' => json_encode([
-                    'countryCode' => $request->input->code]),
+                    'countryCode' => $request->input->code
+                ]),
             ]);
             $statusCode = $response->getStatusCode();
             $responseData = json_decode($response->getBody(), true);
@@ -312,5 +310,4 @@ class FedexController extends Controller
             return $e;
         }
     }
-
 }
