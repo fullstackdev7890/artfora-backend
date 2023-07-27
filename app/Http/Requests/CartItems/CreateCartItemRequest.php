@@ -12,7 +12,7 @@ class CreateCartItemRequest extends Request
             'user_id' => 'numeric',
             'product_id' => 'numeric',
             'quantity' => 'numeric',
-            'shipping'=>"numeric"|'string',
+            'shipping' => 'string',
         ];
     }
 }
