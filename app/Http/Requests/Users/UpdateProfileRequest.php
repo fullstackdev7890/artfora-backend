@@ -53,7 +53,7 @@ class UpdateProfileRequest extends Request
             "sel_address2"=>'string|nullable', 
             "sel_postal"=>'string', 
             "sel_city"=>'string', 
-            "sel_state"=>'string', 
+            "sel_state"=>'string|nullable', 
             "sel_country"=>'string', 
             "sel_phone"=>'string|nullable',
             "sel_email"=>'string',
