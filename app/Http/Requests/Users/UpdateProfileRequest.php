@@ -33,7 +33,7 @@ class UpdateProfileRequest extends Request
             "inv_address2"=>'string|nullable', 
             "inv_postal"=>'string', 
             "inv_city"=>'string', 
-            "inv_state"=>'string', 
+            "inv_state"=>'string|nullable', 
             "inv_country"=>'string',
             "inv_phone"=>'string|nullable',
             "inv_email"=>'string',

@@ -121,21 +121,17 @@ class FedexController extends Controller
             if ($statusCode == 200) {
                 $responseData = json_decode($response->getBody(), true);
                 if (count($responseData['output']['resolvedAddresses'][0]['customerMessages']) == 0) {
-                    $result = json_encode(true);
-                    return $result;
+                    return response()->json(['result' => true]);
                 } else {
-                    $result = json_encode(false);
-                    return $result;
+                    return response()->json(['result' => false]);
                 }
             } else {
-                $result = json_encode(false);
+                return response()->json(['result' => false]);
             }
-            return $result;
         } catch (RequestException $e) {
             $result = json_encode(false);
         }
-        $result = json_encode(false);
-        return $result;
+        return response()->json(['result' => false]);
     }
 
     public function postalCodeValidation(PostalCodeValidationRequest $request)
