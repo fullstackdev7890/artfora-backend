@@ -71,12 +71,12 @@ class UserService extends EntityService
             ->withTrashed()
             ->findBy('email_verification_token', $code);
 
-        $this->repository->force()->update(['email_verification_token' => $code], [
-            'email_verification_token' => null,
-            'email_verification_token_sent_at' => null,
-            'email_verified_at' => Carbon::now(),
-            'deleted_at' => null
-        ]);
+        // $this->repository->force()->update(['email_verification_token' => $code], [
+        //     'email_verification_token' => null,
+        //     'email_verification_token_sent_at' => null,
+        //     'email_verified_at' => Carbon::now(),
+        //     'deleted_at' => null
+        // ]);
 
         return $user;
     }
