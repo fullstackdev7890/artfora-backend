@@ -21,7 +21,6 @@ class Product extends Model
     const COMMON_VISIBILITY_LEVEL = 1;
     const NUDITY_VISIBILITY_LEVEL = 2;
     const EROTIC_VISIBILITY_LEVEL = 3;
-    const PORNO_VISIBILITY_LEVEL = 4;
 
     const STATUSES = [
         self::APPROVED_STATUS,
@@ -33,7 +32,6 @@ class Product extends Model
         self::COMMON_VISIBILITY_LEVEL,
         self::NUDITY_VISIBILITY_LEVEL,
         self::EROTIC_VISIBILITY_LEVEL,
-        self::PORNO_VISIBILITY_LEVEL,
     ];
 
     protected $fillable = [
